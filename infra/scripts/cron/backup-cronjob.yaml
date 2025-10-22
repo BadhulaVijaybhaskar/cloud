@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: naksha-backup
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: naksha/backup:latest
+            command:
+            - /bin/bash
+            - /scripts/backup.sh
+            env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: url
+            - name: BACKUP_S3_BUCKET
+              value: "naksha-backups"
+            volumeMounts:
+            - name: backup-scripts
+              mountPath: /scripts
+          volumes:
+          - name: backup-scripts
+            configMap:
+              name: backup-scripts
+          restartPolicy: OnFailure

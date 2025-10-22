@@ -13,7 +13,8 @@ const pool = new Pool({
 
 const JWT_SECRET = process.env.AUTH_JWT_SECRET;
 
-const wss = new WebSocket.Server({ port: 4000 });
+const PORT = process.env.PORT || 4000;
+const wss = new WebSocket.Server({ port: PORT });
 
 wss.on('connection', (ws, req) => {
   const url = new URL(req.url, 'http://localhost');
@@ -57,4 +58,4 @@ pool.connect((err, client) => {
   client.query('LISTEN projects_changes');
 });
 
-console.log('Realtime service running on port 4000');
+console.log(`Realtime service running on port ${PORT}`);

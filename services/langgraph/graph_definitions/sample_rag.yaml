@@ -1,0 +1,27 @@
+name: sample_rag
+description: Sample RAG workflow
+nodes:
+  - name: query_processor
+    type: default
+    config:
+      function: process_query
+  - name: vector_search
+    type: vector.query
+    config:
+      collection: documents
+      top_k: 5
+  - name: context_builder
+    type: default
+    config:
+      function: build_context
+  - name: llm_generator
+    type: default
+    config:
+      function: generate_response
+edges:
+  - from: query_processor
+    to: vector_search
+  - from: vector_search
+    to: context_builder
+  - from: context_builder
+    to: llm_generator

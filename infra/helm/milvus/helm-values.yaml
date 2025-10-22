@@ -1,0 +1,42 @@
+cluster:
+  enabled: true
+
+etcd:
+  replicaCount: 3
+  persistence:
+    storageClass: ""
+    size: 10Gi
+
+minio:
+  mode: distributed
+  replicas: 4
+  persistence:
+    storageClass: ""
+    size: 10Gi
+
+pulsar:
+  enabled: false
+
+kafka:
+  enabled: true
+
+queryNode:
+  replicas: 2
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+dataNode:
+  replicas: 2
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+indexNode:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi

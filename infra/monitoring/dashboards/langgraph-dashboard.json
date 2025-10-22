@@ -1,0 +1,37 @@
+{
+  "dashboard": {
+    "title": "LangGraph Orchestration",
+    "panels": [
+      {
+        "title": "Job Throughput",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(langgraph_jobs_total[5m])",
+            "legendFormat": "Jobs/sec"
+          }
+        ]
+      },
+      {
+        "title": "Job Duration",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, langgraph_job_duration_seconds_bucket)",
+            "legendFormat": "95th percentile"
+          }
+        ]
+      },
+      {
+        "title": "Active Jobs",
+        "type": "singlestat",
+        "targets": [
+          {
+            "expr": "langgraph_active_jobs",
+            "legendFormat": "Active"
+          }
+        ]
+      }
+    ]
+  }
+}

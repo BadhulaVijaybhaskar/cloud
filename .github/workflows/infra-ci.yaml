@@ -1,0 +1,82 @@
+name: Infrastructure CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths: ['infra/**']
+  pull_request:
+    branches: [main]
+    paths: ['infra/**']
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+      
+      - name: Terraform Init
+        run: terraform init
+        working-directory: infra/terraform
+      
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: infra/terraform
+        env:
+          TF_VAR_database_url: ${{ secrets.DATABASE_URL }}
+          TF_VAR_vault_addr: ${{ secrets.VAULT_ADDR }}
+      
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve
+        working-directory: infra/terraform
+
+  helm-deploy:
+    runs-on: ubuntu-latest
+    needs: terraform
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: '3.12.0'
+      
+      - name: Deploy LangGraph
+        run: |
+          helm upgrade --install langgraph infra/helm/langgraph \
+            --namespace langgraph --create-namespace
+      
+      - name: Deploy Observability
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update
+          
+          helm upgrade --install prometheus prometheus-community/prometheus \
+            --namespace monitoring --create-namespace \
+            -f infra/helm/observability/prometheus-values.yaml
+          
+          helm upgrade --install grafana grafana/grafana \
+            --namespace monitoring \
+            -f infra/helm/observability/grafana-values.yaml
+
+  smoke-tests:
+    runs-on: ubuntu-latest
+    needs: helm-deploy
+    steps:
+      - name: Health Check LangGraph
+        run: |
+          curl -f http://langgraph.local/healthz || exit 1
+      
+      - name: Health Check Vector Service
+        run: |
+          curl -f http://vector.local/healthz || exit 1
+      
+      - name: Check Metrics
+        run: |
+          curl -f http://prometheus.local/metrics || exit 1

@@ -1,0 +1,39 @@
+global:
+  enabled: true
+  tlsDisable: false
+
+server:
+  ha:
+    enabled: true
+    replicas: 3
+  
+  dataStorage:
+    enabled: true
+    size: 10Gi
+    storageClass: null
+  
+  auditStorage:
+    enabled: true
+    size: 10Gi
+  
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 256Mi
+      cpu: 250m
+
+ui:
+  enabled: true
+  serviceType: "ClusterIP"
+
+injector:
+  enabled: true
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 256Mi
+      cpu: 250m

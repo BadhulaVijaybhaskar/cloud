@@ -1,0 +1,7 @@
+{
+  "bound_service_account_names": ["langgraph-sa"],
+  "bound_service_account_namespaces": ["default", "naksha"],
+  "policies": ["langgraph"],
+  "ttl": "1h",
+  "max_ttl": "24h"
+}
