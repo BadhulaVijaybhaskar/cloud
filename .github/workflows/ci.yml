@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and start services
+      run: |
+        cp .env.example .env
+        docker compose up --build -d
+        sleep 30
+
+    - name: Run setup
+      run: |
+        # Run any setup scripts if needed
+        echo "Setup complete"
+
+    - name: Run E2E tests
+      run: |
+        cd e2e-tests
+        node test.js
+
+    - name: Tear down
+      run: docker compose down

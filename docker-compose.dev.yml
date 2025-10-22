@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: naksha
+      POSTGRES_USER: naksha
+      POSTGRES_DB: naksha_system
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  hasura:
+    image: hasura/graphql-engine:latest
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: ${HASURA_GRAPHQL_DATABASE_URL}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+  minio:
+    image: minio/minio
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+    depends_on:
+      - postgres
+  auth:
+    build: ./services/auth
+    env_file: .env
+    ports:
+      - "9999:9999"
+    depends_on:
+      - postgres
+  realtime:
+    build: ./services/realtime
+    env_file: .env
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+  admin-ui:
+    build: ./admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      - hasura
+      - auth
+volumes:
+  pgdata: {}
+  miniodata: {}
