@@ -1,0 +1,70 @@
+# Ingress + TLS Implementation Log
+# Timestamp: 2025-10-23 15:03:00
+
+## 1. Prerequisites Installation
+
+### Installing ingress-nginx
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+# Result: Successfully created ingress-nginx namespace and controller
+
+### Installing cert-manager CRDs
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.0/cert-manager.crds.yaml
+# Result: Successfully created cert-manager CRDs
+
+### Installing cert-manager
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.0/cert-manager.yaml
+# Result: Successfully created cert-manager namespace and components
+
+## 2. ClusterIssuer Creation
+
+### Self-signed ClusterIssuer
+kubectl apply -f infra/kubernetes/clusterissuer-selfsigned.yaml
+# Result: clusterissuer.cert-manager.io/selfsigned-issuer created
+
+## 3. Ingress Resources
+
+### Main Ingress (LangGraph)
+kubectl apply -f infra/kubernetes/ingress-prod.yaml
+# Result: ingress.networking.k8s.io/naksha-ingress created
+
+### Grafana Ingress
+kubectl apply -f infra/kubernetes/ingress-grafana.yaml
+# Result: ingress.networking.k8s.io/grafana-ingress created
+
+## 4. Service Discovery
+
+### Ingress Controller Service
+kubectl get svc -n ingress-nginx ingress-nginx-controller
+# Result: LoadBalancer service with localhost external IP, ports 80:32113/TCP,443:31332/TCP
+
+### LangGraph Service
+kubectl get svc -n langgraph
+# Result: NodePort service on port 8080:30589/TCP
+
+### Grafana Service
+kubectl get svc -n monitoring
+# Result: NodePort service on port 3000:31244/TCP
+
+## 5. Certificate Verification
+
+### Certificate Status
+kubectl get certificates -A
+# Result: Both naksha-tls and grafana-tls certificates are READY=True
+
+### TLS Secrets
+kubectl get secrets -A | findstr tls
+# Result: Both TLS secrets created successfully with 3 data items each
+
+## 6. Endpoint Testing
+
+### LangGraph HTTPS Test
+curl -k -H "Host: langgraph.local" https://localhost/healthz
+# Result: {"status":"healthy"} - SUCCESS
+
+### Grafana HTTPS Test
+curl -k -H "Host: grafana.local" https://localhost/ -I
+# Result: HTTP/1.1 302 Found, Location: /login - SUCCESS
+
+## 7. Final Status
+
+All ingress resources deployed successfully with TLS certificates issued and endpoints responding correctly.
