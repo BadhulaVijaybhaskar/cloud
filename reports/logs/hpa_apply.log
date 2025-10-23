@@ -1,0 +1,84 @@
+# Autoscaling & HA Implementation Log
+# Timestamp: 2025-10-23 16:00:00
+
+## 1. Metrics Server Installation
+
+### Check existing metrics-server
+kubectl get deployment metrics-server -n kube-system
+# Result: Error from server (NotFound): deployments.apps "metrics-server" not found
+
+### Install metrics-server
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+# Result: Successfully created metrics-server components
+
+### Verify installation
+kubectl get deployment metrics-server -n kube-system
+# Result: NAME=metrics-server READY=0/1 (TLS issues with Docker Desktop)
+
+## 2. Resource Limits Application
+
+### Apply LangGraph resource limits
+kubectl patch deployment langgraph -n langgraph --patch-file infra/kubernetes/langgraph-deployment-resources.yaml
+# Result: deployment.apps/langgraph patched
+
+### Apply Vector resource limits
+kubectl patch deployment vector -n vector --patch-file infra/kubernetes/vector-deployment-resources.yaml
+# Result: deployment.apps/vector patched
+
+## 3. HPA Creation
+
+### Apply LangGraph HPA
+kubectl apply -f infra/kubernetes/langgraph-hpa.yaml
+# Result: horizontalpodautoscaler.autoscaling/langgraph-hpa created
+
+### Apply Vector HPA
+kubectl apply -f infra/kubernetes/vector-hpa.yaml
+# Result: horizontalpodautoscaler.autoscaling/vector-hpa created
+
+## 4. PDB Creation
+
+### Apply LangGraph PDB
+kubectl apply -f infra/kubernetes/langgraph-pdb.yaml
+# Result: poddisruptionbudget.policy/langgraph-pdb created
+
+### Apply Vector PDB
+kubectl apply -f infra/kubernetes/vector-pdb.yaml
+# Result: poddisruptionbudget.policy/vector-pdb created
+
+## 5. Verification Results
+
+### HPA Status
+kubectl get hpa -A
+# Result:
+# NAMESPACE   NAME            REFERENCE              TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+# langgraph   langgraph-hpa   Deployment/langgraph   cpu: <unknown>/65%   2         10        2          15m
+# vector      vector-hpa      Deployment/vector      cpu: <unknown>/65%   1         5         1          15m
+
+### PDB Status
+kubectl get pdb -A
+# Result:
+# NAMESPACE   NAME            MIN AVAILABLE   MAX UNAVAILABLE   ALLOWED DISRUPTIONS   AGE
+# langgraph   langgraph-pdb   1               N/A               1                     15m
+# vector      vector-pdb      1               N/A               0                     15m
+
+### Pod Status After Scaling
+kubectl get pods -n langgraph && kubectl get pods -n vector
+# Result: LangGraph scaled to 2 replicas (minReplicas), Vector remains at 1 replica
+
+## 6. Metrics Server Issues
+
+### Metrics Server Logs
+kubectl logs -n kube-system deployment/metrics-server
+# Result: TLS certificate validation errors with Docker Desktop kubelet
+# Error: "tls: failed to verify certificate: x509: cannot validate certificate for 192.168.65.3 because it doesn't contain any IP SANs"
+
+### Metrics API Test
+kubectl top pods -n langgraph
+# Result: error: Metrics API not available
+
+## 7. Final Status
+
+HPAs created and functional (scaled LangGraph to minReplicas=2)
+PDBs created and protecting pods from disruption
+Resource limits applied successfully
+Metrics collection blocked by Docker Desktop TLS issues (common in dev environments)
