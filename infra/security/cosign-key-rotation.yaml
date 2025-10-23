@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cosign-keys
+  namespace: kube-system
+type: Opaque
+data:
+  # New rotated cosign keys (base64 encoded)
+  # Generated with: cosign generate-key-pair
+  cosign.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JR0hBZ0VBTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEJHMHdh...
+  cosign.pub: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFN1MxcDlG...
+stringData:
+  # Placeholder for actual rotated keys
+  cosign.key: |
+    -----BEGIN PRIVATE KEY-----
+    MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg7S1p9F2nK8J5L3mR
+    4wX9Y2vQ8nH1K8J5L3mR4wX9Y2vQ8nH1K8J5L3mR4wX9Y2vQ8nH1K8J5L3mR4wX9
+    -----END PRIVATE KEY-----
+  cosign.pub: |
+    -----BEGIN PUBLIC KEY-----
+    MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7S1p9F2nK8J5L3mR4wX9Y2vQ8nH1
+    K8J5L3mR4wX9Y2vQ8nH1K8J5L3mR4wX9Y2vQ8nH1K8J5L3mR4wX9Y2vQ8nH1Kw==
+    -----END PUBLIC KEY-----

@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  node-exporter-dashboard.json: |
+    {
+      "dashboard": {
+        "id": 1860,
+        "title": "Node Exporter Full",
+        "tags": ["prometheus", "node-exporter"],
+        "timezone": "browser",
+        "panels": [
+          {
+            "title": "CPU Usage",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)"
+              }
+            ]
+          },
+          {
+            "title": "Memory Usage",
+            "type": "stat", 
+            "targets": [
+              {
+                "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100"
+              }
+            ]
+          },
+          {
+            "title": "Disk Usage",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  kubernetes-cluster-dashboard.json: |
+    {
+      "dashboard": {
+        "id": 6417,
+        "title": "Kubernetes Cluster Monitoring",
+        "tags": ["kubernetes", "cluster"],
+        "panels": [
+          {
+            "title": "Cluster CPU Usage",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(rate(container_cpu_usage_seconds_total[5m]))"
+              }
+            ]
+          },
+          {
+            "title": "Cluster Memory Usage", 
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(container_memory_usage_bytes)"
+              }
+            ]
+          },
+          {
+            "title": "Pod Count",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "count(kube_pod_info)"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  aws-billing-dashboard.json: |
+    {
+      "dashboard": {
+        "id": 16103,
+        "title": "AWS Billing Metrics",
+        "tags": ["aws", "billing", "cost"],
+        "panels": [
+          {
+            "title": "Monthly Cost",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "aws_billing_estimated_charges"
+              }
+            ]
+          },
+          {
+            "title": "Cost by Service",
+            "type": "piechart",
+            "targets": [
+              {
+                "expr": "aws_billing_estimated_charges by (service)"
+              }
+            ]
+          },
+          {
+            "title": "Daily Cost Trend",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "increase(aws_billing_estimated_charges[1d])"
+              }
+            ]
+          }
+        ]
+      }
+    }

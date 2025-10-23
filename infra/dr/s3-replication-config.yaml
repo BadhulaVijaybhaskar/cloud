@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: s3-replication-config
+  namespace: langgraph
+data:
+  replication-rules.json: |
+    {
+      "Role": "arn:aws:iam::123456789012:role/replication-role",
+      "Rules": [
+        {
+          "ID": "naksha-backup-replication",
+          "Status": "Enabled",
+          "Priority": 1,
+          "Filter": {
+            "Prefix": "postgres/"
+          },
+          "Destination": {
+            "Bucket": "arn:aws:s3:::naksha-backups-dr",
+            "StorageClass": "STANDARD_IA"
+          }
+        },
+        {
+          "ID": "naksha-vector-replication", 
+          "Status": "Enabled",
+          "Priority": 2,
+          "Filter": {
+            "Prefix": "vector/"
+          },
+          "Destination": {
+            "Bucket": "arn:aws:s3:::naksha-backups-dr",
+            "StorageClass": "STANDARD_IA"
+          }
+        }
+      ]
+    }
+  setup-replication.sh: |
+    #!/bin/bash
+    # S3 Cross-Region Replication Setup
+    aws s3api put-bucket-replication \
+      --bucket naksha-backups \
+      --replication-configuration file://replication-rules.json
+    
+    # Verify replication status
+    aws s3api get-bucket-replication --bucket naksha-backups
