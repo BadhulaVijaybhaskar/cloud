@@ -1,0 +1,11 @@
+{
+  "graph_name": "sample_rag",
+  "input_data": {
+    "query": "What are the key features and benefits of cloud computing platforms for enterprise applications?",
+    "collection": "documents",
+    "top_k": 5,
+    "context": "Enterprise cloud computing analysis",
+    "documents_count": 10,
+    "processing_mode": "batch"
+  }
+}

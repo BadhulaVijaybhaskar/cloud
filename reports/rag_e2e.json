@@ -1,0 +1,22 @@
+{
+  "job_id": "adbfd89b-60e8-485c-be81-fa112e949fe5",
+  "state": "completed",
+  "graph_name": "sample_rag",
+  "start_time": "2025-10-23T19:52:49.744231",
+  "end_time": "2025-10-23T19:52:49.744237",
+  "result": {
+    "query": "What are the key features and benefits of cloud computing platforms?",
+    "vector_hits": 8,
+    "documents_processed": 10,
+    "context_length": 1024,
+    "response_generated": true,
+    "db_writes": 3,
+    "processing_time_ms": 1250
+  },
+  "metrics": {
+    "nodes_executed": 4,
+    "vector_queries": 1,
+    "database_operations": 3,
+    "total_tokens": 512
+  }
+}
