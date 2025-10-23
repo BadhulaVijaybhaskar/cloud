@@ -1,0 +1,175 @@
+name: Production Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+
+env:
+  TF_VAR_environment: ${{ github.event.inputs.environment }}
+
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    outputs:
+      plan-exitcode: ${{ steps.plan.outputs.exitcode }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.6.0
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Terraform Init
+      run: terraform -chdir=infra/terraform init
+
+    - name: Terraform Plan
+      id: plan
+      run: |
+        terraform -chdir=infra/terraform plan -detailed-exitcode -out=tfplan.out
+        echo "exitcode=$?" >> $GITHUB_OUTPUT
+      continue-on-error: true
+
+    - name: Upload Plan Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: tf-plan-${{ github.run_id }}
+        path: infra/terraform/tfplan.out
+        retention-days: 5
+
+    - name: Comment Plan on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const output = `#### Terraform Plan 📖
+          
+          **Plan Exit Code:** ${{ steps.plan.outputs.exitcode }}
+          
+          <details><summary>Show Plan</summary>
+          
+          \`\`\`terraform
+          ${{ steps.plan.outputs.stdout }}
+          \`\`\`
+          
+          </details>
+          
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+  terraform-apply:
+    needs: terraform-plan
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ github.event.inputs.environment }}
+      url: https://naksha-${{ github.event.inputs.environment }}.example.com
+    if: needs.terraform-plan.outputs.plan-exitcode == '2'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Manual Approval Gate
+      uses: trstringer/manual-approval@v1
+      with:
+        secret: ${{ secrets.GITHUB_TOKEN }}
+        approvers: ${{ secrets.APPROVERS }}
+        minimum-approvals: 1
+        issue-title: "Deploy to ${{ github.event.inputs.environment }}"
+        issue-body: |
+          Please review the Terraform plan and approve this deployment to ${{ github.event.inputs.environment }}.
+          
+          **Commit:** ${{ github.sha }}
+          **Actor:** ${{ github.actor }}
+          **Environment:** ${{ github.event.inputs.environment }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.6.0
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Download Plan Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: tf-plan-${{ github.run_id }}
+        path: infra/terraform/
+
+    - name: Terraform Init
+      run: terraform -chdir=infra/terraform init
+
+    - name: Terraform Apply
+      run: terraform -chdir=infra/terraform apply -auto-approve tfplan.out
+
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.28.0'
+
+    - name: Configure kubectl
+      run: |
+        echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > ~/.kube/config
+        kubectl config current-context
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f infra/kubernetes/
+        kubectl rollout status deployment/langgraph -n langgraph --timeout=300s
+        kubectl rollout status deployment/vector -n vector --timeout=300s
+
+    - name: Run Smoke Tests
+      run: bash infra/scripts/smoke_test.sh
+
+    - name: Notify Deployment Success
+      if: success()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.sha,
+            state: 'success',
+            target_url: 'https://naksha-${{ github.event.inputs.environment }}.example.com',
+            description: 'Deployment to ${{ github.event.inputs.environment }} successful',
+            context: 'deployment/${{ github.event.inputs.environment }}'
+          })
+
+    - name: Notify Deployment Failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.sha,
+            state: 'failure',
+            description: 'Deployment to ${{ github.event.inputs.environment }} failed',
+            context: 'deployment/${{ github.event.inputs.environment }}'
+          })

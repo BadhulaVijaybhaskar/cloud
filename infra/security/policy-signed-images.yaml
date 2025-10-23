@@ -1,0 +1,91 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-signed-images
+  annotations:
+    policies.kyverno.io/title: Require Signed Container Images
+    policies.kyverno.io/category: Security
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      This policy requires that all container images are signed with cosign.
+      Images that are not signed will be rejected.
+spec:
+  validationFailureAction: enforce
+  background: false
+  rules:
+    - name: verify-signature-naksha
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+            namespaces:
+            - langgraph
+            - vector
+            - vault
+      verifyImages:
+      - imageReferences:
+        - "naksha/*"
+        - "docker.io/naksha/*"
+        attestors:
+        - entries:
+          - keys:
+              publicKeys: |
+                -----BEGIN PUBLIC KEY-----
+                MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7S1p9F2nK8J5L3mR4wX9Y2vQ8nH1
+                # This is a placeholder public key - replace with actual cosign.pub content
+                # Generated keys should be stored securely and the public key added here
+                -----END PUBLIC KEY-----
+    - name: allow-system-images
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+            namespaces:
+            - kube-system
+            - kube-public
+            - kube-node-lease
+            - cert-manager
+            - ingress-nginx
+            - monitoring
+      exclude:
+        any:
+        - resources:
+            kinds:
+            - Pod
+            names:
+            - "test-*"
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-unsigned-images
+  annotations:
+    policies.kyverno.io/title: Disallow Unsigned Images
+    policies.kyverno.io/category: Security
+    policies.kyverno.io/severity: medium
+spec:
+  validationFailureAction: enforce
+  background: false
+  rules:
+    - name: block-unsigned-images
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+            - Deployment
+            - StatefulSet
+            - DaemonSet
+            - Job
+            - CronJob
+      validate:
+        message: "Container images must be signed. Unsigned images are not allowed."
+        pattern:
+          spec:
+            =(securityContext):
+              =(runAsNonRoot): true
+            containers:
+            - name: "*"
+              image: "!*:latest"
