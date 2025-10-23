@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: langgraph-allow-vector-monitoring
+  namespace: langgraph
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: vector
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+      - protocol: TCP
+        port: 8080
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: vector
+    ports:
+      - protocol: TCP
+        port: 8081
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+      - protocol: TCP
+        port: 9090
+  - ports:
+      - protocol: TCP
+        port: 53
+      - protocol: UDP
+        port: 53
