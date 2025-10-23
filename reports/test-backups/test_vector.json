@@ -1,0 +1,8 @@
+{
+  "timestamp": "2025-10-23T15:25:00",
+  "vectors": [
+    {"id": "test_1", "embedding": [0.1, 0.2, 0.3], "metadata": {"doc": "test1"}},
+    {"id": "test_2", "embedding": [0.4, 0.5, 0.6], "metadata": {"doc": "test2"}}
+  ],
+  "count": 2
+}

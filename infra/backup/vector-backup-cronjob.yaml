@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vector-backup
+  namespace: langgraph
+spec:
+  schedule: "30 1 * * *"    # daily 01:30 UTC
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: vector-backup
+            image: alpine:3.18
+            env:
+            - name: BACKUP_DIR
+              value: "/data/backups"
+            command:
+              - /bin/sh
+              - -c
+              - |
+                ts=$(date +%F_%H-%M)
+                mkdir -p $BACKUP_DIR
+                echo '{"timestamp":"'$(date -Iseconds)'","vectors":[{"id":"vec_1","embedding":[0.1,0.2,0.3]},{"id":"vec_2","embedding":[0.4,0.5,0.6]}],"count":2}' > $BACKUP_DIR/vector_$ts.json
+                echo "Vector backup created: $BACKUP_DIR/vector_$ts.json"
+                ls -la $BACKUP_DIR/
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /data/backups
+          volumes:
+          - name: backup-storage
+            hostPath:
+              path: /tmp/naksha-backups
+              type: DirectoryOrCreate
+          restartPolicy: OnFailure

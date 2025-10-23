@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: langgraph
+spec:
+  schedule: "0 1 * * *"    # daily 01:00 UTC
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgres-backup
+            image: postgres:15-alpine
+            env:
+            - name: PGPASSWORD
+              value: "naksha123"
+            - name: POSTGRES_USER
+              value: "naksha"
+            - name: POSTGRES_HOST
+              value: "postgres"
+            - name: POSTGRES_DB
+              value: "naksha"
+            - name: BACKUP_DIR
+              value: "/data/backups"
+            command:
+              - /bin/sh
+              - -c
+              - |
+                apk add --no-cache aws-cli
+                ts=$(date +%F_%H-%M)
+                mkdir -p $BACKUP_DIR
+                pg_dump -U $POSTGRES_USER -h $POSTGRES_HOST $POSTGRES_DB \
+                  | gzip > $BACKUP_DIR/backup_$ts.sql.gz
+                echo "Backup created: $BACKUP_DIR/backup_$ts.sql.gz"
+                ls -la $BACKUP_DIR/
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /data/backups
+          volumes:
+          - name: backup-storage
+            hostPath:
+              path: /tmp/naksha-backups
+              type: DirectoryOrCreate
+          restartPolicy: OnFailure
