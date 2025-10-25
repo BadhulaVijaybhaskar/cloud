@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: WorkflowPackage
+metadata:
+  name: string
+  version: string
+  description: string
+  author: string
+  created: string # ISO 8601 timestamp
+  tags: [string]
+  signature: string # cosign signature
+spec:
+  runtime:
+    type: string # "k8s", "docker", "shell"
+    version: string
+    requirements:
+      cpu: string
+      memory: string
+      storage: string
+  safety:
+    mode: string # "manual", "auto"
+    approval_required: boolean
+    dry_run_required: boolean
+    rollback_enabled: boolean
+  triggers:
+    - type: string # "webhook", "schedule", "event"
+      config: object
+  handlers:
+    - name: string
+      type: string # "k8s", "shell", "api"
+      config: object
+      timeout: string # duration
+      retry:
+        max_attempts: integer
+        backoff: string
+  rollback:
+    enabled: boolean
+    handlers:
+      - name: string
+        type: string
+        config: object
+  validation:
+    schema_version: string
+    required_permissions: [string]
+    resource_limits: object
+  monitoring:
+    metrics_enabled: boolean
+    logging_level: string # "debug", "info", "warn", "error"
+    alerts: [object]

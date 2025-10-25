@@ -1,6 +1,6 @@
-# Naksha Cloud
+# ATOM - Adaptive Topology Orchestration Module
 
-A Supabase-like backend platform MVP with multi-tenant Postgres, Auth, Storage, Realtime, GraphQL API, and Admin UI.
+An adaptive, AI-orchestrated cloud infrastructure platform with multi-tenant Postgres, Auth, Storage, Realtime, GraphQL API, Vector Search, LangGraph workflows, and Admin UI.
 
 ## Quick Start
 
@@ -8,17 +8,17 @@ A Supabase-like backend platform MVP with multi-tenant Postgres, Auth, Storage, 
 2. Copy `.env.example` to `.env` and fill in secrets
 3. Run `docker compose up --build -d`
 4. Run setup: `infra/scripts/setup.sh`
-5. Create a workspace: `infra/scripts/create_workspace.sh "My Workspace" user@example.com`
+5. Create a workspace: `infra/scripts/create_workspace.sh "My ATOM Workspace" user@example.com`
 6. Open Admin UI at http://localhost:3000
 
 ## Architecture
 
-- **Postgres**: Multi-tenant database with schema-per-tenant
-- **Hasura**: GraphQL API with RLS
-- **Auth Service**: JWT-based authentication
-- **MinIO**: S3-compatible storage
-- **Realtime Service**: WebSocket for live updates
-- **Admin UI**: React/Next.js interface
+- **Postgres**: Multi-tenant database with adaptive schema-per-tenant
+- **Hasura**: GraphQL API with RLS and adaptive policies
+- **Auth Service**: JWT-based authentication with RBAC
+- **MinIO**: S3-compatible adaptive storage
+- **Realtime Service**: WebSocket for live topology updates
+- **Admin UI**: React/Next.js adaptive orchestration interface
 
 ## API Endpoints
 
@@ -27,10 +27,10 @@ A Supabase-like backend platform MVP with multi-tenant Postgres, Auth, Storage, 
 - GraphQL: `POST /v1/graphql` (Hasura)
 - Realtime: `ws://:4000`
 
-## SDK Usage
+## ATOM SDK Usage
 
 ```typescript
-import { createClient } from 'naksha-sdk';
+import { createClient } from 'atom-sdk';
 
 const client = createClient('http://localhost:3000', token);
 

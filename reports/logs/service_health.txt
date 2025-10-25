@@ -1,0 +1,15 @@
+Service Health Check Log - 2025-10-23
+
+Port Scan Results:
+✅ Port 4000: LISTENING (likely realtime service)
+❌ Port 3000: Not listening (admin UI)
+❌ Port 8080: Not listening (hasura)
+❌ Port 8081: Not listening (langgraph)
+❌ Port 8082: Not listening (vector service)
+❌ Port 9999: Not listening (auth service)
+
+HTTP Health Checks:
+❌ localhost:4000: Port open but not responding to HTTP requests
+❌ Other services: Not running
+
+Status: Services need to be started via Docker Compose

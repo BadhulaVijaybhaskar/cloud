@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "workflow-registry.fullname" . }}-config
+  labels:
+    {{- include "workflow-registry.labels" . | nindent 4 }}
+data:
+  vault-addr: {{ .Values.config.vaultAddr | quote }}
+  log-level: {{ .Values.config.logLevel | quote }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "workflow-registry.fullname" . }}-config
+  labels:
+    {{- include "workflow-registry.labels" . | nindent 4 }}
+type: Opaque
+data:
+  cosign-public-key: {{ .Values.config.cosignPublicKey | b64enc | quote }}
+  vault-token: {{ .Values.config.vaultToken | b64enc | quote }}

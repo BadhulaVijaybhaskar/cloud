@@ -1,0 +1,2 @@
+pyyaml==6.0.1
+asyncio-subprocess==0.1.0

@@ -1,10 +1,10 @@
 {
-  "name": "naksha-admin-ui",
+  "name": "atom-admin-ui",
   "version": "1.0.0",
-  "description": "Admin UI for Naksha Cloud",
+  "description": "Admin UI for ATOM - Adaptive Topology Orchestration Module",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start"
   },

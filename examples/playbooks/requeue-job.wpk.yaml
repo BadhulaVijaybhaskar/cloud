@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: WorkflowPackage
+metadata:
+  name: requeue-job
+  version: "1.0.0"
+  description: "Requeue failed jobs with intelligent retry logic"
+  author: "ATOM DevOps Team"
+  created: "2024-01-15T10:00:00Z"
+  tags: ["jobs", "retry", "queue", "failure-recovery"]
+  signature: ""
+spec:
+  runtime:
+    type: k8s
+    version: "1.28+"
+    requirements:
+      cpu: "50m"
+      memory: "64Mi"
+      storage: "128Mi"
+  safety:
+    mode: auto
+    approval_required: false
+    dry_run_required: false
+    rollback_enabled: false
+  triggers:
+    - type: event
+      config:
+        source: kubernetes
+        condition: "job.status.failed > 0"
+        resource_type: "Job"
+  handlers:
+    - name: analyze-failure
+      type: k8s
+      config:
+        action: logs
+        resource_type: job
+        lines: 100
+        analysis: "failure_pattern"
+      timeout: "30s"
+      retry:
+        max_attempts: 2
+        backoff: "5s"
+    - name: check-retry-count
+      type: k8s
+      config:
+        action: get
+        resource_type: job
+        field: "metadata.annotations['retry-count']"
+      timeout: "10s"
+      retry:
+        max_attempts: 1
+        backoff: "2s"
+    - name: increment-retry-counter
+      type: k8s
+      config:
+        action: annotate
+        resource_type: job
+        annotation: "retry-count"
+        value: "increment"
+      timeout: "15s"
+      retry:
+        max_attempts: 2
+        backoff: "3s"
+    - name: requeue-with-backoff
+      type: k8s
+      config:
+        action: create
+        resource_type: job
+        template: "original_job"
+        delay: "exponential_backoff"
+        max_retries: 3
+      timeout: "60s"
+      retry:
+        max_attempts: 1
+        backoff: "10s"
+    - name: escalate-if-max-retries
+      type: api
+      config:
+        url: "${ALERT_WEBHOOK_URL}"
+        method: "POST"
+        condition: "retry_count >= max_retries"
+        payload: "job_failure_escalation"
+      timeout: "30s"
+      retry:
+        max_attempts: 2
+        backoff: "5s"
+  rollback:
+    enabled: false
+  validation:
+    schema_version: "v1"
+    required_permissions:
+      - "jobs/create"
+      - "jobs/patch"
+      - "jobs/get"
+    resource_limits:
+      max_retries: 5
+      max_jobs: 10
+  monitoring:
+    metrics_enabled: true
+    logging_level: info
+    alerts:
+      - type: slack
+        webhook: "${OPS_WEBHOOK_URL}"
+        on_failure: true

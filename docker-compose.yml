@@ -1,0 +1,154 @@
+version: '3.8'
+
+services:
+  # Landing Page (Vite)
+  landing:
+    build: ./adapti-cloud-flow-main
+    ports:
+      - "3001:8080"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./adapti-cloud-flow-main:/app
+      - /app/node_modules
+
+  # Admin UI (Next.js)
+  admin-ui:
+    build: ./admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      - hasura
+      - auth
+    environment:
+      - NODE_ENV=development
+
+  # Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: naksha
+      POSTGRES_USER: naksha
+      POSTGRES_DB: naksha_system
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # GraphQL API
+  hasura:
+    image: hasura/graphql-engine:latest
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://naksha:naksha@postgres:5432/naksha_system
+      HASURA_GRAPHQL_ADMIN_SECRET: naksha_admin_secret
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+  # Storage
+  minio:
+    image: minio/minio
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ACCESS_KEY: naksha_access
+      MINIO_SECRET_KEY: naksha_secret_key
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+  # Auth Service
+  auth:
+    build: ./services/auth
+    ports:
+      - "9999:9999"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://naksha:naksha@postgres:5432/naksha_system
+      - JWT_SECRET=naksha_jwt_secret
+
+  # Realtime Service
+  realtime:
+    build: ./services/realtime
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://naksha:naksha@postgres:5432/naksha_system
+
+  # LangGraph Service
+  langgraph:
+    build: ./services/langgraph
+    ports:
+      - "8081:8080"
+    environment:
+      - DATABASE_URL=postgres://naksha:naksha@postgres:5432/naksha_system
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+
+  # Vector Service
+  vector:
+    build: ./services/vector
+    ports:
+      - "8082:8081"
+    environment:
+      - MILVUS_HOST=milvus
+      - MILVUS_PORT=19530
+    depends_on:
+      - milvus
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # Vector Database
+  milvus:
+    image: milvusdb/milvus:v2.3.0
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    environment:
+      - ETCD_ENDPOINTS=etcd:2379
+      - MINIO_ADDRESS=minio:9000
+      - MINIO_ACCESS_KEY=naksha_access
+      - MINIO_SECRET_KEY=naksha_secret_key
+    volumes:
+      - milvus_data:/var/lib/milvus
+    depends_on:
+      - etcd
+      - minio
+
+  # etcd for Milvus
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.0
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+    volumes:
+      - etcd_data:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    ports:
+      - "2379:2379"
+
+volumes:
+  pgdata: {}
+  miniodata: {}
+  milvus_data: {}
+  etcd_data: {}
+  redis_data: {}
+
+networks:
+  default:
+    name: atom-network

@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: WorkflowPackage
+metadata:
+  name: restart-unhealthy
+  version: "1.0.0"
+  description: "Restart unhealthy pods with diagnostic collection"
+  author: "ATOM DevOps Team"
+  created: "2024-01-15T10:00:00Z"
+  tags: ["kubernetes", "health", "restart", "diagnostics"]
+  signature: ""
+spec:
+  runtime:
+    type: k8s
+    version: "1.28+"
+    requirements:
+      cpu: "100m"
+      memory: "128Mi"
+      storage: "1Gi"
+  safety:
+    mode: manual
+    approval_required: true
+    dry_run_required: true
+    rollback_enabled: true
+  triggers:
+    - type: event
+      config:
+        source: prometheus
+        condition: "pod_restart_count > 3"
+        namespace: "*"
+  handlers:
+    - name: collect-logs
+      type: k8s
+      config:
+        action: logs
+        lines: 200
+        previous: true
+      timeout: "30s"
+      retry:
+        max_attempts: 2
+        backoff: "5s"
+    - name: collect-events
+      type: k8s
+      config:
+        action: events
+        resource_type: pod
+      timeout: "15s"
+      retry:
+        max_attempts: 2
+        backoff: "3s"
+    - name: restart-deployment
+      type: k8s
+      config:
+        action: restart
+        resource_type: deployment
+        grace_period: 30
+      timeout: "120s"
+      retry:
+        max_attempts: 1
+        backoff: "10s"
+    - name: verify-health
+      type: k8s
+      config:
+        action: wait
+        condition: "ready"
+        timeout: "120s"
+      timeout: "150s"
+      retry:
+        max_attempts: 3
+        backoff: "30s"
+  rollback:
+    enabled: true
+    handlers:
+      - name: rollback-deployment
+        type: k8s
+        config:
+          action: rollback
+          revision: "previous"
+  validation:
+    schema_version: "v1"
+    required_permissions:
+      - "pods/log"
+      - "events/list"
+      - "deployments/patch"
+      - "deployments/rollback"
+    resource_limits:
+      max_pods: 10
+      max_namespaces: 5
+  monitoring:
+    metrics_enabled: true
+    logging_level: info
+    alerts:
+      - type: slack
+        webhook: "${SLACK_WEBHOOK_URL}"
+        on_failure: true
+      - type: email
+        recipients: ["oncall@company.com"]
+        on_failure: true

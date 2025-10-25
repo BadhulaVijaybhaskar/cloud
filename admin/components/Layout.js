@@ -27,8 +27,17 @@ export default function Layout({ children, title = 'Naksha Cloud' }) {
     <div className="flex min-h-screen bg-gray-50">
       <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col`}>
         <div className="p-4">
-          <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center">
-            <span className="text-white text-xs font-bold">N</span>
+          <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="3" fill="#374151" />
+            <g stroke="rgba(55,65,81,0.7)" strokeWidth="1.5" strokeLinecap="round">
+              <ellipse cx="12" cy="12" rx="8" ry="3" />
+              <ellipse cx="12" cy="12" rx="8" ry="3" transform="rotate(60 12 12)" />
+              <ellipse cx="12" cy="12" rx="8" ry="3" transform="rotate(120 12 12)" />
+            </g>
+          </svg>
+          <div className="mt-2">
+            <div className="text-sm font-semibold text-gray-900">ATOM</div>
+            <div className="text-xs text-gray-500 -mt-0.5">Orchestration Module</div>
           </div>
         </div>
         <nav className="px-3">
@@ -47,15 +56,20 @@ export default function Layout({ children, title = 'Naksha Cloud' }) {
         {/* Top Header Bar */}
         <div className="bg-white border-b border-gray-200 h-12 flex items-center px-4">
           <div className="flex items-center space-x-3">
-            <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center">
-              <span className="text-white text-xs font-bold">S</span>
-            </div>
-            <span className="text-sm text-gray-600">BadhulaVijaybhaskar's Org</span>
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="2" fill="#374151" />
+              <g stroke="rgba(55,65,81,0.7)" strokeWidth="1" strokeLinecap="round">
+                <ellipse cx="12" cy="12" rx="6" ry="2" />
+                <ellipse cx="12" cy="12" rx="6" ry="2" transform="rotate(60 12 12)" />
+                <ellipse cx="12" cy="12" rx="6" ry="2" transform="rotate(120 12 12)" />
+              </g>
+            </svg>
+            <span className="text-sm text-gray-600">ATOM Organization</span>
             <span className="text-xs text-gray-400">Free</span>
             <div className="w-4 h-4 bg-gray-300 rounded-full flex items-center justify-center ml-4">
               <span className="text-xs">P</span>
             </div>
-            <span className="text-sm text-gray-700">BadhulaVijaybhaskar's Project</span>
+            <span className="text-sm text-gray-700">ATOM Workspace</span>
             <span className="px-2 py-0.5 text-xs bg-orange-100 text-orange-700 rounded">main</span>
             <span className="px-2 py-0.5 text-xs bg-orange-100 text-orange-700 rounded">Production</span>
           </div>

@@ -1,0 +1,18 @@
+apiVersion: v2
+name: runtime-agent
+description: ATOM Runtime Agent - Workflow execution engine
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - atom
+  - runtime
+  - agent
+  - workflow
+  - execution
+home: https://github.com/atom-cloud/runtime-agent
+sources:
+  - https://github.com/atom-cloud/runtime-agent
+maintainers:
+  - name: ATOM DevOps Team
+    email: devops@atom.cloud

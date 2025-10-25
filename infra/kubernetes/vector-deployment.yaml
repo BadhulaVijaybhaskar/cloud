@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vector
+  namespace: vector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vector
+  template:
+    metadata:
+      labels:
+        app: vector
+    spec:
+      containers:
+      - name: vector
+        image: naksha/vector:latest
+        ports:
+        - containerPort: 8081
+        env:
+        - name: MILVUS_HOST
+          value: "milvus"
+        - name: OPENAI_API_KEY
+          value: "sk-test-key"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vector
+  namespace: vector
+spec:
+  selector:
+    app: vector
+  ports:
+  - port: 8081
+    targetPort: 8081
+  type: ClusterIP

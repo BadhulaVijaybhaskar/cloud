@@ -50,14 +50,14 @@ export default function Dashboard() {
 
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-normal text-gray-900 mb-2">Welcome to your new project</h2>
-          <p className="text-gray-600 mb-6">Your project has been deployed on its own instance, with its own API all set up and ready to use.</p>
+          <h2 className="text-xl font-normal text-gray-900 mb-2">Welcome to ATOM</h2>
+          <p className="text-gray-600 mb-6">Your adaptive orchestration platform is deployed and ready. Start building AI workflows, data pipelines, and cloud-native services.</p>
         </div>
 
         {/* Get Started Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-normal text-gray-900 mb-2">Get started by building out your database</h2>
-          <p className="text-gray-600 mb-6">Start building your app by creating tables and inserting data. Our Table Editor makes Postgres as easy to use as a spreadsheet, but there's also our SQL Editor if you need something more.</p>
+          <h2 className="text-xl font-normal text-gray-900 mb-2">Get started with adaptive orchestration</h2>
+          <p className="text-gray-600 mb-6">Build AI workflows, manage data pipelines, and deploy cloud services. Use our visual editors or dive into SQL and vector operations.</p>
           
           <div className="flex space-x-4 mb-8">
             <button className="px-4 py-2 bg-gray-900 text-white rounded text-sm hover:bg-gray-800">Table Editor</button>
@@ -113,7 +113,7 @@ export default function Dashboard() {
                   </tr>
                   <tr className="border-b border-gray-100">
                     <td className="px-4 py-2 text-gray-600">4</td>
-                    <td className="px-4 py-2">Connect Supabase</td>
+                    <td className="px-4 py-2">Connect ATOM</td>
                     <td className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">In progress</td>
                   </tr>
                   <tr className="border-b border-gray-100">
@@ -134,48 +134,52 @@ export default function Dashboard() {
 
         {/* Explore Products Section */}
         <div className="mt-12">
-          <h2 className="text-xl font-normal text-gray-900 mb-2">Explore our other products</h2>
-          <p className="text-gray-600 mb-8">Supabase provides all the backend features you need to build a product. You can use it completely, or just the features you need.</p>
+          <h2 className="text-xl font-normal text-gray-900 mb-2">Explore ATOM capabilities</h2>
+          <p className="text-gray-600 mb-8">ATOM provides adaptive orchestration for AI workloads, data processing, and cloud infrastructure. Use individual modules or the complete platform.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="p-6 border border-gray-200 rounded-lg">
               <div className="w-8 h-8 bg-orange-100 rounded mb-4 flex items-center justify-center">
                 <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 1.79 4 4 4h8c0-2.21-1.79-4-4-4H4V7z" />
                 </svg>
               </div>
-              <h3 className="font-medium text-gray-900 mb-2">Authentication</h3>
-              <p className="text-sm text-gray-600">A complete user management system that works without any additional tools.</p>
+              <h3 className="font-medium text-gray-900 mb-2">Vector Engine</h3>
+              <p className="text-sm text-gray-600 mb-4">Semantic search and embeddings for AI applications</p>
+              <button className="text-sm text-orange-600 hover:text-orange-700">Explore →</button>
             </div>
-            
+
             <div className="p-6 border border-gray-200 rounded-lg">
               <div className="w-8 h-8 bg-blue-100 rounded mb-4 flex items-center justify-center">
                 <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="font-medium text-gray-900 mb-2">Storage</h3>
-              <p className="text-sm text-gray-600">Store, organize, and serve any file types of any size from multiple buckets.</p>
+              <h3 className="font-medium text-gray-900 mb-2">LangGraph</h3>
+              <p className="text-sm text-gray-600 mb-4">AI workflow orchestration and RAG pipelines</p>
+              <button className="text-sm text-blue-600 hover:text-blue-700">Explore →</button>
             </div>
-            
+
             <div className="p-6 border border-gray-200 rounded-lg">
               <div className="w-8 h-8 bg-green-100 rounded mb-4 flex items-center justify-center">
                 <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h3 className="font-medium text-gray-900 mb-2">Edge Functions</h3>
-              <p className="text-sm text-gray-600">Write custom code without deploying or scaling servers, with fast deploy times and low latency.</p>
+              <h3 className="font-medium text-gray-900 mb-2">Vault</h3>
+              <p className="text-sm text-gray-600 mb-4">Dynamic secrets and security management</p>
+              <button className="text-sm text-green-600 hover:text-green-700">Explore →</button>
             </div>
-            
+
             <div className="p-6 border border-gray-200 rounded-lg">
               <div className="w-8 h-8 bg-purple-100 rounded mb-4 flex items-center justify-center">
                 <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
-              <h3 className="font-medium text-gray-900 mb-2">Realtime</h3>
-              <p className="text-sm text-gray-600">Listen to your PostgreSQL database in realtime via websockets.</p>
+              <h3 className="font-medium text-gray-900 mb-2">Observability</h3>
+              <p className="text-sm text-gray-600 mb-4">Prometheus, Grafana, and Loki monitoring</p>
+              <button className="text-sm text-purple-600 hover:text-purple-700">Explore →</button>
             </div>
           </div>
         </div>

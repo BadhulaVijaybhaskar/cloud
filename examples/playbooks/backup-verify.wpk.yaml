@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: WorkflowPackage
+metadata:
+  name: backup-verify
+  version: "1.0.0"
+  description: "Verify backup integrity with staging restore test"
+  author: "ATOM DevOps Team"
+  created: "2024-01-15T10:00:00Z"
+  tags: ["backup", "verification", "restore", "data-integrity"]
+  signature: ""
+spec:
+  runtime:
+    type: k8s
+    version: "1.28+"
+    requirements:
+      cpu: "200m"
+      memory: "256Mi"
+      storage: "2Gi"
+  safety:
+    mode: auto
+    approval_required: false
+    dry_run_required: false
+    rollback_enabled: false
+  triggers:
+    - type: schedule
+      config:
+        cron: "0 2 * * *"  # Daily at 2 AM
+  handlers:
+    - name: copy-backup-manifest
+      type: k8s
+      config:
+        action: copy
+        source: "${BACKUP_PATH}/latest"
+        destination: "${STAGING_PATH}/restore-test"
+      timeout: "300s"
+      retry:
+        max_attempts: 2
+        backoff: "30s"
+    - name: staging-restore
+      type: k8s
+      config:
+        action: restore
+        backup_path: "${STAGING_PATH}/restore-test"
+        subset: "sample_data"
+        read_only: true
+      timeout: "600s"
+      retry:
+        max_attempts: 1
+        backoff: "60s"
+    - name: checksum-verify
+      type: shell
+      config:
+        command: "sha256sum -c ${STAGING_PATH}/checksums.txt"
+      timeout: "120s"
+      retry:
+        max_attempts: 2
+        backoff: "10s"
+    - name: report-results
+      type: api
+      config:
+        url: "${CI_WEBHOOK_URL}"
+        method: "POST"
+        payload: "backup_verification_result"
+      timeout: "30s"
+      retry:
+        max_attempts: 3
+        backoff: "5s"
+  rollback:
+    enabled: false
+  validation:
+    schema_version: "v1"
+    required_permissions:
+      - "backups/read"
+      - "staging/write"
+    resource_limits:
+      max_storage: "5Gi"
+  monitoring:
+    metrics_enabled: true
+    logging_level: info
+    alerts:
+      - type: email
+        recipients: ["backup-team@company.com"]
+        on_failure: true

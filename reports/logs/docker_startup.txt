@@ -1,0 +1,11 @@
+Docker Startup Log - $(Get-Date)
+
+Issue: Docker Desktop not running
+Error: The system cannot find the file specified (dockerDesktopLinuxEngine pipe)
+
+Status: Docker Desktop needs to be started manually before running integration tests.
+
+Recommendation: 
+1. Start Docker Desktop application
+2. Wait for Docker daemon to be ready
+3. Retry integration tests

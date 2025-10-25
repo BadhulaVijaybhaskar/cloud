@@ -24,16 +24,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
-            <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          <div className="mx-auto h-16 w-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+            <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="3" fill="white" />
+              <g stroke="rgba(255,255,255,0.8)" strokeWidth="1.5" strokeLinecap="round">
+                <ellipse cx="12" cy="12" rx="8" ry="3" />
+                <ellipse cx="12" cy="12" rx="8" ry="3" transform="rotate(60 12 12)" />
+                <ellipse cx="12" cy="12" rx="8" ry="3" transform="rotate(120 12 12)" />
+              </g>
             </svg>
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Naksha Cloud</h2>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your admin account</p>
+          <h2 className="mt-6 text-3xl font-extrabold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">ATOM</h2>
+          <p className="mt-2 text-sm text-gray-600">Adaptive Topology Orchestration Module</p>
+          <p className="mt-1 text-xs text-gray-500">Sign in to your admin account</p>
         </div>
         
         <form className="mt-8 space-y-6 bg-white p-8 rounded-xl shadow-lg" onSubmit={handleLogin}>
@@ -81,7 +87,7 @@ export default function Login() {
           
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Demo credentials: admin@naksha.test / password
+              Demo credentials: admin@atom.local / password
             </p>
           </div>
         </form>

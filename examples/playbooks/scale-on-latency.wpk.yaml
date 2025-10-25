@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: WorkflowPackage
+metadata:
+  name: scale-on-latency
+  version: "1.0.0"
+  description: "Auto-scale deployment based on service latency metrics"
+  author: "ATOM DevOps Team"
+  created: "2024-01-15T10:00:00Z"
+  tags: ["kubernetes", "scaling", "latency", "performance"]
+  signature: ""
+spec:
+  runtime:
+    type: k8s
+    version: "1.28+"
+    requirements:
+      cpu: "50m"
+      memory: "64Mi"
+      storage: "512Mi"
+  safety:
+    mode: manual
+    approval_required: true
+    dry_run_required: true
+    rollback_enabled: true
+  triggers:
+    - type: event
+      config:
+        source: prometheus
+        condition: "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5"
+        duration: "3m"
+  handlers:
+    - name: check-load-spike
+      type: k8s
+      config:
+        action: metrics
+        query: "rate(http_requests_total[5m])"
+      timeout: "30s"
+      retry:
+        max_attempts: 2
+        backoff: "5s"
+    - name: scale-deployment
+      type: k8s
+      config:
+        action: scale
+        resource_type: deployment
+        scale_factor: 1.5
+        max_replicas: 10
+      timeout: "60s"
+      retry:
+        max_attempts: 1
+        backoff: "10s"
+    - name: monitor-latency
+      type: k8s
+      config:
+        action: wait
+        condition: "latency_improved"
+        timeout: "300s"
+      timeout: "320s"
+      retry:
+        max_attempts: 2
+        backoff: "60s"
+  rollback:
+    enabled: true
+    handlers:
+      - name: rollback-scaling
+        type: k8s
+        config:
+          action: scale
+          resource_type: deployment
+          replicas: "original"
+  validation:
+    schema_version: "v1"
+    required_permissions:
+      - "deployments/scale"
+      - "metrics/read"
+    resource_limits:
+      max_replicas: 20
+  monitoring:
+    metrics_enabled: true
+    logging_level: info
+    alerts:
+      - type: slack
+        webhook: "${SLACK_WEBHOOK_URL}"
+        on_success: true
