@@ -1,0 +1,139 @@
+# Vault integration values for ATOM Helm charts
+# This file contains configuration for HashiCorp Vault integration
+
+vault:
+  # Enable Vault integration
+  enabled: true
+  
+  # Vault server configuration
+  server:
+    address: "https://vault.example.com:8200"
+    namespace: ""  # Vault Enterprise namespace
+    
+  # Authentication configuration
+  auth:
+    # Authentication method: token, approle, kubernetes
+    method: "approle"
+    
+    # AppRole configuration (recommended for production)
+    approle:
+      roleId: ""  # Set via environment variable VAULT_ROLE_ID
+      secretId: ""  # Set via environment variable VAULT_SECRET_ID
+    
+    # Kubernetes auth configuration (for in-cluster deployment)
+    kubernetes:
+      role: "atom"
+      serviceAccount: "atom-vault-sa"
+    
+    # Token auth (not recommended for production)
+    token: ""  # Set via environment variable VAULT_TOKEN
+  
+  # Secret paths configuration
+  secrets:
+    # Cosign signing keys
+    cosign:
+      path: "secret/atom/cosign"
+      keys:
+        publicKey: "public_key"
+        privateKey: "private_key"
+    
+    # Database credentials
+    database:
+      path: "secret/atom/database"
+      keys:
+        dsn: "dsn"
+        host: "host"
+        port: "port"
+        database: "database"
+        username: "username"
+        password: "password"
+    
+    # S3/MinIO credentials
+    s3:
+      path: "secret/atom/s3"
+      keys:
+        accessKey: "access_key"
+        secretKey: "secret_key"
+        bucket: "bucket"
+        endpoint: "endpoint"
+    
+    # Kubernetes configuration
+    kubernetes:
+      path: "secret/atom/kubernetes"
+      keys:
+        config: "config"
+    
+    # API credentials for external services
+    api:
+      prometheus:
+        path: "secret/atom/api/prometheus"
+        keys:
+          url: "url"
+          username: "username"
+          password: "password"
+          token: "token"
+      
+      grafana:
+        path: "secret/atom/api/grafana"
+        keys:
+          url: "url"
+          token: "token"
+      
+      alertmanager:
+        path: "secret/atom/api/alertmanager"
+        keys:
+          url: "url"
+          username: "username"
+          password: "password"
+
+# Vault Agent configuration (sidecar injection)
+vaultAgent:
+  enabled: false  # Enable for Vault Agent sidecar injection
+  
+  # Vault Agent image
+  image:
+    repository: "vault"
+    tag: "1.15.2"
+    pullPolicy: "IfNotPresent"
+  
+  # Resources for Vault Agent sidecar
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Service-specific Vault configuration
+services:
+  # Workflow Registry Vault configuration
+  workflowRegistry:
+    vault:
+      enabled: true
+      
+      # Required secrets for workflow registry
+      requiredSecrets:
+        - "cosign"
+        - "database"
+        - "s3"
+  
+  # Runtime Agent Vault configuration
+  runtimeAgent:
+    vault:
+      enabled: true
+      
+      # Required secrets for runtime agent
+      requiredSecrets:
+        - "kubernetes"
+        - "api"
+
+# Security configuration
+security:
+  # Service account for Vault authentication
+  serviceAccount:
+    create: true
+    name: "atom-vault-sa"
+    annotations:
+      vault.hashicorp.com/agent-inject: "true"
+      vault.hashicorp.com/role: "atom"
