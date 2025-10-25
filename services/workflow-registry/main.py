@@ -13,6 +13,8 @@ import jsonschema
 import uvicorn
 from validator import WorkflowValidator, create_validator
 from cosign_enforcer import create_cosign_enforcer
+from validator.static_validator import create_static_validator
+from validator.policy_engine import create_policy_engine
 import sys
 from pathlib import Path
 
@@ -35,9 +37,11 @@ if not WORKFLOWS_FILE.exists():
     with open(WORKFLOWS_FILE, 'w') as f:
         json.dump({}, f)
 
-# Initialize validator and cosign enforcer
+# Initialize validator, cosign enforcer, static validator, and policy engine
 validator = create_validator()
 cosign_enforcer = create_cosign_enforcer()
+static_validator = create_static_validator()
+policy_engine = create_policy_engine()
 
 def load_wpk_schema():
     """Load WPK validation schema"""
@@ -365,40 +369,54 @@ async def dry_run_workflow(
     except FileNotFoundError:
         raise HTTPException(status_code=500, detail="WPK file not found")
     
-    # Perform validation
-    structure_result = validator.validate_wpk_structure(wpk_content)
-    policy_result = validator.validate_policies(wpk_content)
-    dry_run_result = validator.dry_run_validation(wpk_content, parameters or {})
+    # Perform static validation
+    static_result = static_validator.validate(wpk_content)
+    
+    # Perform policy evaluation
+    policy_result = policy_engine.evaluate(static_result, wpk_content)
     
     # Categorize workflow
-    category = validator.categorize_workflow(wpk_content)
+    category = policy_engine.categorize_workflow(wpk_content, static_result)
     
     # Generate approval request if needed
     approval_request = None
     if policy_result.approval_required:
-        approval_request = validator.generate_approval_request(wpk_content, policy_result)
+        approval_request = policy_engine.generate_approval_request(
+            wpk_content, policy_result, "api-user", "Dry-run validation request"
+        ).to_dict()
+    
+    # Format issues for response
+    issues = []
+    for issue in static_result.issues:
+        issues.append({
+            "rule_id": issue.rule_id,
+            "severity": issue.severity.value,
+            "message": issue.message,
+            "path": issue.path,
+            "suggestion": issue.suggestion,
+            "cwe": issue.cwe
+        })
     
     return {
         "workflow_id": workflow_id,
         "validation": {
-            "structure_valid": structure_result.valid,
-            "structure_errors": structure_result.errors,
-            "structure_warnings": structure_result.warnings,
-            "policy_valid": policy_result.valid,
-            "policy_errors": policy_result.errors,
-            "policy_warnings": policy_result.warnings,
+            "valid": static_result.valid,
+            "risk_score": static_result.risk_score,
+            "issues": issues,
             "policy_decision": policy_result.policy_decision.value,
             "approval_required": policy_result.approval_required,
-            "risk_score": policy_result.risk_score,
-            "dry_run_warnings": dry_run_result.warnings
+            "errors": policy_result.errors,
+            "warnings": policy_result.warnings
         },
         "category": category,
         "approval_request": approval_request,
         "recommendation": {
-            "can_execute": structure_result.valid and policy_result.valid,
+            "can_execute": policy_result.can_execute,
             "requires_approval": policy_result.approval_required,
             "safety_mode": wpk_content.get("spec", {}).get("safety", {}).get("mode", "manual")
-        }
+        },
+        "timestamp": datetime.utcnow().isoformat(),
+        "dry_run_id": f"dryrun-{workflow_id}-{int(datetime.utcnow().timestamp())}"
     }
 
 if __name__ == "__main__":

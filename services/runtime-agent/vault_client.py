@@ -28,7 +28,7 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent / "workflow-registry"))
 
 try:
-    from secrets import VaultClient, create_vault_client
+    from vault_client import VaultClient, create_vault_client
 except ImportError:
     # Fallback if Vault client not available
     VaultClient = None

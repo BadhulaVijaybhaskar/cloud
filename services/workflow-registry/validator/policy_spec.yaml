@@ -1,0 +1,128 @@
+# /services/workflow-registry/validator/policy_spec.yaml
+# Human readable policy spec for WPK static validator and policy engine.
+# Agent must implement checks listed below, return issues[], and compute numeric score.
+# Score scale: 0 (safe) → 100 (very unsafe).
+#
+# RULE FORMAT:
+# - id: short id
+# - description: human text
+# - type: check type (regex, manifest_field, resource_limit, capability, k8s_action, network_call)
+# - config: rule-specific config
+# - severity: low|medium|high|critical
+# - score: numeric contribution to total score when triggered
+
+policy_name: WPK_Static_Policy_v1
+version: "1.0.0"
+default_thresholds:
+  safe_max_score: 10        # score <= 10 => safe -> can be auto (subject to safety.mode)
+  caution_max_score: 40     # <=40 => caution -> require manual approval
+  unsafe_min_score: 41      # >40 => unsafe -> reject or manual with strong justification
+
+rules:
+  - id: forbid_hostpath
+    description: "Detect hostPath volume usage in Kubernetes manifests"
+    type: regex
+    config:
+      pattern: "hostPath\\s*:"
+    severity: high
+    score: 30
+
+  - id: forbid_privileged
+    description: "Containers running privileged mode"
+    type: manifest_field
+    config:
+      path: "spec.containers[].securityContext.privileged"
+      match: true
+    severity: critical
+    score: 50
+
+  - id: forbid_cap_sys_admin
+    description: "Containers requesting CAP_SYS_ADMIN"
+    type: capability
+    config:
+      capability: "CAP_SYS_ADMIN"
+    severity: high
+    score: 30
+
+  - id: forbid_clusterrole_mod
+    description: "Creates ClusterRole or ClusterRoleBinding"
+    type: k8s_action
+    config:
+      forbidden_kinds: ["ClusterRole","ClusterRoleBinding","MutatingWebhookConfiguration","ValidatingWebhookConfiguration"]
+    severity: critical
+    score: 60
+
+  - id: cpu_request_limit_check
+    description: "Ensure containers set cpu/memory requests and limits within conservative bounds"
+    type: resource_limit
+    config:
+      cpu_request_min_m: 50     # 50m
+      cpu_limit_max_m: 2000    # 2 cores
+      mem_request_min_mb: 16
+      mem_limit_max_mb: 8192
+    severity: medium
+    score: 10
+
+  - id: network_external_call
+    description: "Detect explicit external network calls in initContainers/commands (http:// or curl)"
+    type: regex
+    config:
+      pattern: "(curl|wget|http://|https://)"
+      search_in: ["initContainers","containers[].command","containers[].args"]
+    severity: medium
+    score: 15
+
+  - id: large_image_from_unknown_registry
+    description: "Images from unknown registries (not whitelisted)"
+    type: manifest_field
+    config:
+      path: "spec.containers[].image"
+      whitelist:
+        - "ghcr.io/your-org/"
+        - "docker.io/your-org/"
+        - "registry.gitlab.com/your-org/"
+    severity: medium
+    score: 10
+
+  - id: allow_safe_backup_job
+    description: "Allow read-only backup-verify playbooks by tag"
+    type: metadata_tag
+    config:
+      tag: "backup"
+    severity: low
+    score: 0
+
+# Scoring rules: engine sums scores for triggered rules.
+# Additive but capped at 100.
+# Final score mapping -> action:
+# - score <= safe_max_score => allowed as `auto` (if WPK.safety.mode allows)
+# - score <= caution_max_score => require manual approval (safety.mode -> manual)
+# - score > unsafe_min_score => reject upload OR require admin override
+
+outputs:
+  - name: issues
+    description: "List of detected issues {rule_id, severity, message, location}"
+  - name: score
+    description: "Integer 0..100"
+  - name: decision
+    description: "one of: safe|caution|unsafe"
+  - name: recommended_action
+    description: "one of: allow_auto, require_manual, reject"
+
+examples_for_tests:
+  - name: hostpath_example
+    note: "should trigger forbid_hostpath"
+    content_snippet: |
+      volumes:
+        - name: hostvol
+          hostPath:
+            path: /var/run
+  - name: privileged_example
+    note: "should trigger forbid_privileged"
+    content_snippet: |
+      securityContext:
+        privileged: true
+  - name: safe_backup_example
+    note: "should be safe (backup tag)"
+    metadata:
+      tags: ["backup"]
