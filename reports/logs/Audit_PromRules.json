@@ -1,0 +1,33 @@
+{
+  "status": "BLOCKED",
+  "error": "Connection refused to localhost:9090",
+  "message": "Prometheus server not running or not accessible",
+  "expected_endpoint": "http://localhost:9090/api/v1/rules",
+  "prometheus_rules_file": {
+    "exists": true,
+    "path": "infra/monitoring/prometheus/alerts-workflow.yaml",
+    "rules_count": 3,
+    "rules": [
+      {
+        "alert": "WorkflowFailureRate",
+        "severity": "warning",
+        "description": "High workflow failure rate monitoring"
+      },
+      {
+        "alert": "RegistryUnsignedUpload", 
+        "severity": "critical",
+        "description": "Unsigned workflow upload detection"
+      },
+      {
+        "alert": "InsightEngineAnomalyRate",
+        "severity": "warning", 
+        "description": "High anomaly detection rate monitoring"
+      }
+    ]
+  },
+  "missing_dependencies": [
+    "Prometheus server running on localhost:9090",
+    "PrometheusRule CRD applied to cluster",
+    "Metrics endpoints configured"
+  ]
+}

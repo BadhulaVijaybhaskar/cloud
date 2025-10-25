@@ -1,0 +1,20 @@
+{
+  "status": "BLOCKED",
+  "error": "Connection refused to localhost:9090",
+  "message": "Prometheus server not running - cannot check active alerts",
+  "expected_endpoint": "http://localhost:9090/api/v1/alerts",
+  "alert_rules_configured": true,
+  "alert_rules_file": "infra/monitoring/prometheus/alerts-workflow.yaml",
+  "simulation": {
+    "expected_alerts": [
+      "WorkflowFailureRate",
+      "RegistryUnsignedUpload", 
+      "InsightEngineAnomalyRate"
+    ],
+    "alert_conditions": {
+      "WorkflowFailureRate": "rate(workflow_executions_total{status=\"failed\"}[5m]) > 0.1",
+      "RegistryUnsignedUpload": "increase(workflow_uploads_total{signed=\"false\"}[1h]) > 0",
+      "InsightEngineAnomalyRate": "rate(anomaly_detections_total[5m]) > 0.05"
+    }
+  }
+}
