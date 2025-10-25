@@ -1,0 +1,73 @@
+replicaCount: 1
+
+image:
+  repository: neuralops/byoc-connector
+  pullPolicy: IfNotPresent
+  tag: "1.0.0"
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8005
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  controlPlaneUrl: "http://neuralops-orchestrator:8004"
+  promUrl: "http://prometheus:9090"
+  simulate: true
+  
+env:
+  - name: CLUSTER_ID
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: HOSTNAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: ENV
+    value: "production"
+  - name: REGION
+    value: "default"
+
+secrets:
+  vault:
+    enabled: false
+    roleId: ""
+    secretId: ""
+  cosign:
+    enabled: false
+    publicKey: ""

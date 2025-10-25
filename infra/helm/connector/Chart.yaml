@@ -1,0 +1,17 @@
+apiVersion: v2
+name: byoc-connector
+description: NeuralOps BYOC Connector for external Kubernetes clusters
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - neuralops
+  - byoc
+  - connector
+  - monitoring
+home: https://github.com/BadhulaVijaybhaskar/cloud
+sources:
+  - https://github.com/BadhulaVijaybhaskar/cloud/tree/main/services/connector
+maintainers:
+  - name: NeuralOps Team
+    email: neuralops@atom.com
