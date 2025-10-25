@@ -1,0 +1,11 @@
+ingestion:
+  backend: kafka          # kafka | redis | mock
+  kafka:
+    bootstrap_servers: "localhost:9092"
+    topic: "naksha.telemetry"
+  redis:
+    url: "redis://localhost:6379/0"
+app:
+  port: 8010
+metrics:
+  enabled: true
