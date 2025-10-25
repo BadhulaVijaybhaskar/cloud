@@ -18,9 +18,29 @@ class TestOrchestrationEngine:
     
     def setup_method(self):
         """Setup test environment."""
+        # Create engine with temporary database file
+        import tempfile
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
+        self.temp_db.close()
+        
         self.engine = OrchestrationEngine()
-        self.engine.db_path = ":memory:"
+        self.engine.db_path = self.temp_db.name
         self.engine._init_db()
+    
+    def teardown_method(self):
+        """Cleanup test environment."""
+        import os
+        import time
+        if hasattr(self, 'temp_db') and os.path.exists(self.temp_db.name):
+            try:
+                # Close any remaining connections
+                if hasattr(self.engine, '_conn'):
+                    self.engine._conn.close()
+                time.sleep(0.1)  # Brief delay for Windows
+                os.unlink(self.temp_db.name)
+            except (PermissionError, OSError):
+                # Ignore cleanup errors on Windows
+                pass
     
     def test_suggest_workflow(self):
         """Test suggest stage of orchestration."""
