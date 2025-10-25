@@ -1,0 +1,38 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: atom-workflow-alerts
+  namespace: atom
+  labels:
+    app: atom
+    component: monitoring
+spec:
+  groups:
+  - name: workflow.rules
+    rules:
+    - alert: WorkflowFailureRate
+      expr: rate(workflow_executions_total{status="failed"}[5m]) > 0.1
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High workflow failure rate"
+        description: "Workflow failure rate is {{ $value }} failures/sec"
+    
+    - alert: RegistryUnsignedUpload
+      expr: increase(workflow_uploads_total{signed="false"}[1h]) > 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Unsigned workflow upload detected"
+        description: "{{ $value }} unsigned workflows uploaded in the last hour"
+    
+    - alert: InsightEngineAnomalyRate
+      expr: rate(anomaly_detections_total[5m]) > 0.05
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High anomaly detection rate"
+        description: "Anomaly detection rate is {{ $value }} anomalies/sec"

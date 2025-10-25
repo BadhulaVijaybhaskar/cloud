@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "ATOM Runtime Agent",
+    "tags": ["atom", "runtime"],
+    "panels": [
+      {
+        "id": 1,
+        "title": "Workflow Executions",
+        "type": "timeseries",
+        "targets": [{"expr": "increase(workflow_executions_total{job=\"runtime-agent\"}[1h])"}],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Execution Duration",
+        "type": "timeseries",
+        "targets": [{"expr": "histogram_quantile(0.95, rate(workflow_execution_duration_seconds_bucket{job=\"runtime-agent\"}[5m]))"}],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      }
+    ],
+    "time": {"from": "now-1h", "to": "now"},
+    "refresh": "30s"
+  }
+}
