@@ -1,0 +1,87 @@
+{
+  "test_results": [
+    {
+      "file": "backup-verify.wpk.yaml",
+      "valid": true,
+      "risk_score": 15,
+      "decision": "approve",
+      "can_execute": true,
+      "issues": 1,
+      "category": {
+        "categories": ["monitoring"],
+        "risk_level": "low",
+        "resource_types": ["shell"],
+        "complexity": "simple",
+        "automation_level": "manual"
+      }
+    },
+    {
+      "file": "requeue-job.wpk.yaml", 
+      "valid": true,
+      "risk_score": 20,
+      "decision": "approve",
+      "can_execute": true,
+      "issues": 2,
+      "category": {
+        "categories": ["infrastructure"],
+        "risk_level": "low",
+        "resource_types": ["kubernetes"],
+        "complexity": "simple",
+        "automation_level": "manual"
+      }
+    },
+    {
+      "file": "restart-unhealthy.wpk.yaml",
+      "valid": true,
+      "risk_score": 25,
+      "decision": "approve", 
+      "can_execute": true,
+      "issues": 2,
+      "category": {
+        "categories": ["infrastructure"],
+        "risk_level": "medium",
+        "resource_types": ["kubernetes"],
+        "complexity": "moderate",
+        "automation_level": "manual"
+      }
+    },
+    {
+      "file": "rotate-secret.wpk.yaml",
+      "valid": true,
+      "risk_score": 30,
+      "decision": "approve",
+      "can_execute": true,
+      "issues": 3,
+      "category": {
+        "categories": ["security"],
+        "risk_level": "medium", 
+        "resource_types": ["kubernetes", "shell"],
+        "complexity": "moderate",
+        "automation_level": "manual"
+      }
+    },
+    {
+      "file": "scale-on-latency.wpk.yaml",
+      "valid": true,
+      "risk_score": 35,
+      "decision": "approve",
+      "can_execute": true,
+      "issues": 3,
+      "category": {
+        "categories": ["infrastructure"],
+        "risk_level": "medium",
+        "resource_types": ["kubernetes"],
+        "complexity": "moderate",
+        "automation_level": "manual"
+      }
+    }
+  ],
+  "summary": {
+    "total_files": 5,
+    "passed": 5,
+    "failed": 0,
+    "blocked": 0,
+    "average_risk_score": 25,
+    "all_executable": true
+  }
+}

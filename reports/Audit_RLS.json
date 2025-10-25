@@ -1,0 +1,30 @@
+{
+  "test_name": "rls_tenancy_audit",
+  "status": "BLOCKED",
+  "error": "Missing database dependencies",
+  "missing_dependencies": [
+    "POSTGRES_DSN environment variable",
+    "psycopg2 Python package", 
+    "Active PostgreSQL database",
+    "RLS policies applied"
+  ],
+  "policy_files": {
+    "rls_policies.sql": {
+      "exists": true,
+      "path": "infra/sql/rls_policies.sql",
+      "content_summary": "Basic RLS policy for workflow_runs table with tenant isolation"
+    }
+  },
+  "test_script": {
+    "created": true,
+    "path": "scripts/test_tenancy.py",
+    "functionality": "Cross-tenant access simulation and RLS validation"
+  },
+  "recommendations": [
+    "Install psycopg2-binary package",
+    "Configure PostgreSQL database with RLS",
+    "Set POSTGRES_DSN environment variable",
+    "Apply RLS policies to database",
+    "Run tenancy test after setup"
+  ]
+}

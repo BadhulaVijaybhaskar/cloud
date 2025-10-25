@@ -1,16 +1,23 @@
-import Link from 'next/link'
+import React from 'react'
 
 export default function Home() {
-  return (
-    <div>
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '1rem', color: '#4f46e5' }}>
-          ⚛️ NeuralOps
-        </h1>
-        <p style={{ fontSize: '1.25rem', color: '#6b7280', maxWidth: '600px', margin: '0 auto' }}>
-          Intelligent incident response and automation platform powered by AI
-        </p>
-      </div>
+  return React.createElement(
+    'div',
+    null,
+    React.createElement(
+      'div',
+      { style: { textAlign: 'center', marginBottom: '3rem' } },
+      React.createElement(
+        'h1',
+        { style: { fontSize: '3rem', fontWeight: 'bold', marginBottom: '1rem', color: '#4f46e5' } },
+        '⚛️ NeuralOps'
+      ),
+      React.createElement(
+        'p',
+        { style: { fontSize: '1.25rem', color: '#6b7280', maxWidth: '600px', margin: '0 auto' } },
+        'Intelligent incident response and automation platform powered by AI'
+      )
+    ),
       
       <div className="grid grid-3" style={{ marginBottom: '3rem' }}>
         <div className="card" style={{ textAlign: 'center' }}>
