@@ -1,0 +1,21 @@
+{
+  "name": "@atom/sdk",
+  "version": "1.0.0",
+  "description": "ATOM Cloud SDK for TypeScript/JavaScript",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node index.js --test"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "keywords": ["atom", "cloud", "sdk", "marketplace"],
+  "author": "ATOM Team",
+  "license": "MIT"
+}
