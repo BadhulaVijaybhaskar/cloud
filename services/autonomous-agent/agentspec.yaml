@@ -1,0 +1,28 @@
+agent:
+  name: "autonomous-ops-agent"
+  version: "1.0.0"
+  mode: "simulation"  # simulation | production
+
+observe:
+  sources:
+    - prometheus
+    - insight-stream
+    - workflow-runs
+
+decide:
+  engine: "rule-based"  # rule-based | ml-based
+  rules:
+    - condition: "cpu_usage > 80"
+      action: "scale_up"
+    - condition: "error_rate > 5"
+      action: "restart_service"
+
+act:
+  adapters:
+    - kubernetes
+    - docker
+    - notification
+
+safety:
+  mode: "manual"  # manual | auto
+  approval_required: true
