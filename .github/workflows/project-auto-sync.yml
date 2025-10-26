@@ -1,6 +1,8 @@
 name: 🧠 ATOM Project Auto Sync
 on:
   workflow_dispatch:
+  push:
+    branches: [main, 'prod-feature/*']
   issues:
     types: [opened, labeled, closed, reopened]
   pull_request:
@@ -53,6 +55,28 @@ jobs:
             core.notice(`Created test issue: ${issue.html_url}`);
             core.setOutput('test_issue_number', issue.number);
 
+      - name: 🚀 Create Project Item from Push (if push event)
+        id: create-push-item
+        if: github.event_name == 'push'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const commits = context.payload.commits || [];
+            const latestCommit = commits[commits.length - 1];
+            
+            if (latestCommit && latestCommit.message) {
+              const { data: issue } = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: latestCommit.message,
+                body: `Auto-created from push to ${context.ref}\n\nCommit: ${latestCommit.id}\nAuthor: ${latestCommit.author.name}`,
+                labels: ['auto-push']
+              });
+              core.notice(`Created issue from push: ${issue.html_url}`);
+              core.setOutput('push_issue_number', issue.number);
+            }
+
       - name: 🧠 Sync Issue or PR → Project
         uses: actions/github-script@v7
         with:
@@ -74,6 +98,16 @@ jobs:
             // For manual triggers, get the test issue number from previous step
             if (!issueNumber && context.eventName === 'workflow_dispatch') {
               issueNumber = '${{ steps.create-test-issue.outputs.test_issue_number }}';
+              if (issueNumber && issueNumber !== '') {
+                issueNumber = parseInt(issueNumber);
+              } else {
+                issueNumber = null;
+              }
+            }
+            
+            // For push events, get the push issue number
+            if (!issueNumber && context.eventName === 'push') {
+              issueNumber = '${{ steps.create-push-item.outputs.push_issue_number }}';
               if (issueNumber && issueNumber !== '') {
                 issueNumber = parseInt(issueNumber);
               } else {
