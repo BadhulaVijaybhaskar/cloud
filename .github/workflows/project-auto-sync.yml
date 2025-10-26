@@ -37,6 +37,7 @@ jobs:
           echo "BRANCH: ${{ github.head_ref || github.ref_name }}"
 
       - name: 📝 Create Test Issue (if manual trigger)
+        id: create-test-issue
         if: github.event_name == 'workflow_dispatch'
         uses: actions/github-script@v7
         with:
@@ -68,7 +69,17 @@ jobs:
             `;
             
             const projectId = "PVT_kwHOCgKJBs4AqQWF"; // Project ID for project #5
-            const issueNumber = context.payload.issue?.number || context.payload.pull_request?.number;
+            let issueNumber = context.payload.issue?.number || context.payload.pull_request?.number;
+            
+            // For manual triggers, get the test issue number from previous step
+            if (!issueNumber && context.eventName === 'workflow_dispatch') {
+              issueNumber = '${{ steps.create-test-issue.outputs.test_issue_number }}';
+              if (issueNumber && issueNumber !== '') {
+                issueNumber = parseInt(issueNumber);
+              } else {
+                issueNumber = null;
+              }
+            }
             
             if (issueNumber) {
               try {
@@ -87,6 +98,8 @@ jobs:
               } catch (error) {
                 core.warning(`Failed to add to project: ${error.message}`);
               }
+            } else {
+              core.info('No issue number found to sync');
             }
 
       - name: 🪄 Auto Label by Phase
