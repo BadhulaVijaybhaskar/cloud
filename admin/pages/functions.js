@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 
 export default function Functions() {
@@ -7,103 +7,98 @@ export default function Functions() {
     { name: 'process-payment', status: 'inactive', version: '2.1.0', invocations: 892, created: '2024-01-10' }
   ]);
 
-  return (
-    <Layout title="Edge Functions">
-      <div className="p-8 max-w-6xl">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-normal text-gray-900 mb-2">Edge Functions</h1>
-          <p className="text-gray-600">Deploy serverless functions globally</p>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-1">Total Functions</p>
-              <p className="text-2xl font-semibold text-gray-900">{functions.length}</p>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-1">Invocations (24h)</p>
-              <p className="text-2xl font-semibold text-gray-900">2,139</p>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-1">Avg Duration</p>
-              <p className="text-2xl font-semibold text-gray-900">245ms</p>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-1">Error Rate</p>
-              <p className="text-2xl font-semibold text-gray-900">0.1%</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Functions */}
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-            <h3 className="text-lg font-medium text-gray-900">Functions</h3>
-            <button className="px-4 py-2 bg-gray-900 text-white rounded text-sm hover:bg-gray-800">
-              New function
-            </button>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Version</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Invocations</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {functions.map((func) => (
-                  <tr key={func.name} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
-                          <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
-                        </div>
-                        <div className="ml-3">
-                          <div className="text-sm font-medium text-gray-900">{func.name}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        func.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {func.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{func.version}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{func.invocations.toLocaleString()}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{func.created}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <button className="text-gray-400 hover:text-gray-600">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                        </svg>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </Layout>
+  return React.createElement(Layout, { title: 'Edge Functions' },
+    React.createElement('div', { style: { padding: '32px', maxWidth: '1152px' } },
+      React.createElement('div', { style: { marginBottom: '32px' } },
+        React.createElement('h1', { style: { fontSize: '24px', fontWeight: '400', color: '#111827', marginBottom: '8px' } }, 'Edge Functions'),
+        React.createElement('p', { style: { color: '#4b5563' } }, 'Deploy serverless functions globally')
+      ),
+      React.createElement('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '32px' } },
+        React.createElement('div', { style: { backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '24px' } },
+          React.createElement('div', { style: { textAlign: 'center' } },
+            React.createElement('p', { style: { fontSize: '14px', color: '#6b7280', marginBottom: '4px' } }, 'Total Functions'),
+            React.createElement('p', { style: { fontSize: '24px', fontWeight: '600', color: '#111827' } }, functions.length)
+          )
+        ),
+        React.createElement('div', { style: { backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '24px' } },
+          React.createElement('div', { style: { textAlign: 'center' } },
+            React.createElement('p', { style: { fontSize: '14px', color: '#6b7280', marginBottom: '4px' } }, 'Invocations (24h)'),
+            React.createElement('p', { style: { fontSize: '24px', fontWeight: '600', color: '#111827' } }, '2,139')
+          )
+        ),
+        React.createElement('div', { style: { backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '24px' } },
+          React.createElement('div', { style: { textAlign: 'center' } },
+            React.createElement('p', { style: { fontSize: '14px', color: '#6b7280', marginBottom: '4px' } }, 'Avg Duration'),
+            React.createElement('p', { style: { fontSize: '24px', fontWeight: '600', color: '#111827' } }, '245ms')
+          )
+        ),
+        React.createElement('div', { style: { backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '24px' } },
+          React.createElement('div', { style: { textAlign: 'center' } },
+            React.createElement('p', { style: { fontSize: '14px', color: '#6b7280', marginBottom: '4px' } }, 'Error Rate'),
+            React.createElement('p', { style: { fontSize: '24px', fontWeight: '600', color: '#111827' } }, '0.1%')
+          )
+        )
+      ),
+      React.createElement('div', { style: { backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' } },
+        React.createElement('div', { style: { padding: '16px 24px', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
+          React.createElement('h3', { style: { fontSize: '18px', fontWeight: '500', color: '#111827' } }, 'Functions'),
+          React.createElement('button', { style: { padding: '8px 16px', backgroundColor: '#111827', color: 'white', borderRadius: '4px', fontSize: '14px', border: 'none', cursor: 'pointer' } }, 'New function')
+        ),
+        React.createElement('div', { style: { overflowX: 'auto' } },
+          React.createElement('table', { style: { width: '100%', borderCollapse: 'collapse' } },
+            React.createElement('thead', { style: { backgroundColor: '#f9fafb' } },
+              React.createElement('tr', null,
+                React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } }, 'Name'),
+                React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } }, 'Status'),
+                React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } }, 'Version'),
+                React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } }, 'Invocations'),
+                React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } }, 'Created'),
+                React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } }, 'Actions')
+              )
+            ),
+            React.createElement('tbody', { style: { backgroundColor: 'white' } },
+              functions.map((func) =>
+                React.createElement('tr', { key: func.name, style: { borderTop: '1px solid #e5e7eb' } },
+                  React.createElement('td', { style: { padding: '16px 24px' } },
+                    React.createElement('div', { style: { display: 'flex', alignItems: 'center' } },
+                      React.createElement('div', { style: { width: '32px', height: '32px', backgroundColor: '#dcfce7', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+                        React.createElement('svg', { style: { width: '16px', height: '16px', color: '#059669' }, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+                          React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M13 10V3L4 14h7v7l9-11h-7z' })
+                        )
+                      ),
+                      React.createElement('div', { style: { marginLeft: '12px' } },
+                        React.createElement('div', { style: { fontSize: '14px', fontWeight: '500', color: '#111827' } }, func.name)
+                      )
+                    )
+                  ),
+                  React.createElement('td', { style: { padding: '16px 24px' } },
+                    React.createElement('span', {
+                      style: {
+                        padding: '4px 8px',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        borderRadius: '9999px',
+                        backgroundColor: func.status === 'active' ? '#dcfce7' : '#f3f4f6',
+                        color: func.status === 'active' ? '#166534' : '#374151'
+                      }
+                    }, func.status)
+                  ),
+                  React.createElement('td', { style: { padding: '16px 24px', fontSize: '14px', color: '#111827' } }, func.version),
+                  React.createElement('td', { style: { padding: '16px 24px', fontSize: '14px', color: '#111827' } }, func.invocations.toLocaleString()),
+                  React.createElement('td', { style: { padding: '16px 24px', fontSize: '14px', color: '#6b7280' } }, func.created),
+                  React.createElement('td', { style: { padding: '16px 24px', fontSize: '14px', color: '#6b7280' } },
+                    React.createElement('button', { style: { color: '#9ca3af', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' } },
+                      React.createElement('svg', { style: { width: '16px', height: '16px' }, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+                        React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z' })
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
   );
 }

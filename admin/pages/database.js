@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
 
@@ -19,172 +19,158 @@ export default function Database() {
     { id: 'triggers', name: 'Triggers', count: 5 }
   ];
 
-  return (
-    <Layout title="Database">
-      <div className="flex h-screen">
-        {/* Sidebar */}
-        <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Schema Designer</h2>
-              <Button size="sm">🧠 AI Assistant</Button>
-            </div>
-            
-            {/* Engine Selector */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Database Engine</label>
-              <select className="w-full border border-gray-300 rounded px-3 py-2 text-sm">
-                <option>PostgreSQL (Primary)</option>
-                <option>SQLite (Local)</option>
-                <option>DuckDB (Analytics)</option>
-                <option>VectorDB (Embeddings)</option>
-              </select>
-            </div>
-
-            {/* Tabs */}
-            <div className="flex flex-wrap gap-1">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-3 py-1 text-xs font-medium rounded ${
-                    activeTab === tab.id
-                      ? 'bg-green-100 text-green-700'
-                      : 'text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  {tab.name} ({tab.count})
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          {/* Tables List */}
-          <div className="flex-1 overflow-y-auto p-4">
-            <div className="space-y-2">
-              {tables.filter(t => activeTab === 'tables' ? t.type === 'table' : activeTab === 'vectors' ? t.type === 'vector' : activeTab === 'views' ? t.type === 'view' : true).map((table) => (
-                <div key={table.name} className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                  <div className="flex items-center space-x-2">
-                    <div className={`w-2 h-2 rounded-full ${table.type === 'vector' ? 'bg-purple-500' : table.type === 'view' ? 'bg-blue-500' : 'bg-green-500'}`}></div>
-                    <span className="font-medium text-sm">{table.name}</span>
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1 ml-4">
-                    {table.rows.toLocaleString()} rows • {table.size}
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <Button className="w-full mt-4" size="sm">
-              + Create {activeTab === 'tables' ? 'Table' : activeTab === 'vectors' ? 'Vector Index' : 'View'}
-            </Button>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          {/* Header */}
-          <div className="bg-white border-b border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">users</h1>
-                <p className="text-sm text-gray-500">PostgreSQL table • 1,247 rows • 2.4 MB</p>
-              </div>
-              <div className="flex space-x-3">
-                <Button variant="secondary" size="sm">🔍 Query</Button>
-                <Button variant="secondary" size="sm">📊 Analytics</Button>
-                <Button size="sm">✏️ Edit Schema</Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Content Tabs */}
-          <div className="bg-white border-b border-gray-200">
-            <div className="flex">
-              <button className="px-4 py-2 text-sm font-medium text-green-600 border-b-2 border-green-600">
-                Data
-              </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">
-                Schema
-              </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">
-                Indexes
-              </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">
-                Policies (RLS)
-              </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">
-                Relationships
-              </button>
-            </div>
-          </div>
-
-          {/* AI Suggestions Bar */}
-          <div className="bg-blue-50 border-b border-blue-200 p-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600">🧠</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-blue-900">AI Suggestions</p>
-                <p className="text-xs text-blue-700">Add UUID primary key • Create email unique index • Generate RLS policy for user isolation</p>
-              </div>
-              <Button size="sm" variant="secondary">Apply All</Button>
-            </div>
-          </div>
-
-          {/* Data Grid */}
-          <div className="flex-1 bg-gray-50 p-6">
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        id <span className="text-blue-500">(int8)</span>
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        email <span className="text-green-500">(text)</span>
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        name <span className="text-green-500">(text)</span>
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        created_at <span className="text-purple-500">(timestamptz)</span>
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {[
-                      { id: 1, email: 'john@example.com', name: 'John Doe', created_at: '2024-01-15T10:30:00Z' },
-                      { id: 2, email: 'jane@example.com', name: 'Jane Smith', created_at: '2024-01-14T15:45:00Z' },
-                      { id: 3, email: 'bob@example.com', name: 'Bob Johnson', created_at: '2024-01-13T09:20:00Z' }
-                    ].map((row) => (
-                      <tr key={row.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{row.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{row.email}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{row.name}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(row.created_at).toLocaleString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <div className="flex space-x-2">
-                            <button className="text-blue-600 hover:text-blue-800">Edit</button>
-                            <button className="text-red-600 hover:text-red-800">Delete</button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Layout>
+  return React.createElement(Layout, { title: 'Database' },
+    React.createElement('div', { style: { display: 'flex', height: '100vh' } },
+      React.createElement('div', { style: { width: '320px', backgroundColor: 'white', borderRight: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' } },
+        React.createElement('div', { style: { padding: '16px', borderBottom: '1px solid #e5e7eb' } },
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' } },
+            React.createElement('h2', { style: { fontSize: '18px', fontWeight: '600', color: '#111827' } }, 'Schema Designer'),
+            React.createElement(Button, { size: 'sm' }, '🧠 AI Assistant')
+          ),
+          React.createElement('div', { style: { marginBottom: '16px' } },
+            React.createElement('label', { style: { display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '8px' } }, 'Database Engine'),
+            React.createElement('select', { style: { width: '100%', border: '1px solid #d1d5db', borderRadius: '4px', padding: '8px 12px', fontSize: '14px' } },
+              React.createElement('option', null, 'PostgreSQL (Primary)'),
+              React.createElement('option', null, 'SQLite (Local)'),
+              React.createElement('option', null, 'DuckDB (Analytics)'),
+              React.createElement('option', null, 'VectorDB (Embeddings)')
+            )
+          ),
+          React.createElement('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '4px' } },
+            tabs.map((tab) =>
+              React.createElement('button', {
+                key: tab.id,
+                onClick: () => setActiveTab(tab.id),
+                style: {
+                  padding: '4px 12px',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  borderRadius: '4px',
+                  border: 'none',
+                  backgroundColor: activeTab === tab.id ? '#dcfce7' : 'transparent',
+                  color: activeTab === tab.id ? '#15803d' : '#6b7280',
+                  cursor: 'pointer'
+                }
+              }, `${tab.name} (${tab.count})`)
+            )
+          )
+        ),
+        React.createElement('div', { style: { flex: 1, overflowY: 'auto', padding: '16px' } },
+          React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
+            tables.filter(t => activeTab === 'tables' ? t.type === 'table' : activeTab === 'vectors' ? t.type === 'vector' : activeTab === 'views' ? t.type === 'view' : true).map((table) =>
+              React.createElement('div', {
+                key: table.name,
+                style: {
+                  padding: '12px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  backgroundColor: 'white'
+                }
+              },
+                React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
+                  React.createElement('div', {
+                    style: {
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      backgroundColor: table.type === 'vector' ? '#8b5cf6' : table.type === 'view' ? '#3b82f6' : '#10b981'
+                    }
+                  }),
+                  React.createElement('span', { style: { fontWeight: '500', fontSize: '14px' } }, table.name)
+                ),
+                React.createElement('div', { style: { fontSize: '12px', color: '#6b7280', marginTop: '4px', marginLeft: '16px' } },
+                  `${table.rows.toLocaleString()} rows • ${table.size}`
+                )
+              )
+            )
+          ),
+          React.createElement(Button, { style: { width: '100%', marginTop: '16px' }, size: 'sm' },
+            `+ Create ${activeTab === 'tables' ? 'Table' : activeTab === 'vectors' ? 'Vector Index' : 'View'}`
+          )
+        )
+      ),
+      React.createElement('div', { style: { flex: 1, display: 'flex', flexDirection: 'column' } },
+        React.createElement('div', { style: { backgroundColor: 'white', borderBottom: '1px solid #e5e7eb', padding: '24px' } },
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
+            React.createElement('div', null,
+              React.createElement('h1', { style: { fontSize: '20px', fontWeight: '600', color: '#111827' } }, 'users'),
+              React.createElement('p', { style: { fontSize: '14px', color: '#6b7280' } }, 'PostgreSQL table • 1,247 rows • 2.4 MB')
+            ),
+            React.createElement('div', { style: { display: 'flex', gap: '12px' } },
+              React.createElement(Button, { variant: 'secondary', size: 'sm' }, '🔍 Query'),
+              React.createElement(Button, { variant: 'secondary', size: 'sm' }, '📊 Analytics'),
+              React.createElement(Button, { size: 'sm' }, '✏️ Edit Schema')
+            )
+          )
+        ),
+        React.createElement('div', { style: { backgroundColor: 'white', borderBottom: '1px solid #e5e7eb' } },
+          React.createElement('div', { style: { display: 'flex' } },
+            React.createElement('button', { style: { padding: '8px 16px', fontSize: '14px', fontWeight: '500', color: '#059669', borderBottom: '2px solid #059669', border: 'none', backgroundColor: 'transparent' } }, 'Data'),
+            React.createElement('button', { style: { padding: '8px 16px', fontSize: '14px', fontWeight: '500', color: '#6b7280', border: 'none', backgroundColor: 'transparent' } }, 'Schema'),
+            React.createElement('button', { style: { padding: '8px 16px', fontSize: '14px', fontWeight: '500', color: '#6b7280', border: 'none', backgroundColor: 'transparent' } }, 'Indexes'),
+            React.createElement('button', { style: { padding: '8px 16px', fontSize: '14px', fontWeight: '500', color: '#6b7280', border: 'none', backgroundColor: 'transparent' } }, 'Policies (RLS)'),
+            React.createElement('button', { style: { padding: '8px 16px', fontSize: '14px', fontWeight: '500', color: '#6b7280', border: 'none', backgroundColor: 'transparent' } }, 'Relationships')
+          )
+        ),
+        React.createElement('div', { style: { backgroundColor: '#eff6ff', borderBottom: '1px solid #bfdbfe', padding: '16px' } },
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: '12px' } },
+            React.createElement('div', { style: { width: '32px', height: '32px', backgroundColor: '#dbeafe', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+              React.createElement('span', { style: { color: '#2563eb' } }, '🧠')
+            ),
+            React.createElement('div', { style: { flex: 1 } },
+              React.createElement('p', { style: { fontSize: '14px', fontWeight: '500', color: '#1e3a8a' } }, 'AI Suggestions'),
+              React.createElement('p', { style: { fontSize: '12px', color: '#1d4ed8' } }, 'Add UUID primary key • Create email unique index • Generate RLS policy for user isolation')
+            ),
+            React.createElement(Button, { size: 'sm', variant: 'secondary' }, 'Apply All')
+          )
+        ),
+        React.createElement('div', { style: { flex: 1, backgroundColor: '#f9fafb', padding: '24px' } },
+          React.createElement('div', { style: { backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' } },
+            React.createElement('div', { style: { overflowX: 'auto' } },
+              React.createElement('table', { style: { width: '100%', borderCollapse: 'collapse' } },
+                React.createElement('thead', { style: { backgroundColor: '#f9fafb' } },
+                  React.createElement('tr', null,
+                    React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } },
+                      'id ', React.createElement('span', { style: { color: '#3b82f6' } }, '(int8)')
+                    ),
+                    React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } },
+                      'email ', React.createElement('span', { style: { color: '#10b981' } }, '(text)')
+                    ),
+                    React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } },
+                      'name ', React.createElement('span', { style: { color: '#10b981' } }, '(text)')
+                    ),
+                    React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } },
+                      'created_at ', React.createElement('span', { style: { color: '#8b5cf6' } }, '(timestamptz)')
+                    ),
+                    React.createElement('th', { style: { padding: '12px 24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase' } }, 'Actions')
+                  )
+                ),
+                React.createElement('tbody', { style: { backgroundColor: 'white' } },
+                  [
+                    { id: 1, email: 'john@example.com', name: 'John Doe', created_at: '2024-01-15T10:30:00Z' },
+                    { id: 2, email: 'jane@example.com', name: 'Jane Smith', created_at: '2024-01-14T15:45:00Z' },
+                    { id: 3, email: 'bob@example.com', name: 'Bob Johnson', created_at: '2024-01-13T09:20:00Z' }
+                  ].map((row) =>
+                    React.createElement('tr', { key: row.id, style: { borderTop: '1px solid #e5e7eb' } },
+                      React.createElement('td', { style: { padding: '16px 24px', fontSize: '14px', color: '#111827' } }, row.id),
+                      React.createElement('td', { style: { padding: '16px 24px', fontSize: '14px', color: '#111827' } }, row.email),
+                      React.createElement('td', { style: { padding: '16px 24px', fontSize: '14px', color: '#111827' } }, row.name),
+                      React.createElement('td', { style: { padding: '16px 24px', fontSize: '14px', color: '#6b7280' } }, new Date(row.created_at).toLocaleString()),
+                      React.createElement('td', { style: { padding: '16px 24px', fontSize: '14px', color: '#6b7280' } },
+                        React.createElement('div', { style: { display: 'flex', gap: '8px' } },
+                          React.createElement('button', { style: { color: '#2563eb', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' } }, 'Edit'),
+                          React.createElement('button', { style: { color: '#dc2626', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' } }, 'Delete')
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
   );
 }

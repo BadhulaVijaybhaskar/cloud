@@ -9,7 +9,7 @@ export default function LaunchpadHome() {
   const [projects, setProjects] = useState([]);
   const [aiSuggestions, setAiSuggestions] = useState([]);
   const [systemHealth, setSystemHealth] = useState({});
-  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     // Load data from backend API
@@ -136,28 +136,14 @@ export default function LaunchpadHome() {
         autonomous: true
         });
         
-        setLoading(false);
+
       }
     };
     
     loadData();
   }, []);
 
-  if (loading) {
-    return (
-      <LaunchpadLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 mx-auto bg-gradient-to-r from-teal-500 to-violet-500 rounded-full animate-pulse" />
-            <h2 className="text-xl font-semibold bg-gradient-to-r from-teal-500 to-violet-500 bg-clip-text text-transparent">
-              ATOM Neural Network Initializing...
-            </h2>
-            <p className="text-muted-foreground">Autonomous systems coming online</p>
-          </div>
-        </div>
-      </LaunchpadLayout>
-    );
-  }
+
 
   return (
     <LaunchpadLayout>
@@ -165,9 +151,9 @@ export default function LaunchpadHome() {
         {/* Hero Section */}
         <div className="relative overflow-hidden bg-gradient-to-r from-teal-500/10 via-primary/5 to-violet-500/10 border-b border-border/50">
           <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-          <div className="relative container mx-auto px-6 py-12">
-            <div className="flex items-center justify-between">
-              <div className="space-y-4">
+          <div className="relative max-w-7xl mx-auto px-6 py-12 ml-3">
+            <div className="flex items-center justify-start gap-96">
+              <div className="space-y-4 flex-1 pr-12">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
                   <span className="text-sm font-medium text-emerald-600">Neural Network Active</span>

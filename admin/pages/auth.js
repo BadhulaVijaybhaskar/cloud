@@ -1,148 +1,178 @@
-import { useState } from 'react';
+import React from 'react';
 import Layout from '../components/Layout';
 
-export default function Auth() {
-  const [activeTab, setActiveTab] = useState('users');
-  const [users] = useState([
-    { id: 1, email: 'john@example.com', provider: 'email', mfa: true, last_sign_in: '2024-01-20T10:30:00Z', status: 'active' },
-    { id: 2, email: 'jane@example.com', provider: 'google', mfa: false, last_sign_in: '2024-01-19T15:45:00Z', status: 'active' },
-    { id: 3, email: 'bob@example.com', provider: 'github', mfa: true, last_sign_in: '2024-01-18T09:20:00Z', status: 'suspended' }
-  ]);
+export default function Authentication() {
+  const [activeTab, setActiveTab] = React.useState('users');
 
-  const tabs = [
-    { id: 'users', name: 'Users' },
-    { id: 'providers', name: 'Providers' },
-    { id: 'policies', name: 'Policies' },
-    { id: 'settings', name: 'Settings' }
-  ];
+  const tabStyle = {
+    padding: '12px 24px',
+    border: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
+    borderBottom: '2px solid transparent',
+    fontSize: '0.875rem'
+  };
 
-  return (
-    <Layout title="Authentication">
-      <div className="p-8 max-w-6xl">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-normal text-gray-900 mb-2">Authentication</h1>
-          <p className="text-gray-600">Manage your users and authentication settings</p>
-        </div>
+  const activeTabStyle = {
+    ...tabStyle,
+    borderBottomColor: '#3b82f6',
+    color: '#3b82f6'
+  };
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-1">Total Users</p>
-              <p className="text-2xl font-semibold text-gray-900">{users.length}</p>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-1">Active Sessions</p>
-              <p className="text-2xl font-semibold text-gray-900">23</p>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-1">MFA Enabled</p>
-              <p className="text-2xl font-semibold text-gray-900">67%</p>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-1">SSO Providers</p>
-              <p className="text-2xl font-semibold text-gray-900">4</p>
-            </div>
-          </div>
-        </div>
+  return React.createElement(Layout, { title: 'Authentication' },
+    React.createElement('div', { style: { padding: '24px' } },
+      // Header
+      React.createElement('div', { style: { marginBottom: '32px' } },
+        React.createElement('h1', { style: { fontSize: '1.5rem', fontWeight: '600', color: '#111827', marginBottom: '8px' } }, 'Authentication'),
+        React.createElement('p', { style: { color: '#6b7280' } }, 'Manage your project\'s users and authentication settings')
+      ),
 
-        {/* Tabs */}
-        <div className="border-b border-gray-200 mb-6">
-          <nav className="-mb-px flex space-x-8">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === tab.id
-                    ? 'border-gray-900 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {tab.name}
-              </button>
-            ))}
-          </nav>
-        </div>
+      // Tabs
+      React.createElement('div', { style: { borderBottom: '1px solid #e5e7eb', marginBottom: '24px' } },
+        React.createElement('div', { style: { display: 'flex' } },
+          React.createElement('button', {
+            style: activeTab === 'users' ? activeTabStyle : tabStyle,
+            onClick: () => setActiveTab('users')
+          }, 'Users'),
+          React.createElement('button', {
+            style: activeTab === 'policies' ? activeTabStyle : tabStyle,
+            onClick: () => setActiveTab('policies')
+          }, 'Policies'),
+          React.createElement('button', {
+            style: activeTab === 'settings' ? activeTabStyle : tabStyle,
+            onClick: () => setActiveTab('settings')
+          }, 'Settings')
+        )
+      ),
 
-        {/* Content */}
-        {activeTab === 'users' && (
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Provider</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Last Sign In</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {users.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                            <span className="text-sm font-medium text-gray-600">
-                              {user.email.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                          <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-900">{user.email}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.provider}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 15, 2024</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(user.last_sign_in).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <button className="text-gray-400 hover:text-gray-600">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                          </svg>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+      // Content
+      activeTab === 'users' && React.createElement('div', null,
+        React.createElement('div', { 
+          style: { 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            marginBottom: '24px' 
+          } 
+        },
+          React.createElement('h2', { style: { fontSize: '1.125rem', fontWeight: '500' } }, 'Users'),
+          React.createElement('button', { 
+            style: { 
+              padding: '8px 16px', 
+              background: '#3b82f6', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '4px', 
+              fontSize: '0.875rem', 
+              cursor: 'pointer' 
+            } 
+          }, 'Add user')
+        ),
 
-        {activeTab === 'providers' && (
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Auth Providers</h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 border border-gray-200 rounded">
-                <div>
-                  <h4 className="font-medium">Email</h4>
-                  <p className="text-sm text-gray-500">Allow users to sign up with email and password</p>
-                </div>
-                <button className="px-3 py-1 text-sm bg-green-100 text-green-800 rounded">Enabled</button>
-              </div>
-              <div className="flex items-center justify-between p-4 border border-gray-200 rounded">
-                <div>
-                  <h4 className="font-medium">Google</h4>
-                  <p className="text-sm text-gray-500">Allow users to sign in with Google</p>
-                </div>
-                <button className="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded">Disabled</button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </Layout>
+        React.createElement('div', { 
+          style: { 
+            background: 'white', 
+            border: '1px solid #e5e7eb', 
+            borderRadius: '8px', 
+            overflow: 'hidden' 
+          } 
+        },
+          React.createElement('table', { style: { width: '100%', fontSize: '0.875rem' } },
+            React.createElement('thead', { style: { background: '#f9fafb' } },
+              React.createElement('tr', null,
+                React.createElement('th', { style: { padding: '12px 16px', textAlign: 'left', fontWeight: '500' } }, 'Email'),
+                React.createElement('th', { style: { padding: '12px 16px', textAlign: 'left', fontWeight: '500' } }, 'Created'),
+                React.createElement('th', { style: { padding: '12px 16px', textAlign: 'left', fontWeight: '500' } }, 'Last Sign In'),
+                React.createElement('th', { style: { padding: '12px 16px', textAlign: 'left', fontWeight: '500' } }, 'Actions')
+              )
+            ),
+            React.createElement('tbody', null,
+              React.createElement('tr', null,
+                React.createElement('td', { 
+                  style: { 
+                    padding: '32px', 
+                    textAlign: 'center', 
+                    color: '#6b7280' 
+                  }, 
+                  colSpan: 4 
+                },
+                  React.createElement('div', { style: { fontSize: '3rem', marginBottom: '16px' } }, '👥'),
+                  React.createElement('p', null, 'No users yet'),
+                  React.createElement('p', { style: { fontSize: '0.75rem', marginTop: '4px' } }, 'Users will appear here when they sign up')
+                )
+              )
+            )
+          )
+        )
+      ),
+
+      activeTab === 'policies' && React.createElement('div', null,
+        React.createElement('h2', { style: { fontSize: '1.125rem', fontWeight: '500', marginBottom: '16px' } }, 'Row Level Security Policies'),
+        React.createElement('div', { 
+          style: { 
+            background: '#fef3c7', 
+            border: '1px solid #f59e0b', 
+            borderRadius: '8px', 
+            padding: '16px', 
+            marginBottom: '24px' 
+          } 
+        },
+          React.createElement('p', { style: { fontSize: '0.875rem', color: '#92400e' } }, 'RLS is not enabled. Enable Row Level Security to create policies.')
+        ),
+        React.createElement('button', { 
+          style: { 
+            padding: '8px 16px', 
+            background: '#3b82f6', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '4px', 
+            fontSize: '0.875rem', 
+            cursor: 'pointer' 
+          } 
+        }, 'Enable RLS')
+      ),
+
+      activeTab === 'settings' && React.createElement('div', null,
+        React.createElement('h2', { style: { fontSize: '1.125rem', fontWeight: '500', marginBottom: '24px' } }, 'Authentication Settings'),
+        
+        React.createElement('div', { style: { background: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '24px' } },
+          React.createElement('h3', { style: { fontSize: '1rem', fontWeight: '500', marginBottom: '16px' } }, 'General Settings'),
+          
+          React.createElement('div', { style: { marginBottom: '20px' } },
+            React.createElement('label', { style: { display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '8px' } }, 'Site URL'),
+            React.createElement('input', { 
+              type: 'text', 
+              defaultValue: 'http://localhost:3000',
+              style: { 
+                width: '100%', 
+                padding: '8px 12px', 
+                border: '1px solid #d1d5db', 
+                borderRadius: '4px', 
+                fontSize: '0.875rem' 
+              } 
+            })
+          ),
+
+          React.createElement('div', { style: { marginBottom: '20px' } },
+            React.createElement('label', { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
+              React.createElement('input', { type: 'checkbox', defaultChecked: true }),
+              React.createElement('span', { style: { fontSize: '0.875rem' } }, 'Enable email confirmations')
+            )
+          ),
+
+          React.createElement('button', { 
+            style: { 
+              padding: '8px 16px', 
+              background: '#10b981', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '4px', 
+              fontSize: '0.875rem', 
+              cursor: 'pointer' 
+            } 
+          }, 'Save')
+        )
+      )
+    )
   );
 }

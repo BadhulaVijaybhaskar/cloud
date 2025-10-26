@@ -1,0 +1,57 @@
+/* Full-width launchpad layout without centering */
+.launchpad-container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 24px;
+}
+
+.launchpad-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.system-health-panel,
+.ai-assistant-panel {
+  width: 100%;
+}
+
+/* Remove any centering constraints */
+.container,
+.main-content {
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .launchpad-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .launchpad-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .launchpad-container {
+    padding: 0 16px;
+  }
+}

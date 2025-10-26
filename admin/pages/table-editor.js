@@ -1,94 +1,147 @@
-import { useState } from 'react';
+import React from 'react';
 import Layout from '../components/Layout';
 
 export default function TableEditor() {
-  return (
-    <Layout title="Table Editor">
-      <div className="flex h-screen">
-        {/* Sidebar */}
-        <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-          <div className="p-4 border-b border-gray-200">
-            <div className="mb-4">
-              <select className="w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white">
-                <option>schema public</option>
-                <option>schema auth</option>
-              </select>
-            </div>
-            
-            <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded mb-4">
-              New table
-            </button>
-          </div>
+  return React.createElement(Layout, { title: 'Table Editor' },
+    React.createElement('div', { style: { display: 'flex', height: '100vh' } },
+      // Sidebar
+      React.createElement('div', { 
+        style: { 
+          width: '320px', 
+          background: 'white', 
+          borderRight: '1px solid #e5e7eb', 
+          display: 'flex', 
+          flexDirection: 'column' 
+        } 
+      },
+        React.createElement('div', { style: { padding: '16px', borderBottom: '1px solid #e5e7eb' } },
+          React.createElement('div', { style: { marginBottom: '16px' } },
+            React.createElement('select', { 
+              style: { 
+                width: '100%', 
+                border: '1px solid #d1d5db', 
+                borderRadius: '4px', 
+                padding: '8px 12px', 
+                fontSize: '0.875rem', 
+                background: 'white' 
+              } 
+            },
+              React.createElement('option', null, 'schema public'),
+              React.createElement('option', null, 'schema auth')
+            )
+          ),
+          React.createElement('button', { 
+            style: { 
+              width: '100%', 
+              textAlign: 'left', 
+              padding: '8px 12px', 
+              fontSize: '0.875rem', 
+              color: '#374151', 
+              background: 'transparent', 
+              border: 'none', 
+              borderRadius: '4px', 
+              cursor: 'pointer' 
+            } 
+          }, 'New table')
+        ),
+        
+        // Search
+        React.createElement('div', { style: { padding: '0 16px', marginBottom: '16px' } },
+          React.createElement('div', { style: { position: 'relative' } },
+            React.createElement('input', {
+              type: 'text',
+              placeholder: 'Search tables...',
+              style: {
+                width: '100%',
+                padding: '8px 12px 8px 32px',
+                fontSize: '0.875rem',
+                border: '1px solid #d1d5db',
+                borderRadius: '4px'
+              }
+            }),
+            React.createElement('span', { 
+              style: { 
+                position: 'absolute', 
+                left: '8px', 
+                top: '8px', 
+                color: '#9ca3af' 
+              } 
+            }, '🔍')
+          )
+        ),
+        
+        // No Tables Message
+        React.createElement('div', { 
+          style: { 
+            flex: 1, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            padding: '32px', 
+            textAlign: 'center' 
+          } 
+        },
+          React.createElement('div', { style: { color: '#9ca3af', marginBottom: '16px', fontSize: '3rem' } }, '📋'),
+          React.createElement('h3', { style: { fontSize: '0.875rem', fontWeight: '500', color: '#111827', marginBottom: '4px' } }, 'No tables or views'),
+          React.createElement('p', { style: { fontSize: '0.75rem', color: '#6b7280', marginBottom: '16px' } }, 'Any tables or views you create will be listed here.'),
           
-          {/* Search */}
-          <div className="px-4 mb-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search tables..."
-                className="w-full px-3 py-2 pl-8 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
-              />
-              <svg className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-          </div>
-          
-          {/* No Tables Message */}
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-            <div className="text-gray-400 mb-4">
-              <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-              </svg>
-            </div>
-            <h3 className="text-sm font-medium text-gray-900 mb-1">No tables or views</h3>
-            <p className="text-xs text-gray-500 mb-4">Any tables or views you create will be listed here.</p>
-            
-            <div className="space-y-2 text-xs text-gray-400">
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                <span>postgres_lsn</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                <span>postgres_fdw</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                <span>postgres_fdw</span>
-              </div>
-            </div>
-          </div>
-        </div>
+          React.createElement('div', { style: { fontSize: '0.75rem', color: '#9ca3af' } },
+            React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' } },
+              React.createElement('div', { style: { width: '16px', height: '16px', background: '#e5e7eb', borderRadius: '4px' } }),
+              React.createElement('span', null, 'postgres_lsn')
+            ),
+            React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' } },
+              React.createElement('div', { style: { width: '16px', height: '16px', background: '#e5e7eb', borderRadius: '4px' } }),
+              React.createElement('span', null, 'postgres_fdw')
+            )
+          )
+        )
+      ),
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          {/* Main Area */}
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center max-w-md">
-              <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </div>
-              <h2 className="text-lg font-medium text-gray-900 mb-2">Create a table</h2>
-              <p className="text-sm text-gray-500 mb-6">Design and create a new database table</p>
-              <button className="px-4 py-2 bg-gray-900 text-white rounded text-sm hover:bg-gray-800">
-                Create a new table
-              </button>
-            </div>
-          </div>
-          
-          {/* Recent Items */}
-          <div className="border-t border-gray-200 p-6">
-            <h3 className="text-sm font-medium text-gray-900 mb-4">Recent items</h3>
-            <div className="text-center py-8">
-              <p className="text-sm text-gray-500">No recent items yet</p>
-              <p className="text-xs text-gray-400 mt-1">Items will appear here as you browse through your project</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Layout>
+      // Main Content
+      React.createElement('div', { style: { flex: 1, display: 'flex', flexDirection: 'column' } },
+        // Main Area
+        React.createElement('div', { style: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+          React.createElement('div', { style: { textAlign: 'center', maxWidth: '400px' } },
+            React.createElement('div', { 
+              style: { 
+                width: '64px', 
+                height: '64px', 
+                background: '#f3f4f6', 
+                borderRadius: '8px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                margin: '0 auto 16px auto',
+                fontSize: '2rem'
+              } 
+            }, '➕'),
+            React.createElement('h2', { style: { fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '8px' } }, 'Create a table'),
+            React.createElement('p', { style: { fontSize: '0.875rem', color: '#6b7280', marginBottom: '24px' } }, 'Design and create a new database table'),
+            React.createElement('button', { 
+              style: { 
+                padding: '8px 16px', 
+                background: '#111827', 
+                color: 'white', 
+                borderRadius: '4px', 
+                fontSize: '0.875rem', 
+                border: 'none', 
+                cursor: 'pointer' 
+              } 
+            }, 'Create a new table')
+          )
+        ),
+        
+        // Recent Items
+        React.createElement('div', { style: { borderTop: '1px solid #e5e7eb', padding: '24px' } },
+          React.createElement('h3', { style: { fontSize: '0.875rem', fontWeight: '500', color: '#111827', marginBottom: '16px' } }, 'Recent items'),
+          React.createElement('div', { style: { textAlign: 'center', padding: '32px 0' } },
+            React.createElement('p', { style: { fontSize: '0.875rem', color: '#6b7280' } }, 'No recent items yet'),
+            React.createElement('p', { style: { fontSize: '0.75rem', color: '#9ca3af', marginTop: '4px' } }, 'Items will appear here as you browse through your project')
+          )
+        )
+      )
+    )
   );
 }

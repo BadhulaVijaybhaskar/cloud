@@ -1,69 +1,139 @@
-import { useState } from 'react';
+import React from 'react';
 import Layout from '../components/Layout';
 
 export default function SQLEditor() {
-  return (
-    <Layout title="SQL Editor">
-      <div className="flex h-screen">
-        {/* Sidebar */}
-        <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-          <div className="p-4 border-b border-gray-200">
-            <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded mb-4">
-              New query
-            </button>
-          </div>
-          
-          {/* Query History */}
-          <div className="flex-1 p-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">Recent queries</h3>
-            <div className="text-center py-8">
-              <p className="text-sm text-gray-500">No queries yet</p>
-              <p className="text-xs text-gray-400 mt-1">Your query history will appear here</p>
-            </div>
-          </div>
-        </div>
+  const [query, setQuery] = React.useState('-- Welcome to the SQL Editor\n-- Write your queries here\n\nSELECT * FROM users LIMIT 10;');
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          {/* Query Editor */}
-          <div className="flex-1 flex flex-col">
-            <div className="border-b border-gray-200 p-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-medium text-gray-900">SQL Editor</h2>
-                <div className="flex space-x-2">
-                  <button className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">
-                    Save
-                  </button>
-                  <button className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700">
-                    Run
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            {/* Code Editor */}
-            <div className="flex-1 bg-gray-900 text-white font-mono text-sm">
-              <div className="p-4">
-                <div className="text-green-400">-- Welcome to Supabase SQL Editor</div>
-                <div className="text-green-400">-- You can query your database directly from here</div>
-                <div className="mt-4">
-                  <span className="text-blue-400">SELECT</span> * <span className="text-blue-400">FROM</span> users;
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Results Panel */}
-          <div className="h-64 border-t border-gray-200 bg-white">
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="text-sm font-medium text-gray-900">Results</h3>
-            </div>
-            <div className="p-4 text-center text-gray-500">
-              <p className="text-sm">Run a query to see results here</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Layout>
+  return React.createElement(Layout, { title: 'SQL Editor' },
+    React.createElement('div', { style: { display: 'flex', height: '100vh', flexDirection: 'column' } },
+      // Toolbar
+      React.createElement('div', { 
+        style: { 
+          background: 'white', 
+          borderBottom: '1px solid #e5e7eb', 
+          padding: '12px 16px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '12px' 
+        } 
+      },
+        React.createElement('button', { 
+          style: { 
+            padding: '8px 16px', 
+            background: '#10b981', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '4px', 
+            fontSize: '0.875rem', 
+            cursor: 'pointer' 
+          } 
+        }, '▶ Run'),
+        React.createElement('button', { 
+          style: { 
+            padding: '8px 16px', 
+            background: 'white', 
+            color: '#374151', 
+            border: '1px solid #d1d5db', 
+            borderRadius: '4px', 
+            fontSize: '0.875rem', 
+            cursor: 'pointer' 
+          } 
+        }, 'Save'),
+        React.createElement('select', { 
+          style: { 
+            padding: '8px 12px', 
+            border: '1px solid #d1d5db', 
+            borderRadius: '4px', 
+            fontSize: '0.875rem', 
+            background: 'white' 
+          } 
+        },
+          React.createElement('option', null, 'public')
+        )
+      ),
+
+      React.createElement('div', { style: { display: 'flex', flex: 1 } },
+        // Query Editor
+        React.createElement('div', { style: { flex: 1, display: 'flex', flexDirection: 'column' } },
+          React.createElement('div', { 
+            style: { 
+              background: '#f8f9fa', 
+              padding: '8px 16px', 
+              borderBottom: '1px solid #e5e7eb', 
+              fontSize: '0.875rem', 
+              color: '#6b7280' 
+            } 
+          }, 'Query'),
+          React.createElement('textarea', {
+            value: query,
+            onChange: (e) => setQuery(e.target.value),
+            style: {
+              flex: 1,
+              padding: '16px',
+              border: 'none',
+              fontFamily: 'monospace',
+              fontSize: '0.875rem',
+              background: '#1e293b',
+              color: '#e2e8f0',
+              resize: 'none',
+              outline: 'none'
+            },
+            placeholder: 'Write your SQL query here...'
+          })
+        ),
+
+        // Results Panel
+        React.createElement('div', { 
+          style: { 
+            width: '50%', 
+            borderLeft: '1px solid #e5e7eb', 
+            display: 'flex', 
+            flexDirection: 'column' 
+          } 
+        },
+          React.createElement('div', { 
+            style: { 
+              background: '#f8f9fa', 
+              padding: '8px 16px', 
+              borderBottom: '1px solid #e5e7eb', 
+              fontSize: '0.875rem', 
+              color: '#6b7280' 
+            } 
+          }, 'Results'),
+          React.createElement('div', { 
+            style: { 
+              flex: 1, 
+              padding: '32px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              textAlign: 'center' 
+            } 
+          },
+            React.createElement('div', null,
+              React.createElement('div', { style: { fontSize: '3rem', marginBottom: '16px' } }, '📊'),
+              React.createElement('h3', { style: { fontSize: '1rem', fontWeight: '500', color: '#111827', marginBottom: '8px' } }, 'Run a query to see results'),
+              React.createElement('p', { style: { fontSize: '0.875rem', color: '#6b7280' } }, 'Click the Run button to execute your SQL query')
+            )
+          )
+        )
+      ),
+
+      // Status Bar
+      React.createElement('div', { 
+        style: { 
+          background: '#f8f9fa', 
+          borderTop: '1px solid #e5e7eb', 
+          padding: '8px 16px', 
+          fontSize: '0.75rem', 
+          color: '#6b7280', 
+          display: 'flex', 
+          justifyContent: 'space-between' 
+        } 
+      },
+        React.createElement('span', null, 'Ready'),
+        React.createElement('span', null, 'Line 1, Column 1')
+      )
+    )
   );
 }

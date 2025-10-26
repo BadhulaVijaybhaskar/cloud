@@ -1,181 +1,170 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Layout from '../components/Layout';
-import Card from '../components/Card';
-import Button from '../components/Button';
 
 export default function Dashboard() {
-  const [project] = useState({
-    name: 'My Project',
-    id: 'abc123',
-    region: 'US East 1',
-    created: '2024-01-15'
-  });
+  const [projects] = useState([
+    { id: 1, name: 'E-commerce API', status: 'active', users: 1247, requests: '2.4M' },
+    { id: 2, name: 'Analytics Dashboard', status: 'building', users: 89, requests: '156K' },
+    { id: 3, name: 'Mobile Backend', status: 'paused', users: 456, requests: '890K' }
+  ]);
 
-  const [stats, setStats] = useState({
-    dbSize: '2.4 MB',
-    apiRequests: '1,247',
-    bandwidth: '45.2 KB',
-    mau: '12'
-  });
+  const stats = [
+    { title: 'Total Projects', value: '12', change: '+2.1%', color: 'from-teal-500 to-cyan-500' },
+    { title: 'Active Users', value: '1,247', change: '+12.5%', color: 'from-violet-500 to-purple-500' },
+    { title: 'API Requests', value: '2.4M', change: '+8.2%', color: 'from-emerald-500 to-green-500' },
+    { title: 'Uptime', value: '99.9%', change: '+0.1%', color: 'from-orange-500 to-red-500' }
+  ];
 
   return (
-    <Layout title="Project overview">
-      <div className="p-8 max-w-6xl">
-        {/* Project Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-normal text-gray-900 mb-2">{project.name} <span className="text-sm bg-gray-100 text-gray-600 px-2 py-1 rounded ml-2">NANO</span></h1>
-            </div>
-            <div className="flex items-center space-x-6 text-sm">
-              <div className="text-center">
-                <div className="text-lg font-semibold">Tables</div>
-                <div className="text-2xl font-bold">0</div>
+    <Layout title="Dashboard">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary">
+        {/* Header */}
+        <div className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
+          <div className="container mx-auto px-6 py-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-500 via-primary to-violet-500 bg-clip-text text-transparent">
+                  Dashboard
+                </h1>
+                <p className="text-muted-foreground mt-2">Welcome back to ATOM Cloud</p>
               </div>
-              <div className="text-center">
-                <div className="text-lg font-semibold">Functions</div>
-                <div className="text-2xl font-bold">0</div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-semibold">Replicas</div>
-                <div className="text-2xl font-bold">0</div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-sm text-gray-600">Project Status</span>
+              <div className="flex items-center gap-3">
+                <button className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
+                  📊 Analytics
+                </button>
+                <button className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-gradient-to-r from-teal-500 to-violet-500 text-white hover:opacity-90 shadow-lg hover:shadow-xl transition-all h-9 px-3">
+                  ⚡ New Project
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-normal text-gray-900 mb-2">Welcome to your new project</h2>
-          <p className="text-gray-600 mb-6">Your project has been deployed on its own instance, with its own API all set up and ready to use.</p>
-        </div>
-
-        {/* Get Started Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-normal text-gray-900 mb-2">Get started by building out your database</h2>
-          <p className="text-gray-600 mb-6">Start building your app by creating tables and inserting data. Our Table Editor makes Postgres as easy to use as a spreadsheet, but there's also our SQL Editor if you need something more.</p>
-          
-          <div className="flex space-x-4 mb-8">
-            <button className="px-4 py-2 bg-gray-900 text-white rounded text-sm hover:bg-gray-800">Table Editor</button>
-            <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50">SQL Editor</button>
-            <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50">About Database</button>
-          </div>
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - SQL Editor Preview */}
-          <div>
-            <div className="bg-gray-900 rounded-lg p-4 text-sm font-mono">
-              <div className="text-green-400 mb-2">-- Create a table for todos</div>
-              <div className="text-blue-400">create table</div>
-              <div className="text-white ml-2">todos (</div>
-              <div className="text-white ml-4">id <span className="text-yellow-400">bigint</span> <span className="text-purple-400">generated by default as identity</span> <span className="text-blue-400">primary key</span>,</div>
-              <div className="text-white ml-4">task <span className="text-yellow-400">text</span> <span className="text-blue-400">check</span> (<span className="text-green-400">length</span>(task) &gt; <span className="text-orange-400">0</span>),</div>
-              <div className="text-white ml-4">status <span className="text-yellow-400">status</span> <span className="text-blue-400">default</span> <span className="text-green-400">'pending'</span>::<span className="text-yellow-400">status</span>,</div>
-              <div className="text-white ml-4">user_id <span className="text-yellow-400">uuid</span> <span className="text-blue-400">references</span> auth.users <span className="text-blue-400">not null</span>,</div>
-              <div className="text-white ml-4">inserted_at <span className="text-yellow-400">timestamp</span> <span className="text-blue-400">with time zone</span> <span className="text-blue-400">default</span> <span className="text-green-400">timezone</span>(<span className="text-orange-400">'utc'</span>::<span className="text-yellow-400">text</span>, <span className="text-green-400">now</span>()) <span className="text-blue-400">not null</span>,</div>
-              <div className="text-white ml-4">updated_at <span className="text-yellow-400">timestamp</span> <span className="text-blue-400">with time zone</span> <span className="text-blue-400">default</span> <span className="text-green-400">timezone</span>(<span className="text-orange-400">'utc'</span>::<span className="text-yellow-400">text</span>, <span className="text-green-400">now</span>()) <span className="text-blue-400">not null</span></div>
-              <div className="text-white">);</div>
-            </div>
-          </div>
-
-          {/* Right Column - Tasks Table */}
-          <div>
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="px-4 py-2 text-left font-medium text-gray-700">id</th>
-                    <th className="px-4 py-2 text-left font-medium text-gray-700">task</th>
-                    <th className="px-4 py-2 text-left font-medium text-gray-700">status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-gray-100">
-                    <td className="px-4 py-2 text-gray-600">1</td>
-                    <td className="px-4 py-2">Create a project</td>
-                    <td className="px-4 py-2"><span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Complete</span></td>
-                  </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="px-4 py-2 text-gray-600">2</td>
-                    <td className="px-4 py-2">Read documentation</td>
-                    <td className="px-4 py-2"><span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Complete</span></td>
-                  </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="px-4 py-2 text-gray-600">3</td>
-                    <td className="px-4 py-2">Build application</td>
-                    <td className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">In progress</td>
-                  </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="px-4 py-2 text-gray-600">4</td>
-                    <td className="px-4 py-2">Connect Supabase</td>
-                    <td className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">In progress</td>
-                  </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="px-4 py-2 text-gray-600">5</td>
-                    <td className="px-4 py-2">Deploy project</td>
-                    <td className="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Not started</td>
-                  </tr>
-                  <tr>
-                    <td className="px-4 py-2 text-gray-600">6</td>
-                    <td className="px-4 py-2">Get users</td>
-                    <td className="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Not started</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* Explore Products Section */}
-        <div className="mt-12">
-          <h2 className="text-xl font-normal text-gray-900 mb-2">Explore our other products</h2>
-          <p className="text-gray-600 mb-8">Supabase provides all the backend features you need to build a product. You can use it completely, or just the features you need.</p>
-          
+        <div className="container mx-auto px-6 py-8 space-y-8">
+          {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 border border-gray-200 rounded-lg">
-              <div className="w-8 h-8 bg-orange-100 rounded mb-4 flex items-center justify-center">
-                <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+            {stats.map((stat, index) => (
+              <div key={index} className="rounded-lg border bg-card/80 backdrop-blur-lg border-border/50 text-card-foreground shadow-sm hover:shadow-lg transition-all duration-300 group p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                    <p className="text-2xl font-bold mt-2">{stat.value}</p>
+                    <p className="text-xs text-emerald-600 mt-1">{stat.change} from last month</p>
+                  </div>
+                  <div className={`p-3 rounded-lg bg-gradient-to-br ${stat.color} group-hover:scale-110 transition-transform`}>
+                    <div className="w-6 h-6 text-white">📊</div>
+                  </div>
+                </div>
               </div>
-              <h3 className="font-medium text-gray-900 mb-2">Authentication</h3>
-              <p className="text-sm text-gray-600">A complete user management system that works without any additional tools.</p>
+            ))}
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Projects Overview */}
+            <div className="lg:col-span-2">
+              <div className="rounded-lg border bg-card/80 backdrop-blur-lg border-border/50 text-card-foreground shadow-sm">
+                <div className="flex flex-col space-y-1.5 p-6">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    🗄️ Recent Projects
+                  </h3>
+                  <p className="text-sm text-muted-foreground">Your latest project activity</p>
+                </div>
+                <div className="p-6 pt-0">
+                  <div className="space-y-4">
+                    {projects.map((project) => (
+                      <div key={project.id} className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-accent/50 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-3 h-3 rounded-full ${
+                            project.status === 'active' ? 'bg-emerald-500 animate-pulse' :
+                            project.status === 'building' ? 'bg-amber-500 animate-pulse' :
+                            'bg-gray-400'
+                          }`} />
+                          <div>
+                            <h4 className="font-medium">{project.name}</h4>
+                            <p className="text-sm text-muted-foreground capitalize">{project.status}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium">{project.users} users</p>
+                          <p className="text-xs text-muted-foreground">{project.requests} requests</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div className="p-6 border border-gray-200 rounded-lg">
-              <div className="w-8 h-8 bg-blue-100 rounded mb-4 flex items-center justify-center">
-                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
+
+            {/* System Status */}
+            <div className="space-y-6">
+              <div className="rounded-lg border bg-card/80 backdrop-blur-lg border-border/50 text-card-foreground shadow-sm">
+                <div className="flex flex-col space-y-1.5 p-6">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    🛡️ System Status
+                  </h3>
+                </div>
+                <div className="p-6 pt-0 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">API Gateway</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                      <span className="text-xs text-emerald-600">Operational</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Database</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                      <span className="text-xs text-emerald-600">Healthy</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Vector Store</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+                      <span className="text-xs text-amber-600">Syncing</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="font-medium text-gray-900 mb-2">Storage</h3>
-              <p className="text-sm text-gray-600">Store, organize, and serve any file types of any size from multiple buckets.</p>
-            </div>
-            
-            <div className="p-6 border border-gray-200 rounded-lg">
-              <div className="w-8 h-8 bg-green-100 rounded mb-4 flex items-center justify-center">
-                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+
+              <div className="rounded-lg border bg-card/80 backdrop-blur-lg border-border/50 text-card-foreground shadow-sm">
+                <div className="flex flex-col space-y-1.5 p-6">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    💻 Resource Usage
+                  </h3>
+                </div>
+                <div className="p-6 pt-0 space-y-4">
+                  <div>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span>CPU</span>
+                      <span>67%</span>
+                    </div>
+                    <div className="w-full bg-secondary rounded-full h-2">
+                      <div className="bg-gradient-to-r from-teal-500 to-violet-500 h-2 rounded-full" style={{ width: '67%' }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span>Memory</span>
+                      <span>45%</span>
+                    </div>
+                    <div className="w-full bg-secondary rounded-full h-2">
+                      <div className="bg-gradient-to-r from-emerald-500 to-green-500 h-2 rounded-full" style={{ width: '45%' }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span>Storage</span>
+                      <span>23%</span>
+                    </div>
+                    <div className="w-full bg-secondary rounded-full h-2">
+                      <div className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full" style={{ width: '23%' }} />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="font-medium text-gray-900 mb-2">Edge Functions</h3>
-              <p className="text-sm text-gray-600">Write custom code without deploying or scaling servers, with fast deploy times and low latency.</p>
-            </div>
-            
-            <div className="p-6 border border-gray-200 rounded-lg">
-              <div className="w-8 h-8 bg-purple-100 rounded mb-4 flex items-center justify-center">
-                <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="font-medium text-gray-900 mb-2">Realtime</h3>
-              <p className="text-sm text-gray-600">Listen to your PostgreSQL database in realtime via websockets.</p>
             </div>
           </div>
         </div>
