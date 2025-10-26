@@ -21,7 +21,7 @@ jobs:
               }
             `;
             
-            const projectId = "PVT_kwHOCgKJBs4AqQWF";
+            const projectId = "PVT_kwHODbuAAc4BGfen";
             
             // Get all open issues
             const { data: issues } = await github.rest.issues.listForRepo({
