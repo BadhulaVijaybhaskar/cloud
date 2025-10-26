@@ -53,10 +53,41 @@ jobs:
             core.setOutput('test_issue_number', issue.number);
 
       - name: 🧠 Sync Issue or PR → Project
-        uses: actions/add-to-project@v1.0.2
+        uses: actions/github-script@v7
         with:
-          project-url: https://github.com/users/BadhulaVijaybhaskar/projects/5
           github-token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          script: |
+            const query = `
+              mutation($projectId: ID!, $contentId: ID!) {
+                addProjectV2ItemById(input: {projectId: $projectId, contentId: $contentId}) {
+                  item {
+                    id
+                  }
+                }
+              }
+            `;
+            
+            const projectId = "PVT_kwHOCgKJBs4AqQWF"; // Project ID for project #5
+            const issueNumber = context.payload.issue?.number || context.payload.pull_request?.number;
+            
+            if (issueNumber) {
+              try {
+                const { data: issue } = await github.rest.issues.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber
+                });
+                
+                const result = await github.graphql(query, {
+                  projectId: projectId,
+                  contentId: issue.node_id
+                });
+                
+                core.notice(`Added issue #${issueNumber} to project`);
+              } catch (error) {
+                core.warning(`Failed to add to project: ${error.message}`);
+              }
+            }
 
       - name: 🪄 Auto Label by Phase
         if: github.event_name == 'pull_request' || github.event_name == 'issues'
