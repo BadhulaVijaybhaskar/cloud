@@ -1,0 +1,76 @@
+name: 🧪 Test Project Sync
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔍 Test Project Access
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            // Test 1: Get project info
+            try {
+              const projectQuery = `
+                query($owner: String!) {
+                  user(login: $owner) {
+                    projectsV2(first: 10) {
+                      nodes {
+                        id
+                        title
+                        number
+                        url
+                      }
+                    }
+                  }
+                }
+              `;
+              
+              const projects = await github.graphql(projectQuery, {
+                owner: "BadhulaVijaybhaskar"
+              });
+              
+              console.log("Available projects:", JSON.stringify(projects, null, 2));
+              
+              // Find project #5
+              const project5 = projects.user.projectsV2.nodes.find(p => p.number === 5);
+              if (project5) {
+                console.log("Found project #5:", project5);
+                
+                // Test 2: Add issue #5 to project
+                const addQuery = `
+                  mutation($projectId: ID!, $contentId: ID!) {
+                    addProjectV2ItemById(input: {projectId: $projectId, contentId: $contentId}) {
+                      item {
+                        id
+                      }
+                    }
+                  }
+                `;
+                
+                // Get issue #5
+                const { data: issue } = await github.rest.issues.get({
+                  owner: "BadhulaVijaybhaskar",
+                  repo: "cloud",
+                  issue_number: 5
+                });
+                
+                console.log("Issue node_id:", issue.node_id);
+                
+                const result = await github.graphql(addQuery, {
+                  projectId: project5.id,
+                  contentId: issue.node_id
+                });
+                
+                console.log("Added to project:", result);
+                core.notice(`Successfully added issue #5 to project!`);
+              } else {
+                core.error("Project #5 not found");
+              }
+              
+            } catch (error) {
+              core.error(`Error: ${error.message}`);
+              console.log("Full error:", error);
+            }
