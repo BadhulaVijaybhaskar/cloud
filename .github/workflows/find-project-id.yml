@@ -1,0 +1,58 @@
+name: 🔍 Find Project ID
+on:
+  workflow_dispatch:
+
+jobs:
+  find-id:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔍 Find Correct Project ID
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            try {
+              // Get user projects
+              const userQuery = `
+                query($login: String!) {
+                  user(login: $login) {
+                    projectsV2(first: 20) {
+                      nodes {
+                        id
+                        title
+                        number
+                        url
+                      }
+                    }
+                  }
+                }
+              `;
+              
+              const userProjects = await github.graphql(userQuery, {
+                login: "BadhulaVijaybhaskar"
+              });
+              
+              console.log("User Projects:");
+              console.log(JSON.stringify(userProjects, null, 2));
+              
+              // Find project #5 or "ATOM Cloud" project
+              const atomProject = userProjects.user.projectsV2.nodes.find(p => 
+                p.number === 5 || p.title.includes("ATOM Cloud")
+              );
+              
+              if (atomProject) {
+                console.log(`✅ Found ATOM Cloud project:`);
+                console.log(`   ID: ${atomProject.id}`);
+                console.log(`   Title: ${atomProject.title}`);
+                console.log(`   Number: ${atomProject.number}`);
+                console.log(`   URL: ${atomProject.url}`);
+                
+                core.notice(`Project ID: ${atomProject.id}`);
+              } else {
+                console.log("❌ ATOM Cloud project not found");
+              }
+              
+            } catch (error) {
+              console.log(`Error: ${error.message}`);
+              console.log("Full error:", error);
+            }
