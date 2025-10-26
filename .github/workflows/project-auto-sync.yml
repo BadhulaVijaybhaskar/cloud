@@ -17,6 +17,7 @@ jobs:
       issues: write
       pull-requests: write
       contents: read
+      repository-projects: write
     steps:
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
@@ -55,7 +56,7 @@ jobs:
         uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/users/BadhulaVijaybhaskar/projects/5
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: 🪄 Auto Label by Phase
         if: github.event_name == 'pull_request' || github.event_name == 'issues'
