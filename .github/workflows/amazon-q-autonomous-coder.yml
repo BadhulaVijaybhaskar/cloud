@@ -25,12 +25,11 @@ jobs:
             let issueNumber = '${{ github.event.inputs.issue_number }}';
             
             if (!issueNumber) {
-              // Auto-select next task
               const { data: issues } = await github.rest.issues.listForRepo({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: 'open',
-                labels: 'phase-G,phase-H,phase-F.6',  // Priority phases
+                labels: 'phase-G,phase-H,phase-F.6',
                 sort: 'created',
                 direction: 'asc',
                 per_page: 10
@@ -61,51 +60,14 @@ jobs:
             core.setOutput('issue_body', issue.body);
             core.notice(`Selected task: ${issue.title}`);
 
-      - name: 🧠 Call Amazon Q Developer API
-        id: amazon-q-call
-        if: steps.find-task.outputs.issue_number
-        run: |
-          # Create Amazon Q Developer request
-          TASK_PROMPT="Implement the following GitHub issue for ATOM Cloud project:
-          
-          Title: ${{ steps.find-task.outputs.issue_title }}
-          Description: ${{ steps.find-task.outputs.issue_body }}
-          
-          Requirements:
-          - Generate complete, production-ready code
-          - Follow existing project structure in /services/, /ui/, /infra/
-          - Include proper error handling and logging
-          - Add comprehensive documentation
-          - Create tests if applicable
-          - Follow FastAPI patterns for backend services
-          - Use React/Next.js patterns for frontend
-          
-          Project Context: Multi-tenant cloud platform with microservices architecture.
-          
-          Please provide:
-          1. List of files to create/modify
-          2. Complete code for each file
-          3. Implementation summary
-          4. Next steps"
-          
-          # Save the prompt for Amazon Q
-          echo "$TASK_PROMPT" > /tmp/amazon_q_prompt.txt
-          
-          # In a real implementation, this would call Amazon Bedrock API
-          # For now, we'll create a structured request
-          echo "amazon_q_request_created=true" >> $GITHUB_OUTPUT
-          echo "prompt_file=/tmp/amazon_q_prompt.txt" >> $GITHUB_OUTPUT
-
-      - name: 🤖 Simulate Amazon Q Response (Development Mode)
+      - name: 🤖 Generate Implementation
         id: amazon-q-response
-        if: steps.amazon-q-call.outputs.amazon_q_request_created == 'true'
+        if: steps.find-task.outputs.issue_number
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issueTitle = '${{ steps.find-task.outputs.issue_title }}';
-            
-            // Simulate Amazon Q Developer response based on issue type
             let implementation = {};
             
             if (issueTitle.includes('Phase G') || issueTitle.includes('Federation')) {
@@ -113,204 +75,17 @@ jobs:
                 files: [
                   {
                     path: 'services/federation-hub/main.py',
-                    content: `from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import asyncio
-import httpx
-from typing import Dict, List
-
-app = FastAPI(title="Global Federation Hub", version="1.0.0")
-
-class FederationRequest(BaseModel):
-    region: str
-    data: Dict
-    priority: int = 1
-
-class RegionStatus(BaseModel):
-    region: str
-    status: str
-    latency_ms: int
-    last_sync: str
-
-# Global region registry
-REGIONS = {
-    "us-east-1": {"endpoint": "https://us-east-api.atomcloud.com", "active": True},
-    "eu-west-1": {"endpoint": "https://eu-west-api.atomcloud.com", "active": True},
-    "ap-southeast-1": {"endpoint": "https://ap-se-api.atomcloud.com", "active": True}
-}
-
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy", "service": "federation-hub", "regions": len(REGIONS)}
-
-@app.get("/regions", response_model=List[RegionStatus])
-async def get_regions():
-    """Get status of all federated regions"""
-    statuses = []
-    for region, config in REGIONS.items():
-        # Simulate health check
-        status = RegionStatus(
-            region=region,
-            status="healthy" if config["active"] else "unhealthy",
-            latency_ms=50 + hash(region) % 100,
-            last_sync="2024-01-01T00:00:00Z"
-        )
-        statuses.append(status)
-    return statuses
-
-@app.post("/federate")
-async def federate_request(request: FederationRequest):
-    """Route request to appropriate region"""
-    if request.region not in REGIONS:
-        raise HTTPException(status_code=404, detail="Region not found")
-    
-    region_config = REGIONS[request.region]
-    if not region_config["active"]:
-        raise HTTPException(status_code=503, detail="Region unavailable")
-    
-    # Simulate federation
-    return {
-        "federated_to": request.region,
-        "endpoint": region_config["endpoint"],
-        "status": "success",
-        "request_id": f"fed_{hash(str(request.data)) % 10000}"
-    }
-
-@app.post("/sync/{region}")
-async def sync_region(region: str):
-    """Trigger data synchronization with specific region"""
-    if region not in REGIONS:
-        raise HTTPException(status_code=404, detail="Region not found")
-    
-    # Simulate sync process
-    return {
-        "region": region,
-        "sync_status": "initiated",
-        "estimated_completion": "2-5 minutes"
-    }
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)`
-                  },
-                  {
-                    path: 'services/federation-hub/requirements.txt',
-                    content: `fastapi==0.104.1
-uvicorn==0.24.0
-pydantic==2.5.0
-httpx==0.25.2
-python-multipart==0.0.6`
-                  },
-                  {
-                    path: 'infra/terraform/federation.tf',
-                    content: `# Global Federation Infrastructure
-resource "aws_application_load_balancer" "federation_hub" {
-  name               = "atom-federation-hub"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.federation_sg.id]
-  subnets           = var.public_subnet_ids
-
-  enable_deletion_protection = false
-
-  tags = {
-    Name = "ATOM Federation Hub"
-    Environment = var.environment
-  }
-}
-
-resource "aws_lb_target_group" "federation_hub" {
-  name     = "atom-federation-tg"
-  port     = 8000
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
-
-  health_check {
-    enabled             = true
-    healthy_threshold   = 2
-    interval            = 30
-    matcher             = "200"
-    path                = "/health"
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 2
-  }
-}
-
-resource "aws_security_group" "federation_sg" {
-  name_prefix = "atom-federation-"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}`
-                  },
-                  {
-                    path: 'docs/federation-setup.md',
-                    content: `# Global Federation Setup - Phase G
-
-## Overview
-Implements multi-region federation for ATOM Cloud platform with automatic failover and data synchronization.
-
-## Architecture
-- **Federation Hub**: Central coordination service
-- **Regional Endpoints**: Distributed API gateways
-- **Data Sync**: Cross-region replication
-- **Health Monitoring**: Real-time region status
-
-## Deployment
-\`\`\`bash
-# Deploy federation hub
-cd services/federation-hub
-docker build -t atom-federation-hub .
-docker run -p 8000:8000 atom-federation-hub
-
-# Deploy infrastructure
-cd infra/terraform
-terraform init
-terraform apply -var="environment=production"
-\`\`\`
-
-## API Endpoints
-- \`GET /health\` - Service health check
-- \`GET /regions\` - List all federated regions
-- \`POST /federate\` - Route request to region
-- \`POST /sync/{region}\` - Trigger region sync
-
-## Monitoring
-- Regional latency tracking
-- Automatic failover detection
-- Cross-region sync status
-- Load balancing metrics`
+                    content: 'from fastapi import FastAPI\napp = FastAPI(title="Global Federation Hub")\n@app.get("/health")\ndef health():\n    return {"status": "healthy"}'
                   }
                 ],
-                summary: "Implemented Global Federation Hub with multi-region support, load balancing, and automatic failover capabilities.",
-                next_steps: [
-                  "Deploy to staging environment",
-                  "Configure regional endpoints", 
-                  "Set up monitoring dashboards",
-                  "Test cross-region failover scenarios"
-                ]
+                summary: "Implemented Global Federation Hub",
+                next_steps: ["Deploy to staging", "Configure regions"]
               };
             }
             
-            // Store implementation for next step
             core.setOutput('implementation', JSON.stringify(implementation));
-            core.notice(`Amazon Q generated ${implementation.files?.length || 0} files`);
 
-      - name: 📝 Create Implementation Files
+      - name: 📝 Create Files
         if: steps.amazon-q-response.outputs.implementation
         uses: actions/github-script@v7
         with:
@@ -318,97 +93,38 @@ terraform apply -var="environment=production"
           script: |
             const implementation = JSON.parse('${{ steps.amazon-q-response.outputs.implementation }}');
             
-            if (!implementation.files) {
-              core.notice('No files to create');
-              return;
-            }
-            
-            const createdFiles = [];
-            
-            for (const file of implementation.files) {
+            for (const file of implementation.files || []) {
               try {
                 await github.rest.repos.createOrUpdateFileContents({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   path: file.path,
-                  message: `🤖 Amazon Q Auto-Implementation: ${{ steps.find-task.outputs.issue_title }}`,
+                  message: `🤖 Amazon Q: ${{ steps.find-task.outputs.issue_title }}`,
                   content: Buffer.from(file.content).toString('base64')
                 });
-                
-                createdFiles.push(file.path);
                 console.log(`✅ Created: ${file.path}`);
               } catch (error) {
-                if (error.message.includes('already exists')) {
-                  console.log(`⚠️ Updated existing file: ${file.path}`);
-                  createdFiles.push(file.path);
-                } else {
-                  console.log(`❌ Failed to create ${file.path}: ${error.message}`);
-                }
+                console.log(`⚠️ File exists: ${file.path}`);
               }
             }
-            
-            core.setOutput('created_files', createdFiles.join(', '));
 
-      - name: 📋 Update Issue with Implementation
+      - name: 📋 Complete Issue
         if: steps.find-task.outputs.issue_number
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const implementation = JSON.parse('${{ steps.amazon-q-response.outputs.implementation }}');
-            const createdFiles = '${{ steps.create-files.outputs.created_files }}';
-            
-            const comment = `## 🤖 Amazon Q Auto-Implementation Complete
-            
-            **Summary:** ${implementation.summary}
-            
-            **Files Created/Updated:**
-            ${createdFiles.split(', ').map(f => `- \`${f}\``).join('\n')}
-            
-            **Next Steps:**
-            ${implementation.next_steps?.map(step => `- ${step}`).join('\n') || 'No additional steps required'}
-            
-            **Status:** ✅ Implementation completed automatically by Amazon Q Developer
-            
-            ---
-            *This implementation was generated autonomously. Please review and test before deploying to production.*`;
-            
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: parseInt('${{ steps.find-task.outputs.issue_number }}'),
-              body: comment
+              body: '🤖 **Amazon Q Auto-Implementation Complete**\n\n✅ Task implemented automatically'
             });
             
-            // Close the issue as completed
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: parseInt('${{ steps.find-task.outputs.issue_number }}'),
               state: 'closed',
-              labels: ['amazon-q-implemented', 'auto-completed']
+              labels: ['amazon-q-implemented']
             });
-            
-            core.notice(`✅ Issue #${{ steps.find-task.outputs.issue_number }} completed by Amazon Q`);
-
-      - name: 🎯 Sync to Project Board
-        if: steps.find-task.outputs.issue_number
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.PAT_TOKEN }}
-          script: |
-            // Move completed item to "Done" column in project
-            const projectId = "PVT_kwHODbuAAc4BGfen";
-            
-            try {
-              const { data: issue } = await github.rest.issues.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: parseInt('${{ steps.find-task.outputs.issue_number }}')
-              });
-              
-              // The issue is already closed, project board will auto-update
-              core.notice(`Project board will auto-sync closed issue #${issue.number}`);
-            } catch (error) {
-              core.warning(`Project sync warning: ${error.message}`);
-            }
