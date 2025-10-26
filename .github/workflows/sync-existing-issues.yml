@@ -1,0 +1,53 @@
+name: 🔄 Sync Existing Issues to Project
+on:
+  workflow_dispatch:
+
+jobs:
+  sync-all:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔄 Sync All Open Issues to Project
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            const query = `
+              mutation($projectId: ID!, $contentId: ID!) {
+                addProjectV2ItemById(input: {projectId: $projectId, contentId: $contentId}) {
+                  item {
+                    id
+                  }
+                }
+              }
+            `;
+            
+            const projectId = "PVT_kwHOCgKJBs4AqQWF";
+            
+            // Get all open issues
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100
+            });
+            
+            console.log(`Found ${issues.length} open issues`);
+            
+            for (const issue of issues) {
+              try {
+                const result = await github.graphql(query, {
+                  projectId: projectId,
+                  contentId: issue.node_id
+                });
+                
+                console.log(`✅ Added issue #${issue.number}: ${issue.title}`);
+              } catch (error) {
+                if (error.message.includes('already exists')) {
+                  console.log(`⚠️ Issue #${issue.number} already in project`);
+                } else {
+                  console.log(`❌ Failed to add issue #${issue.number}: ${error.message}`);
+                }
+              }
+            }
+            
+            core.notice(`Processed ${issues.length} issues`);
