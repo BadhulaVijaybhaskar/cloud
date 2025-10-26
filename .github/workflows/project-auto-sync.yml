@@ -15,8 +15,8 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
-      project: write
       contents: read
+      projects: write
     steps:
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
