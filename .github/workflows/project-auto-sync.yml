@@ -106,17 +106,24 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'issues'
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const title = context.payload.pull_request?.title || context.payload.issue?.title || '';
             const labels = [];
-            if (title.includes('Phase A')) labels.push('phase-A');
-            if (title.includes('Phase B')) labels.push('phase-B');
-            if (title.includes('Phase C')) labels.push('phase-C');
-            if (title.includes('Phase D')) labels.push('phase-D');
-            if (title.includes('Phase E')) labels.push('phase-E');
-            if (title.includes('Phase F')) labels.push('phase-F');
-            if (title.includes('Phase G')) labels.push('phase-G');
-            if (title.includes('Phase H')) labels.push('phase-H');
+            
+            // Check for specific decimal phases first
+            if (title.includes('Phase F.5')) labels.push('phase-F.5');
+            else if (title.includes('Phase F.6')) labels.push('phase-F.6');
+            else if (title.includes('Phase 0.5')) labels.push('phase-0.5');
+            // Then check for main phases
+            else if (title.includes('Phase A')) labels.push('phase-A');
+            else if (title.includes('Phase B')) labels.push('phase-B');
+            else if (title.includes('Phase C')) labels.push('phase-C');
+            else if (title.includes('Phase D')) labels.push('phase-D');
+            else if (title.includes('Phase E')) labels.push('phase-E');
+            else if (title.includes('Phase F')) labels.push('phase-F');
+            else if (title.includes('Phase G')) labels.push('phase-G');
+            else if (title.includes('Phase H')) labels.push('phase-H');
             if (labels.length > 0) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
@@ -132,6 +139,7 @@ jobs:
       - name: ✅ Move items based on status
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const col = {
               open: 'In Progress',
