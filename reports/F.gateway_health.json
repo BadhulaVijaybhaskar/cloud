@@ -1,0 +1,1 @@
+{"status": "ok", "env": "SIM", "timestamp": "2024-12-19T10:30:00Z", "services": {"data-api": "ready", "auth-api": "ready", "ai-proxy": "ready", "storage-api": "ready", "runtime-deploy": "ready"}}
