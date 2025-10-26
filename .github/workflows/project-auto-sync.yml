@@ -1,5 +1,6 @@
 name: 🧠 ATOM Project Auto Sync
 on:
+  workflow_dispatch:
   issues:
     types: [opened, labeled, closed, reopened]
   pull_request:
@@ -34,10 +35,26 @@ jobs:
           echo "TARGET: ${{ github.event.pull_request.html_url || github.event.issue.html_url }}"
           echo "BRANCH: ${{ github.head_ref || github.ref_name }}"
 
+      - name: 📝 Create Test Issue (if manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: issue } = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Phase F.5 Test - Project Sync Verification',
+              body: 'This is a test issue to verify GitHub project sync functionality.',
+              labels: ['phase-F']
+            });
+            core.notice(`Created test issue: ${issue.html_url}`);
+            core.setOutput('test_issue_number', issue.number);
+
       - name: 🧠 Sync Issue or PR → Project
         uses: actions/add-to-project@v1.0.2
         with:
-          project-url: https://github.com/users/BadhulaVijaybhaskar/projects/1
+          project-url: https://github.com/users/BadhulaVijaybhaskar/projects/5
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🪄 Auto Label by Phase
