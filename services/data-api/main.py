@@ -3,10 +3,12 @@ import sqlite3
 import os
 from prometheus_client import Counter, generate_latest
 from schema import router as schema_router
+from crud import router as crud_router
 
 app = FastAPI(title="ATOM Data API", version="1.0.0")
 
 app.include_router(schema_router, prefix="/api/data")
+app.include_router(crud_router, prefix="/api/data")
 
 # Metrics
 query_counter = Counter('data_queries_total', 'Total data queries')
