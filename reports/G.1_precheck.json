@@ -1,0 +1,8 @@
+{
+  "vault": "MISSING",
+  "cosign": "MISSING",
+  "postgres": "MISSING", 
+  "global_registry": "MISSING",
+  "decision": "PROCEED_SIMULATION",
+  "blockers": ["vault_infrastructure", "cosign_keys", "postgres_cluster", "global_registry"]
+}
