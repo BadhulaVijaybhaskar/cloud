@@ -1,0 +1,8 @@
+{
+  "vault": "MISSING",
+  "cosign": "MISSING",
+  "neural_fabric_bridge": "MISSING",
+  "quantum_runtime": "MISSING",
+  "env_defaults": "PRESENT",
+  "decision": "PROCEED_SIMULATION"
+}
