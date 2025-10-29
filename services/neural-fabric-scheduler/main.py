@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 import os, json, time, hashlib
+from pqc_bridge import pqc_handshake, rotate_pqc_key, get_pqc_status
 
 app = FastAPI(title="Neural Fabric Scheduler", version="1.0.0")
 start_time = time.time()
@@ -41,6 +42,21 @@ def get_schedule(jid:str):
 @app.post("/failover/promote")
 def promote(payload:dict):
     return {"action":"promote","region":payload.get("region","secondary"),"tenant":payload.get("tenant_id"),"dry_run":payload.get("dry_run",True),"ok":True}
+
+@app.get("/pqc/handshake")
+def pqc_handshake_endpoint():
+    """PQC handshake for quantum-neural bridge"""
+    return pqc_handshake()
+
+@app.post("/pqc/rotate")
+def pqc_rotate_endpoint(approver: str):
+    """Rotate PQC key with approval"""
+    return rotate_pqc_key(approver)
+
+@app.get("/pqc/status")
+def pqc_status_endpoint():
+    """Get PQC bridge status"""
+    return get_pqc_status()
 
 if __name__ == "__main__":
     import uvicorn
