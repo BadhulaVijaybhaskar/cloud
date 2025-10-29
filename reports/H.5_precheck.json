@@ -1,0 +1,7 @@
+{
+  "GLOBAL_REGISTRY_URL": "MISSING",
+  "VAULT_ADDR": "MISSING",
+  "COSIGN_KEY_PATH": "MISSING",
+  "PROM_URL": "MISSING",
+  "decision": "BLOCK"
+}
