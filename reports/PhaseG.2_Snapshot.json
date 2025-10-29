@@ -1,0 +1,17 @@
+{
+  "commit": "192b9b5",
+  "reports": [
+    "reports/F.6.1_summary.md",
+    "reports/F.6.2_summary.md", 
+    "reports/F.6_DataStudio_Summary.md",
+    "reports/F.7.1_vault_adapter.md",
+    "reports/F.7_precheck.json",
+    "reports/G.1_precheck.json",
+    "reports/G.2.1_replication_controller.md",
+    "reports/G.2_precheck.json",
+    "reports/PhaseF.6_Summary.md",
+    "reports/PhaseF.7_Summary.md",
+    "reports/PhaseG.1_Summary.md"
+  ],
+  "generated_at": "2024-01-15T10:30:00Z"
+}
