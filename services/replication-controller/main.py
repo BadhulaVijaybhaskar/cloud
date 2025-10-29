@@ -5,6 +5,16 @@ import json
 import hashlib
 from datetime import datetime
 from typing import List, Dict, Optional
+from prometheus_client import Counter, generate_latest
+
+SERVICE_NAME = "replication-controller"
+
+# labeled counter
+replication_jobs_total = Counter(
+    "replication_jobs_total",
+    "Total replication jobs processed",
+    ["phase", "service", "tenant"]
+)
 
 app = FastAPI(title="ATOM Replication Controller", version="1.0.0")
 
@@ -82,6 +92,9 @@ def create_replication_job(job: ReplicationJob):
             "created_at": datetime.now().isoformat()
         }
         
+        # Increment metrics
+        replication_jobs_total.labels(phase="G.2", service=SERVICE_NAME, tenant=job.tenant_id).inc()
+        
         return {"job_id": job_id, "status": "created", "message": "Replication job started (simulation)"}
     
     raise HTTPException(status_code=503, detail="Replication infrastructure unavailable")
@@ -114,11 +127,7 @@ def list_jobs(tenant_id: Optional[str] = None):
 
 @app.get("/metrics")
 def metrics():
-    return {
-        "jobs_total": len(jobs_db),
-        "jobs_running": len([j for j in jobs_db.values() if j["status"] == "running"]),
-        "simulation_mode": SIMULATION_MODE
-    }
+    return generate_latest()
 
 if __name__ == "__main__":
     import uvicorn
