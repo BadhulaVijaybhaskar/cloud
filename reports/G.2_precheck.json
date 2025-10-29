@@ -1,0 +1,12 @@
+{
+  "registry": "ERROR:Connection refused",
+  "postgres": {
+    "primary": "MISSING",
+    "secondary": "MISSING"
+  },
+  "vault": "MISSING",
+  "cosign": "MISSING",
+  "s3_primary": "MISSING",
+  "s3_secondary": "MISSING",
+  "decision": "PROCEED_SIMULATION"
+}
