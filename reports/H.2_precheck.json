@@ -1,0 +1,8 @@
+{
+  "postgres": "MISSING",
+  "vault": "MISSING",
+  "cosign": "MISSING",
+  "gpu_nodes": "NONE",
+  "neural_fabric_mode": "MISSING",
+  "decision": "PROCEED_SIMULATION"
+}
