@@ -1,0 +1,49 @@
+cost_optimization:
+  name: "Cost Optimization"
+  description: "Template for cost reduction decisions"
+  schema:
+    action: "scale_down"
+    impact_level: "medium"
+    rollback_plan: true
+    approval_required: false
+    safety_checks:
+      - "validate_minimum_capacity"
+      - "check_sla_impact"
+
+security_update:
+  name: "Security Update"
+  description: "Template for security-related changes"
+  schema:
+    action: "security_patch"
+    impact_level: "high"
+    rollback_plan: true
+    approval_required: true
+    safety_checks:
+      - "validate_patch_compatibility"
+      - "backup_current_state"
+      - "test_rollback_procedure"
+
+performance_scaling:
+  name: "Performance Scaling"
+  description: "Template for performance improvements"
+  schema:
+    action: "scale_up"
+    impact_level: "medium"
+    rollback_plan: true
+    approval_required: false
+    safety_checks:
+      - "validate_resource_limits"
+      - "check_cost_impact"
+
+emergency_response:
+  name: "Emergency Response"
+  description: "Template for urgent system responses"
+  schema:
+    action: "emergency_action"
+    impact_level: "high"
+    rollback_plan: true
+    approval_required: true
+    priority: "urgent"
+    safety_checks:
+      - "validate_emergency_justification"
+      - "ensure_rollback_capability"
