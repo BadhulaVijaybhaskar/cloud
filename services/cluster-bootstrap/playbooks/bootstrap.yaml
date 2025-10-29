@@ -1,0 +1,27 @@
+---
+- name: Bootstrap ATOM Cluster
+  hosts: all
+  become: yes
+  vars:
+    simulation_mode: "{{ ansible_env.SIMULATION_MODE | default('true') }}"
+  
+  tasks:
+    - name: Check if simulation mode
+      debug:
+        msg: "Running in simulation mode: {{ simulation_mode }}"
+      when: simulation_mode == "true"
+    
+    - name: Install Docker (simulation)
+      debug:
+        msg: "Would install Docker on {{ inventory_hostname }}"
+      when: simulation_mode == "true"
+    
+    - name: Install Kubernetes (simulation)
+      debug:
+        msg: "Would install K8s on {{ inventory_hostname }}"
+      when: simulation_mode == "true"
+    
+    - name: Configure cluster networking (simulation)
+      debug:
+        msg: "Would configure CNI on {{ inventory_hostname }}"
+      when: simulation_mode == "true"

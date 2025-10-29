@@ -1,0 +1,26 @@
+apiVersion: v2
+name: atom-chart
+description: ATOM Cloud Self-Hosting Chart
+type: application
+version: 1.0.0
+appVersion: "7.2.0"
+
+dependencies:
+  - name: postgresql
+    version: "11.9.13"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  
+  - name: redis
+    version: "17.3.7"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
+
+maintainers:
+  - name: ATOM Team
+    email: team@atom.cloud
+
+keywords:
+  - atom
+  - self-hosting
+  - multi-tenant
