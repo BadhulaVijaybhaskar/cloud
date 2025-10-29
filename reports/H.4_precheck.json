@@ -1,0 +1,7 @@
+{
+  "VAULT_ADDR": "MISSING",
+  "POSTGRES_DSN": "MISSING",
+  "PROM_URL": "MISSING",
+  "OPENAI_API_KEY": "SET",
+  "decision": "PROCEED_SIMULATION"
+}
