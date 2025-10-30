@@ -1,0 +1,61 @@
+@import './theme.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ATOM Global Styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}
+
+@layer components {
+  /* ATOM Component Utilities */
+  .atom-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .atom-section {
+    @apply py-12 lg:py-16;
+  }
+  
+  .atom-heading-1 {
+    @apply text-4xl lg:text-5xl font-bold tracking-tight;
+  }
+  
+  .atom-heading-2 {
+    @apply text-3xl lg:text-4xl font-bold tracking-tight;
+  }
+  
+  .atom-heading-3 {
+    @apply text-2xl lg:text-3xl font-semibold tracking-tight;
+  }
+  
+  .atom-body {
+    @apply text-base lg:text-lg leading-relaxed;
+  }
+  
+  .atom-caption {
+    @apply text-sm text-textMuted;
+  }
+}
+
+@layer utilities {
+  /* ATOM Utility Classes */
+  .atom-focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-brandA focus:ring-offset-2;
+  }
+  
+  .atom-transition {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .atom-hover-lift {
+    @apply hover:-translate-y-1 hover:shadow-lg;
+  }
+}

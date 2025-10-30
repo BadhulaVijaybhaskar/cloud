@@ -1,0 +1,104 @@
+{
+  "tenants": [
+    {
+      "id": "acme-corp",
+      "name": "Acme Corporation",
+      "email": "admin@acme.com",
+      "plan": "enterprise",
+      "status": "active",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "lastActive": "2024-01-20T14:22:00Z",
+      "deployments": 12,
+      "monthlyUsage": 89500,
+      "region": "us-east-1",
+      "features": ["auth", "storage", "realtime", "graphql"]
+    },
+    {
+      "id": "tech-startup",
+      "name": "Tech Startup Inc",
+      "email": "ops@techstartup.com",
+      "plan": "pro",
+      "status": "active",
+      "createdAt": "2024-01-10T09:15:00Z",
+      "lastActive": "2024-01-20T16:45:00Z",
+      "deployments": 8,
+      "monthlyUsage": 34200,
+      "region": "us-west-2",
+      "features": ["auth", "storage", "graphql"]
+    },
+    {
+      "id": "global-enterprise",
+      "name": "Global Enterprise Ltd",
+      "email": "devops@globalent.com",
+      "plan": "enterprise",
+      "status": "active",
+      "createdAt": "2023-12-20T11:00:00Z",
+      "lastActive": "2024-01-20T13:30:00Z",
+      "deployments": 25,
+      "monthlyUsage": 156800,
+      "region": "eu-west-1",
+      "features": ["auth", "storage", "realtime", "graphql", "analytics"]
+    },
+    {
+      "id": "dev-agency",
+      "name": "Development Agency",
+      "email": "team@devagency.io",
+      "plan": "starter",
+      "status": "trial",
+      "createdAt": "2024-01-18T14:20:00Z",
+      "lastActive": "2024-01-20T10:15:00Z",
+      "deployments": 3,
+      "monthlyUsage": 8900,
+      "region": "us-east-1",
+      "features": ["auth", "storage"]
+    },
+    {
+      "id": "fintech-co",
+      "name": "FinTech Solutions Co",
+      "email": "infrastructure@fintech.co",
+      "plan": "enterprise",
+      "status": "suspended",
+      "createdAt": "2023-11-05T08:45:00Z",
+      "lastActive": "2024-01-15T09:20:00Z",
+      "deployments": 18,
+      "monthlyUsage": 0,
+      "region": "us-east-1",
+      "features": ["auth", "storage", "realtime", "graphql"]
+    }
+  ],
+  "plans": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "price": 29,
+      "features": ["Basic Auth", "5GB Storage", "Community Support"],
+      "limits": {
+        "deployments": 5,
+        "storage": "5GB",
+        "requests": 100000
+      }
+    },
+    {
+      "id": "pro",
+      "name": "Professional",
+      "price": 99,
+      "features": ["Advanced Auth", "50GB Storage", "GraphQL API", "Email Support"],
+      "limits": {
+        "deployments": 20,
+        "storage": "50GB",
+        "requests": 1000000
+      }
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "price": 299,
+      "features": ["Enterprise Auth", "Unlimited Storage", "All APIs", "Realtime", "Priority Support"],
+      "limits": {
+        "deployments": "unlimited",
+        "storage": "unlimited",
+        "requests": "unlimited"
+      }
+    }
+  ]
+}

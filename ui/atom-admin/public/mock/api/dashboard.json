@@ -1,0 +1,95 @@
+{
+  "stats": {
+    "totalTenants": 1247,
+    "activeTenants": 1089,
+    "activeDeployments": 89,
+    "monthlyRevenue": 125400,
+    "systemHealth": 99.9,
+    "totalRequests": 2847392,
+    "avgResponseTime": 2.1,
+    "criticalIssues": 0
+  },
+  "recentActivity": [
+    {
+      "id": 1,
+      "type": "deployment",
+      "message": "New deployment: prod-api-v2.1.0",
+      "time": "2 minutes ago",
+      "status": "success",
+      "tenant": "acme-corp",
+      "user": "john.doe@acme.com"
+    },
+    {
+      "id": 2,
+      "type": "tenant",
+      "message": "New tenant registered: Acme Corp",
+      "time": "15 minutes ago",
+      "status": "info",
+      "tenant": "acme-corp",
+      "user": "admin@atom.cloud"
+    },
+    {
+      "id": 3,
+      "type": "alert",
+      "message": "High CPU usage on us-east-1",
+      "time": "1 hour ago",
+      "status": "warning",
+      "tenant": "system",
+      "user": "monitoring@atom.cloud"
+    },
+    {
+      "id": 4,
+      "type": "approval",
+      "message": "Deployment approved: staging-db-migration",
+      "time": "2 hours ago",
+      "status": "success",
+      "tenant": "tech-startup",
+      "user": "jane.smith@techstartup.com"
+    }
+  ],
+  "systemMetrics": {
+    "regions": [
+      {
+        "name": "us-east-1",
+        "status": "healthy",
+        "uptime": 99.95,
+        "load": 0.65,
+        "tenants": 423
+      },
+      {
+        "name": "us-west-2",
+        "status": "healthy",
+        "uptime": 99.98,
+        "load": 0.52,
+        "tenants": 387
+      },
+      {
+        "name": "eu-west-1",
+        "status": "healthy",
+        "uptime": 99.92,
+        "load": 0.71,
+        "tenants": 437
+      }
+    ],
+    "services": [
+      {
+        "name": "ATOM Auth Service",
+        "status": "healthy",
+        "uptime": 99.99,
+        "responseTime": 1.2
+      },
+      {
+        "name": "ATOM Storage API",
+        "status": "healthy",
+        "uptime": 99.95,
+        "responseTime": 2.8
+      },
+      {
+        "name": "ATOM GraphQL Gateway",
+        "status": "healthy",
+        "uptime": 99.97,
+        "responseTime": 1.8
+      }
+    ]
+  }
+}

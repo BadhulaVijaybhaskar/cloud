@@ -1,0 +1,139 @@
+/* ATOM Cloud Admin Console - Theme Variables */
+:root {
+  /* ATOM Brand Colors */
+  --bg: #ffffff;
+  --surface-1: #f9fafb;
+  --surface-2: #ffffff;
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --brand-a: #0057ff; /* ATOM Primary Blue */
+  --brand-b: #9333ea; /* ATOM Secondary Purple */
+  --cta-gradient: linear-gradient(90deg, var(--brand-a), var(--brand-b));
+  
+  /* ATOM Design System */
+  --radius-md: 12px;
+  --shadow-1: 0 8px 24px rgba(10,15,25,0.06);
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  
+  /* ATOM Status Colors */
+  --atom-success: #10b981;
+  --atom-warning: #f59e0b;
+  --atom-error: #ef4444;
+  --atom-info: #3b82f6;
+  
+  /* ATOM Semantic Colors */
+  --atom-border: #e2e8f0;
+  --atom-hover: #f1f5f9;
+  --atom-active: #e2e8f0;
+}
+
+/* ATOM Dark Theme */
+[data-theme='dark'] {
+  --bg: #0a1020;
+  --surface-1: #0e1524;
+  --surface-2: #101a2e;
+  --text-primary: #e6eef8;
+  --text-muted: #94a3b8;
+  --brand-a: #478aff;
+  --brand-b: #a855f7;
+  --cta-gradient: linear-gradient(90deg, var(--brand-a), var(--brand-b));
+  --shadow-1: 0 10px 30px rgba(2,6,23,0.6);
+  
+  /* ATOM Dark Status Colors */
+  --atom-success: #059669;
+  --atom-warning: #d97706;
+  --atom-error: #dc2626;
+  --atom-info: #2563eb;
+  
+  /* ATOM Dark Semantic Colors */
+  --atom-border: #334155;
+  --atom-hover: #1e293b;
+  --atom-active: #334155;
+}
+
+/* ATOM Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ATOM Component Base Classes */
+.atom-card {
+  background: var(--surface-2);
+  border: 1px solid var(--atom-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  transition: all 0.2s ease;
+}
+
+.atom-card:hover {
+  box-shadow: 0 12px 32px rgba(10,15,25,0.1);
+  transform: translateY(-2px);
+}
+
+.atom-button {
+  background: var(--cta-gradient);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.atom-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-1);
+}
+
+.atom-input {
+  background: var(--surface-1);
+  border: 1px solid var(--atom-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.atom-input:focus {
+  outline: none;
+  border-color: var(--brand-a);
+  box-shadow: 0 0 0 3px rgba(0, 87, 255, 0.1);
+}
+
+/* ATOM Utility Classes */
+.atom-gradient-text {
+  background: var(--cta-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.atom-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
