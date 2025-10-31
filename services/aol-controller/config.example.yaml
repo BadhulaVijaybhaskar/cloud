@@ -1,0 +1,54 @@
+aol:
+  port: 8601
+  simulation_mode: true
+  eval_window_seconds: 300
+  max_learning_rate: 0.05
+  
+  # Canary configuration
+  canary:
+    duration_seconds: 300
+    success_threshold: 0.95
+    
+  # Optimization thresholds
+  thresholds:
+    cpu_utilization:
+      min: 0.2
+      max: 0.8
+      target: 0.6
+    memory_utilization:
+      min: 0.3
+      max: 0.85
+      target: 0.7
+    latency_p95:
+      min: 50
+      max: 500
+      target: 200
+    throughput:
+      min: 100
+      max: 10000
+      target: 1000
+    error_rate:
+      min: 0.0
+      max: 0.05
+      target: 0.01
+
+# External service URLs
+services:
+  postgres_dsn: "postgresql://user:pass@localhost:5432/aol"
+  prometheus_url: "http://localhost:9090"
+  jaeger_url: "http://localhost:14268"
+  vault_addr: "http://localhost:8200"
+  neural_fabric_url: "http://localhost:8500"
+  global_router_url: "http://localhost:8400"
+  policy_engine_url: "http://localhost:8300"
+  model_store_url: "http://localhost:8200"
+
+# Security
+security:
+  cosign_key_path: "/etc/cosign/cosign.key"
+  vault_token_path: "/etc/vault/token"
+
+# Logging
+logging:
+  level: "INFO"
+  format: "json"
