@@ -1,0 +1,35 @@
+syntax = "proto3";
+package phasei5.contracts;
+
+message DecisionRecordV1 {
+  string decision_id = 1;           // unique decision identifier
+  string conflict_id = 2;           // source conflict identifier
+  DecisionOutcome outcome = 3;      // decision result
+  Provenance provenance = 4;        // decision provenance
+  double confidence = 5;            // confidence score [0,1]
+  string method = 6;                // resolution method used
+  string rationale = 7;             // human-readable explanation
+  string timestamp_iso = 8;         // decision timestamp
+  map<string,string> metadata = 9;  // additional metadata
+}
+
+message DecisionOutcome {
+  string action = 1;                // decided action
+  map<string,string> parameters = 2; // action parameters
+  string winner_agent_id = 3;       // winning agent (if applicable)
+}
+
+message Provenance {
+  repeated Vote votes = 1;          // all votes cast
+  string resolution_method = 2;     // method used for resolution
+  repeated string input_signals = 3; // input signal IDs
+  string policy_context = 4;       // applicable policy context
+}
+
+message Vote {
+  string voter_id = 1;              // voting agent ID
+  string vote = 2;                  // vote value
+  double weight = 3;                // vote weight
+  string reasoning = 4;             // vote rationale
+  string timestamp_iso = 5;         // vote timestamp
+}

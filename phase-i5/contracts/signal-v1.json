@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SignalV1",
+  "type": "object",
+  "required": ["signal_id", "timestamp", "source", "signal_type", "data"],
+  "properties": {
+    "signal_id": {
+      "type": "string",
+      "pattern": "^sig-[a-zA-Z0-9-]+$",
+      "description": "Unique signal identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Signal generation timestamp"
+    },
+    "source": {
+      "type": "string",
+      "description": "Signal source identifier"
+    },
+    "signal_type": {
+      "type": "string",
+      "enum": ["metric", "event", "decision", "model_update", "conflict"],
+      "description": "Type of signal"
+    },
+    "data": {
+      "type": "object",
+      "description": "Signal payload data"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "classification": {
+          "type": "string",
+          "enum": ["public", "internal", "confidential", "restricted"]
+        },
+        "consent_token": {
+          "type": "string",
+          "description": "Privacy consent token if PII present"
+        },
+        "region": {
+          "type": "string",
+          "description": "Source region"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "Tenant identifier"
+        }
+      }
+    },
+    "signature": {
+      "type": "string",
+      "description": "Cryptographic signature for integrity"
+    }
+  }
+}

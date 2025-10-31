@@ -1,0 +1,117 @@
+groups:
+- name: cin.rules
+  rules:
+  # Signal Gateway Alerts
+  - alert: CINSignalGatewayDown
+    expr: up{job="signal-gateway"} == 0
+    for: 1m
+    labels:
+      severity: critical
+      service: signal-gateway
+    annotations:
+      summary: "CIN Signal Gateway is down"
+      description: "Signal Gateway has been down for more than 1 minute"
+
+  - alert: CINHighSignalRejectionRate
+    expr: rate(signals_rejected_total[5m]) > 0.1
+    for: 2m
+    labels:
+      severity: warning
+      service: signal-gateway
+    annotations:
+      summary: "High signal rejection rate"
+      description: "Signal rejection rate is {{ $value }} per second"
+
+  - alert: CINSignalIngestionLatencyHigh
+    expr: histogram_quantile(0.95, rate(signal_ingestion_seconds_bucket[5m])) > 0.25
+    for: 3m
+    labels:
+      severity: warning
+      service: signal-gateway
+    annotations:
+      summary: "High signal ingestion latency"
+      description: "95th percentile latency is {{ $value }}s"
+
+  # FL Orchestrator Alerts
+  - alert: CINFLRoundFailureRate
+    expr: rate(fl_rounds_completed_total{status="failed"}[10m]) > 0.01
+    for: 5m
+    labels:
+      severity: critical
+      service: fl-orchestrator
+    annotations:
+      summary: "High FL round failure rate"
+      description: "FL round failure rate is {{ $value }} per second"
+
+  - alert: CINFLRoundDurationHigh
+    expr: histogram_quantile(0.95, rate(fl_round_duration_seconds_bucket[10m])) > 1800
+    for: 5m
+    labels:
+      severity: warning
+      service: fl-orchestrator
+    annotations:
+      summary: "FL rounds taking too long"
+      description: "95th percentile FL round duration is {{ $value }}s"
+
+  # Arbiter Alerts
+  - alert: CINArbitrationFailureRate
+    expr: rate(conflicts_resolved_total{resolution_method="error"}[5m]) > 0.05
+    for: 2m
+    labels:
+      severity: critical
+      service: arbiter
+    annotations:
+      summary: "High arbitration failure rate"
+      description: "Arbitration failure rate is {{ $value }} per second"
+
+  - alert: CINLowResolutionConfidence
+    expr: histogram_quantile(0.50, rate(resolution_confidence_bucket[5m])) < 0.7
+    for: 5m
+    labels:
+      severity: warning
+      service: arbiter
+    annotations:
+      summary: "Low resolution confidence"
+      description: "Median resolution confidence is {{ $value }}"
+
+  # Consensus Bus Alerts
+  - alert: CINConsensusLag
+    expr: rate(consensus_messages_published_total[5m]) - rate(consensus_messages_consumed_total[5m]) > 100
+    for: 3m
+    labels:
+      severity: warning
+      service: consensus-bus
+    annotations:
+      summary: "High consensus message lag"
+      description: "Message lag is {{ $value }} messages per second"
+
+  - alert: CINActiveConnectionsDrop
+    expr: consensus_active_connections < 5
+    for: 2m
+    labels:
+      severity: warning
+      service: consensus-bus
+    annotations:
+      summary: "Low active connections"
+      description: "Only {{ $value }} active connections to consensus bus"
+
+  # Cross-service SLO Alerts
+  - alert: CINEndToEndLatencyHigh
+    expr: histogram_quantile(0.95, rate(cin_e2e_latency_seconds_bucket[5m])) > 0.5
+    for: 3m
+    labels:
+      severity: critical
+      service: cin-platform
+    annotations:
+      summary: "End-to-end latency SLO breach"
+      description: "95th percentile E2E latency is {{ $value }}s (SLO: 0.25s)"
+
+  - alert: CINPolicyViolationSpike
+    expr: rate(policy_violations_total[5m]) > 1
+    for: 1m
+    labels:
+      severity: critical
+      service: cin-platform
+    annotations:
+      summary: "Policy violation spike detected"
+      description: "Policy violations at {{ $value }} per second"

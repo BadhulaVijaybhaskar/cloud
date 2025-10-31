@@ -1,0 +1,18 @@
+apiVersion: v2
+name: signal-gateway
+description: CIN Signal Gateway Helm Chart
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - cin
+  - signal-processing
+  - collective-intelligence
+home: https://github.com/atom/cin
+sources:
+  - https://github.com/atom/cin/tree/main/phase-i5
+maintainers:
+  - name: CIN Team
+    email: cin-team@atom.cloud
+annotations:
+  category: Intelligence

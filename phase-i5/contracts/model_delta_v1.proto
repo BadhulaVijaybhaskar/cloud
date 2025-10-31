@@ -1,0 +1,22 @@
+syntax = "proto3";
+package phasei5.contracts;
+
+message ModelDeltaV1 {
+  string delta_id = 1;              // unique delta identifier
+  string round_id = 2;              // FL round identifier
+  string participant_id = 3;        // participant agent id
+  string model_base_hash = 4;       // base model hash
+  bytes delta_weights = 5;          // serialized weight deltas
+  DeltaMetadata metadata = 6;       // training metadata
+  string signature = 7;             // cryptographic signature
+  string timestamp_iso = 8;         // creation timestamp
+}
+
+message DeltaMetadata {
+  int32 sample_count = 1;           // number of training samples
+  double epsilon_used = 2;          // privacy budget consumed
+  double training_accuracy = 3;     // local training accuracy
+  double fairness_score = 4;        // fairness metric
+  map<string,double> metrics = 5;   // additional metrics
+  string compression_type = 6;      // delta compression method
+}
