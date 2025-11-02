@@ -1,0 +1,219 @@
+# Phase J.1 Helm Values - Production Deployment Configuration
+
+global:
+  environment: production
+  simulation_mode: false
+  image:
+    registry: gcr.io
+    repository: atom-cloud
+    tag: "v10.0.0-phaseJ.1"
+    pullPolicy: IfNotPresent
+
+# Deployment Orchestrator
+deploymentOrchestrator:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: deployment-orchestrator
+  service:
+    type: ClusterIP
+    port: 10001
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  env:
+    SIMULATION_MODE: "false"
+
+# Canary Controller
+canaryController:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: canary-controller
+  service:
+    type: ClusterIP
+    port: 10002
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+# Telemetry Hub
+telemetryHub:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: telemetry-hub
+  service:
+    type: ClusterIP
+    port: 10003
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: ssd
+
+# Billing Agent
+billingAgent:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: billing-agent
+  service:
+    type: ClusterIP
+    port: 10004
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  env:
+    BILLING_KEY: "production-billing-key"
+
+# Launch Control UI
+launchControlUI:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: launch-control-ui
+  service:
+    type: LoadBalancer
+    port: 10005
+  ingress:
+    enabled: true
+    className: nginx
+    hosts:
+      - host: launch.atom-cloud.io
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: launch-control-tls
+        hosts:
+          - launch.atom-cloud.io
+
+# Ops Gateway
+opsGateway:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: ops-gateway
+  service:
+    type: ClusterIP
+    port: 10006
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+# PostgreSQL (for production data)
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "atom-postgres-password"
+    username: "atom_user"
+    password: "atom-user-password"
+    database: "atom_prod"
+  primary:
+    persistence:
+      enabled: true
+      size: 50Gi
+      storageClass: ssd
+  metrics:
+    enabled: true
+
+# Prometheus (for monitoring)
+prometheus:
+  enabled: true
+  server:
+    persistentVolume:
+      enabled: true
+      size: 20Gi
+    retention: "30d"
+  alertmanager:
+    enabled: true
+    persistentVolume:
+      enabled: true
+      size: 5Gi
+
+# Grafana (for dashboards)
+grafana:
+  enabled: true
+  admin:
+    user: admin
+    password: "grafana-admin-password"
+  persistence:
+    enabled: true
+    size: 5Gi
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'atom-dashboards'
+        orgId: 1
+        folder: 'ATOM Cloud'
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/atom
+
+# Ingress Controller
+ingress-nginx:
+  enabled: true
+  controller:
+    replicaCount: 2
+    service:
+      type: LoadBalancer
+    metrics:
+      enabled: true
+
+# Service Monitor for Prometheus
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  scrapeTimeout: 10s
+
+# Network Policies
+networkPolicies:
+  enabled: true
+  
+# Pod Security Policies
+podSecurityPolicy:
+  enabled: true
+
+# Resource Quotas
+resourceQuotas:
+  enabled: true
+  hard:
+    requests.cpu: "10"
+    requests.memory: "20Gi"
+    limits.cpu: "20"
+    limits.memory: "40Gi"
+    persistentvolumeclaims: "10"
+
+# Horizontal Pod Autoscaler
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
