@@ -1,0 +1,53 @@
+{
+  "scenario_id": "basic_load_test",
+  "name": "Basic Load Test Scenario",
+  "description": "Simulate basic load testing with multiple actors",
+  "version": "1.0",
+  "actors": [
+    {
+      "id": "user_simulator",
+      "type": "load_generator",
+      "config": {
+        "concurrent_users": 10,
+        "ramp_up_time": 30,
+        "test_duration": 300
+      }
+    },
+    {
+      "id": "api_gateway",
+      "type": "service_endpoint",
+      "config": {
+        "base_url": "http://localhost:8000",
+        "endpoints": ["/health", "/api/v1/status"]
+      }
+    }
+  ],
+  "duration_seconds": 300,
+  "phases": [
+    {
+      "name": "ramp_up",
+      "duration": 30,
+      "actions": ["start_load_generation"]
+    },
+    {
+      "name": "steady_state",
+      "duration": 240,
+      "actions": ["maintain_load", "collect_metrics"]
+    },
+    {
+      "name": "ramp_down",
+      "duration": 30,
+      "actions": ["reduce_load", "generate_report"]
+    }
+  ],
+  "success_criteria": {
+    "max_response_time": 2000,
+    "min_success_rate": 0.95,
+    "max_error_rate": 0.05
+  },
+  "metadata": {
+    "created_by": "phase_i8_agent",
+    "tags": ["load_test", "basic", "simulation"],
+    "simulation": true
+  }
+}

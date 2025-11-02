@@ -1,0 +1,62 @@
+{
+  "scenario_id": "chaos_engineering",
+  "name": "Chaos Engineering Scenario",
+  "description": "Test system resilience through controlled failure injection",
+  "version": "1.0",
+  "actors": [
+    {
+      "id": "chaos_monkey",
+      "type": "fault_injector",
+      "config": {
+        "fault_types": ["network_latency", "service_unavailable", "resource_exhaustion"],
+        "injection_rate": 0.1,
+        "recovery_time": 60
+      }
+    },
+    {
+      "id": "system_monitor",
+      "type": "observer",
+      "config": {
+        "metrics": ["response_time", "error_rate", "availability"],
+        "alert_thresholds": {
+          "response_time": 5000,
+          "error_rate": 0.1
+        }
+      }
+    }
+  ],
+  "duration_seconds": 600,
+  "phases": [
+    {
+      "name": "baseline",
+      "duration": 120,
+      "actions": ["establish_baseline_metrics"]
+    },
+    {
+      "name": "fault_injection",
+      "duration": 360,
+      "actions": ["inject_network_latency", "inject_service_failures", "monitor_recovery"]
+    },
+    {
+      "name": "recovery_validation",
+      "duration": 120,
+      "actions": ["validate_system_recovery", "compare_to_baseline"]
+    }
+  ],
+  "safety_limits": {
+    "max_concurrent_faults": 3,
+    "max_downtime_seconds": 300,
+    "emergency_stop_conditions": ["critical_service_failure", "data_loss_detected"]
+  },
+  "success_criteria": {
+    "recovery_time": 180,
+    "data_integrity": true,
+    "service_availability": 0.99
+  },
+  "metadata": {
+    "created_by": "phase_i8_agent",
+    "tags": ["chaos", "resilience", "fault_injection"],
+    "simulation": true,
+    "risk_level": "medium"
+  }
+}
