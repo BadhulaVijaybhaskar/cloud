@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 SIMULATION_MODE = os.getenv('SIMULATION_MODE', 'true').lower() == 'true'
-POLICY_CONFIG_PATH = os.getenv('POLICY_CONFIG_PATH', '/phase-i5/policies/policy-matrix.yaml')
+POLICY_CONFIG_PATH = os.getenv('POLICY_CONFIG_PATH', '/infra/vault/policies/collective-intelligence.hcl')
 
 # Policy cache
 policy_matrix = {}
@@ -53,8 +53,8 @@ def load_policy_matrix():
     
     try:
         if SIMULATION_MODE:
-            # Load from phase-i5 directory
-            policy_path = "phase-i5/policies/policy-matrix.yaml"
+            # Load from global infra directory
+            policy_path = "infra/vault/policies/collective-intelligence.hcl"
             if os.path.exists(policy_path):
                 with open(policy_path, 'r') as f:
                     config = yaml.safe_load(f)

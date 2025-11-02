@@ -67,11 +67,11 @@
 
   "contracts_defined": {
     "SignalV1": {
-      "file": "phase-i5/contracts/signal-v1.json",
+      "file": "infra/contracts/collective-intelligence/signal-v1.json",
       "description": "Core signal schema with classification and metadata"
     },
     "DecisionRecordV1": {
-      "file": "phase-i5/contracts/decision-record-v1.json", 
+      "file": "infra/contracts/collective-intelligence/decision-record-v1.json", 
       "description": "Decision record with provenance and confidence"
     },
     "ModelDeltaV1": {
@@ -79,7 +79,7 @@
       "description": "Federated learning model delta format"
     },
     "PolicyContextV1": {
-      "file": "phase-i5/policies/policy-matrix.yaml",
+      "file": "infra/vault/policies/collective-intelligence.hcl",
       "description": "Policy enforcement matrix and rules"
     }
   },
@@ -240,9 +240,9 @@
   },
 
   "files_created": [
-    "phase-i5/contracts/signal-v1.json",
-    "phase-i5/contracts/decision-record-v1.json",
-    "phase-i5/policies/policy-matrix.yaml",
+    "infra/contracts/collective-intelligence/signal-v1.json",
+    "infra/contracts/collective-intelligence/decision-record-v1.json",
+    "infra/vault/policies/collective-intelligence.hcl",
     "services/signal-gateway/main.py",
     "services/consensus-bus/main.py", 
     "services/fl-orchestrator/main.py",

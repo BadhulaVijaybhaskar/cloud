@@ -76,30 +76,30 @@
       "json_schemas": 2,
       "generated_stubs": true,
       "files": [
-        "phase-i5/contracts/signal_v1.proto",
-        "phase-i5/contracts/model_delta_v1.proto", 
-        "phase-i5/contracts/decision_record_v1.proto",
-        "phase-i5/contracts/signal-v1.json",
-        "phase-i5/contracts/decision-record-v1.json"
+        "infra/contracts/collective-intelligence/signal_v1.proto",
+        "infra/contracts/collective-intelligence/model_delta_v1.proto", 
+        "infra/contracts/collective-intelligence/decision_record_v1.proto",
+        "infra/contracts/collective-intelligence/signal-v1.json",
+        "infra/contracts/collective-intelligence/decision-record-v1.json"
       ]
     },
     "security_policies": {
-      "vault_policies": "phase-i5/security/vault-policies.hcl",
-      "policy_matrix": "phase-i5/policies/policy-matrix.yaml",
-      "privacy_policy": "phase-i5/privacy/epsilon_policy.md",
+      "vault_policies": "infra/security/collective-intelligence/vault-policies.hcl",
+      "policy_matrix": "infra/vault/policies/collective-intelligence.hcl",
+      "privacy_policy": "docs/privacy/collective-intelligence/epsilon_policy.md",
       "enforcement_points": 6
     },
     "deployment_artifacts": {
       "helm_charts": 1,
       "kubernetes_manifests": true,
-      "monitoring_config": "phase-i5/observability/alerts.yaml",
-      "build_system": "phase-i5/Makefile"
+      "monitoring_config": "infra/monitoring/collective-intelligence/alerts.yaml",
+      "build_system": "infra/scripts/collective-intelligence/Makefile"
     },
     "testing_suite": {
       "integration_tests": "tests/integration/test_I.5_end2end.py",
-      "load_tests": "phase-i5/tests/load/run_k6.sh",
-      "precheck_suite": "phase-i5/prechecks/production_precheck.sh",
-      "cli_tools": "phase-i5/cli/sample_cli.py"
+      "load_tests": "tests/collective-intelligence/load/run_k6.sh",
+      "precheck_suite": "infra/scripts/collective-intelligence/production_precheck.sh",
+      "cli_tools": "infra/scripts/collective-intelligence/sample_cli.py"
     }
   },
 
@@ -274,8 +274,8 @@
     "services/privacy-proxy/main.py",
     "services/model-store/main.py", 
     "services/policy-engine/main.py",
-    "phase-i5/Makefile",
-    "phase-i5/tests/load/run_k6.sh",
+    "infra/scripts/collective-intelligence/Makefile",
+    "tests/collective-intelligence/load/run_k6.sh",
     "reports/I.5_complete_build_summary.md"
   ],
 
