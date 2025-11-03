@@ -2,70 +2,46 @@ import { useState, useEffect } from 'react';
 import LaunchpadLayout from '../components/LaunchpadLayout';
 
 const menuItems = {
-  'Database Management': {
+  'Schema & Structure': {
     items: [
-      { name: 'Schema Visualizer', action: 'schema-viz' },
-      { name: 'Tables', action: 'tables' },
-      { name: 'Functions', action: 'functions' },
-      { name: 'Triggers', action: 'triggers' },
-      { name: 'Enumerated Types', action: 'enums' },
-      { name: 'Extensions', action: 'extensions' },
-      { name: 'Indexes', action: 'indexes' },
-      { name: 'Publications', action: 'publications' },
-      { name: 'Replication', action: 'replication' }
+      { name: 'Schema Visualizer', action: 'schema-viz', icon: '🗂️' },
+      { name: 'Tables', action: 'tables', icon: '📊' },
+      { name: 'Functions', action: 'functions', icon: '⚙️' },
+      { name: 'Triggers', action: 'triggers', icon: '⚡' },
+      { name: 'Enumerated Types', action: 'enums', icon: '📝' },
+      { name: 'Indexes', action: 'indexes', icon: '🔍' }
     ]
   },
-  'Configuration': {
+  'Query & Analysis': {
     items: [
-      { name: 'Roles', action: 'roles' },
-      { name: 'Policies', action: 'policies' },
-      { name: 'Settings', action: 'settings' }
-    ]
-  },
-  'Platform': {
-    items: [
-      { name: 'Backups', action: 'backups' },
-      { name: 'Migrations', action: 'migrations' },
-      { name: 'Wrappers', action: 'wrappers' },
-      { name: 'Webhooks', action: 'webhooks' }
-    ]
-  },
-  'Tools': {
-    items: [
-      { name: 'Security Advisor', action: 'security-advisor' },
-      { name: 'Performance Advisor', action: 'performance-advisor' },
-      { name: 'Query Performance', action: 'query-performance' }
+      { name: 'Query Performance', action: 'query-performance', icon: '📈' },
+      { name: 'SQL Editor', action: 'sql-editor', icon: '💻' },
+      { name: 'Data Explorer', action: 'data-explorer', icon: '🔎' }
     ]
   }
 };
 
-const Sidebar = ({ activeSection, onSectionChange, isAIMode, onModeToggle }) => {
+const TopNav = ({ activeSection, onSectionChange }) => {
+  const allItems = Object.values(menuItems).flatMap(category => category.items);
+  
   return (
-    <div className="w-64 bg-card/50 border-r border-border/50 h-full overflow-y-auto">
-
-      
-      {Object.entries(menuItems).map(([category, { items }]) => (
-        <div key={category} className="p-4">
-          <h3 className="text-sm font-semibold text-muted-foreground mb-2">
-            {category}
-          </h3>
-          <div className="space-y-1">
-            {items.map((item) => (
-              <button
-                key={item.action}
-                onClick={() => onSectionChange(item.action)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                  activeSection === item.action
-                    ? 'bg-primary/20 text-primary'
-                    : 'hover:bg-accent/50'
-                }`}
-              >
-                {item.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      ))}
+    <div className="border-b border-border/50 bg-card/30 px-6 py-3">
+      <div className="flex flex-wrap gap-2">
+        {allItems.map((item) => (
+          <button
+            key={item.action}
+            onClick={() => onSectionChange(item.action)}
+            className={`px-3 py-1.5 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${
+              activeSection === item.action
+                ? 'bg-primary/20 text-primary border border-primary/30'
+                : 'hover:bg-accent/50 border border-transparent'
+            }`}
+          >
+            <span className="text-sm">{item.icon}</span>
+            <span className="hidden sm:inline">{item.name}</span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
@@ -160,19 +136,9 @@ const ContentArea = ({ activeSection, isAIMode, tables, selectedTable, tableData
     'functions': { title: 'Functions', desc: 'Database functions and procedures' },
     'triggers': { title: 'Triggers', desc: 'Database triggers and events' },
     'enums': { title: 'Enumerated Types', desc: 'Custom enumerated data types' },
-    'extensions': { title: 'Extensions', desc: 'Database extensions and plugins' },
     'indexes': { title: 'Indexes', desc: 'Database indexes and performance' },
-    'publications': { title: 'Publications', desc: 'Logical replication publications' },
-    'replication': { title: 'Replication', desc: 'Database replication settings' },
-    'roles': { title: 'Roles', desc: 'User roles and permissions' },
-    'policies': { title: 'Policies', desc: 'Row Level Security policies' },
-    'settings': { title: 'Settings', desc: 'Database configuration' },
-    'backups': { title: 'Backups', desc: 'Database backups and restore' },
-    'migrations': { title: 'Migrations', desc: 'Schema migrations' },
-    'wrappers': { title: 'Wrappers', desc: 'Foreign data wrappers' },
-    'webhooks': { title: 'Webhooks', desc: 'Database webhooks' },
-    'security-advisor': { title: 'Security Advisor', desc: 'Security recommendations' },
-    'performance-advisor': { title: 'Performance Advisor', desc: 'Performance optimization' },
+    'sql-editor': { title: 'SQL Editor', desc: 'Interactive SQL query editor' },
+    'data-explorer': { title: 'Data Explorer', desc: 'Browse and explore database data' },
     'query-performance': { title: 'Query Performance', desc: 'Query analysis and optimization' }
   };
 
@@ -257,12 +223,10 @@ export default function DataStudio() {
 
   return (
     <LaunchpadLayout>
-      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-secondary/20 flex">
-        <Sidebar 
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-secondary/20">
+        <TopNav 
           activeSection={activeSection}
           onSectionChange={setActiveSection}
-          isAIMode={isAIMode}
-          onModeToggle={() => setIsAIMode(!isAIMode)}
         />
         <ContentArea 
           activeSection={activeSection}

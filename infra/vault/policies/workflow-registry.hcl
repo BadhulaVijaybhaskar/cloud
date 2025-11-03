@@ -1,7 +1,7 @@
-# LangGraph Component Vault Policy
+# Workflow-Registry Component Vault Policy
 # Enforces P1-P20 policy inheritance matrix
 
-path "secret/data/langgraph/*" {
+path "secret/data/workflow-registry/*" {
   capabilities = ["create", "read", "update", "delete", "list"]
   # P1: Authentication required
   # P2: Authorization via JWT
@@ -10,7 +10,7 @@ path "secret/data/langgraph/*" {
   # P5: TLS in transit
 }
 
-path "secret/data/shared/langgraph/*" {
+path "secret/data/shared/workflow-registry/*" {
   capabilities = ["read", "list"]
   # P6: Multi-tenant isolation
   # P7: Rate limiting
@@ -30,7 +30,7 @@ path "sys/capabilities-self" {
 }
 
 # P13-P20: Additional security controls
-path "pki/cert/langgraph" {
+path "pki/cert/workflow-registry" {
   capabilities = ["read"]
   # P13: Certificate management
   # P14: Key rotation

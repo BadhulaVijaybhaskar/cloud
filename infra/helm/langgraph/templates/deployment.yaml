@@ -1,40 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: langgraph
+  name: {{ include "langgraph.fullname" . }}-core
   labels:
-    app: langgraph
+    {{- include "langgraph.labels" . | nindent 4 }}
+    component: core
 spec:
-  replicas: 2
+  replicas: {{ .Values.langgraphCore.replicaCount }}
   selector:
     matchLabels:
-      app: langgraph
+      {{- include "langgraph.selectorLabels" . | nindent 6 }}
+      component: core
   template:
     metadata:
       labels:
-        app: langgraph
+        {{- include "langgraph.selectorLabels" . | nindent 8 }}
+        component: core
     spec:
-      serviceAccountName: langgraph-sa
       containers:
-        - name: langgraph
-          image: naksha/langgraph:latest
-          ports:
-            - containerPort: 8080
-          env:
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: url
-            - name: REDIS_URL
-              value: "redis://redis:6379"
-            - name: VAULT_ADDR
-              value: "http://vault:8200"
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 8080
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 8080
+      - name: langgraph-core
+        image: "{{ .Values.langgraphCore.image.repository }}:{{ .Values.langgraphCore.image.tag }}"
+        imagePullPolicy: {{ .Values.langgraphCore.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.langgraphCore.service.targetPort }}
+        env:
+        - name: SIMULATION_MODE
+          value: "{{ .Values.langgraphCore.env.SIMULATION_MODE }}"
+        - name: SERVICE_MESH_ENABLED
+          value: "{{ .Values.serviceMesh.enabled }}"
+        resources:
+          {{- toYaml .Values.langgraphCore.resources | nindent 10 }}
+---
+{{- if .Values.serviceMesh.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "langgraph.fullname" . }}-vs
+spec:
+  hosts:
+  - {{ include "langgraph.fullname" . }}
+  http:
+  - route:
+    - destination:
+        host: {{ include "langgraph.fullname" . }}
+{{- end }}

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: developer-console
+description: Developer Console Helm Chart
+type: application
+version: 0.1.0
+appVersion: "j2-dev-0"

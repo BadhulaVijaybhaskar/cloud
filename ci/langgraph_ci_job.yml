@@ -1,0 +1,81 @@
+name: LangGraph CI Pipeline
+
+on:
+  push:
+    branches: [prod-feature/langgraph.complete]
+  pull_request:
+    branches: [main]
+
+env:
+  SIMULATION_MODE: true
+  COMPONENT_NAME: langgraph
+  DOCKER_REGISTRY: localhost:5000
+
+jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Precheck
+        env:
+          SIMULATION_MODE: true
+        run: |
+          chmod +x infra/scripts/langgraph/precheck.sh
+          ./infra/scripts/langgraph/precheck.sh
+      
+      - name: Upload Precheck Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: langgraph-precheck-report
+          path: reports/langgraph/precheck.log
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: precheck
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install Dependencies
+        run: |
+          pip install pytest pytest-cov requests
+      
+      - name: Run Unit Tests
+        env:
+          SIMULATION_MODE: true
+        run: |
+          export SIMULATION_MODE=true
+          python -m pytest tests/langgraph/unit/ --cov --json-report --json-report-file=reports/langgraph_unit_tests.json
+      
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: langgraph-unit-test-results
+          path: reports/langgraph_unit_tests.json
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-python: '3.11'
+      
+      - name: Install Dependencies
+        run: |
+          pip install pytest requests
+      
+      - name: Run Integration Tests
+        env:
+          SIMULATION_MODE: true
+        run: |
+          export SIMULATION_MODE=true
+          python -m pytest tests/langgraph/integration/ --json-report --json-report-file=reports/langgraph_integration_tests.json

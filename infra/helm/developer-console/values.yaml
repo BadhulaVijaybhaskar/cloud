@@ -1,0 +1,25 @@
+replicaCount: 1
+
+image:
+  repository: localhost:5000/atom-cloud
+  tag: "j2-dev-0"
+  pullPolicy: IfNotPresent
+
+services:
+  core:
+    port: 8091
+  api:
+    port: 8092
+  worker:
+    port: 8093
+
+ingress:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi

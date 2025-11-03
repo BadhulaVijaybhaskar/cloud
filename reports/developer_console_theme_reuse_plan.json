@@ -1,0 +1,13 @@
+{
+  "launchpad_source_found": false,
+  "theme_reuse_strategy": "no_source_available",
+  "copied_assets": [],
+  "theme_components": {
+    "styles": [],
+    "icons": [],
+    "tokens": []
+  },
+  "wrapper_components": [],
+  "routing_strategy": "redirect_to_external_launchpad",
+  "notes": "LaunchPad source not found at collective_intelligence/launchpad. Developer Console will use default theme and redirect to external LaunchPad instance when available."
+}
