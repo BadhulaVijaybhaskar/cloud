@@ -1,5 +1,5 @@
-import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { useTheme } from '../hooks/useTheme'
 
 interface LayoutProps {
@@ -7,7 +7,7 @@ interface LayoutProps {
   title?: string
 }
 
-export default function Layout({ children, title = "Developer Console" }: LayoutProps) {
+export default function Layout({ children, title = 'ATOM Marketplace' }: LayoutProps) {
   const router = useRouter()
   const { theme, toggleTheme } = useTheme()
 
@@ -15,7 +15,7 @@ export default function Layout({ children, title = "Developer Console" }: Layout
     <>
       <Head>
         <title>{title}</title>
-        <meta name="description" content="ATOM Developer Console - Manage your projects and APIs" />
+        <meta name="description" content="ATOM AI Marketplace - Discover and deploy AI models and agents" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/atom-favicon.svg" />
       </Head>
@@ -48,31 +48,23 @@ export default function Layout({ children, title = "Developer Console" }: Layout
                       router.pathname === '/' ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
                     }`}
                   >
-                    Projects
+                    Browse
                   </button>
                   <button 
-                    onClick={() => router.push('/api-keys')}
+                    onClick={() => router.push('/publish')}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      router.pathname === '/api-keys' ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
+                      router.pathname === '/publish' ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
                     }`}
                   >
-                    API Keys
+                    Publish
                   </button>
                   <button 
-                    onClick={() => router.push('/marketplace')}
+                    onClick={() => router.push('/vendor')}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      router.pathname === '/marketplace' ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
+                      router.pathname === '/vendor' ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
                     }`}
                   >
-                    Marketplace
-                  </button>
-                  <button 
-                    onClick={() => router.push('/settings')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      router.pathname === '/settings' ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
-                    }`}
-                  >
-                    Settings
+                    Dashboard
                   </button>
                 </div>
               </div>
@@ -85,15 +77,12 @@ export default function Layout({ children, title = "Developer Console" }: Layout
                 >
                   {theme === 'dark' ? '☀️' : '🌙'}
                 </button>
-                <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
-                  <div className="w-8 h-8 bg-gradient-to-r from-teal-500 to-violet-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    A
-                  </div>
-                  <div className="hidden sm:block text-right">
-                    <div className="text-sm font-medium">Developer</div>
-                    <div className="text-xs text-muted-foreground">Admin</div>
-                  </div>
-                </div>
+                <button className="quantum-card px-4 py-2 rounded-lg text-sm font-medium hover:bg-accent">
+                  Sign In
+                </button>
+                <button className="atom-gradient text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
+                  Get Started
+                </button>
               </div>
             </div>
           </div>
@@ -110,11 +99,11 @@ export default function Layout({ children, title = "Developer Console" }: Layout
                 <div className="w-6 h-6 bg-gradient-to-br from-teal-500 to-violet-500 rounded flex items-center justify-center text-white text-xs font-bold">
                   A
                 </div>
-                <span className="text-sm text-muted-foreground">© 2024 ATOM Console</span>
+                <span className="text-sm text-muted-foreground">© 2024 ATOM Marketplace</span>
               </div>
               <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                <button className="hover:text-foreground">Docs</button>
-                <button className="hover:text-foreground">API</button>
+                <button className="hover:text-foreground">Privacy</button>
+                <button className="hover:text-foreground">Terms</button>
                 <button className="hover:text-foreground">Support</button>
               </div>
             </div>

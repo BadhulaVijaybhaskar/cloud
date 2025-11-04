@@ -1,0 +1,14 @@
+apiVersion: v2
+name: atom-marketplace
+description: ATOM Marketplace Helm Chart
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - atom
+  - marketplace
+  - ai
+  - models
+home: https://atom.cloud
+sources:
+  - https://github.com/atom-cloud/marketplace

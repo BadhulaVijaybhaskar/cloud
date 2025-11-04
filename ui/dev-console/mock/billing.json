@@ -1,0 +1,90 @@
+{
+  "billing_summary": {
+    "total_mtd": 1847.25,
+    "forecast": 2150.00,
+    "last_month": 1680.75,
+    "active_projects": 3,
+    "cost_trend": "+12.5%"
+  },
+  "project_costs": [
+    {
+      "project_id": "proj_acme_001",
+      "project_name": "ACME Corp Demo Project",
+      "current_cost": 1250.75,
+      "last_month": 980.50,
+      "trend": "+27.6%",
+      "breakdown": {
+        "compute": 850.25,
+        "storage": 180.50,
+        "api_calls": 220.00
+      }
+    },
+    {
+      "project_id": "proj_startup_002", 
+      "project_name": "StartupXYZ ML Pipeline",
+      "current_cost": 450.25,
+      "last_month": 380.75,
+      "trend": "+18.2%",
+      "breakdown": {
+        "compute": 320.15,
+        "storage": 65.10,
+        "api_calls": 65.00
+      }
+    },
+    {
+      "project_id": "proj_enterprise_003",
+      "project_name": "Enterprise AI Suite", 
+      "current_cost": 146.25,
+      "last_month": 319.50,
+      "trend": "-54.2%",
+      "breakdown": {
+        "compute": 0.00,
+        "storage": 146.25,
+        "api_calls": 0.00
+      }
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv_2024_12",
+      "date": "2024-12-01",
+      "amount": 1680.75,
+      "status": "paid",
+      "due_date": "2024-12-15",
+      "paid_date": "2024-12-10"
+    },
+    {
+      "id": "inv_2024_11",
+      "date": "2024-11-01", 
+      "amount": 1520.30,
+      "status": "paid",
+      "due_date": "2024-11-15",
+      "paid_date": "2024-11-12"
+    },
+    {
+      "id": "inv_2024_10",
+      "date": "2024-10-01",
+      "amount": 1890.45,
+      "status": "paid", 
+      "due_date": "2024-10-15",
+      "paid_date": "2024-10-14"
+    },
+    {
+      "id": "inv_2024_09",
+      "date": "2024-09-01",
+      "amount": 1245.80,
+      "status": "paid",
+      "due_date": "2024-09-15", 
+      "paid_date": "2024-09-13"
+    }
+  ],
+  "usage_alerts": [
+    {
+      "project_id": "proj_startup_002",
+      "type": "approaching_limit",
+      "message": "Project approaching 90% of monthly budget",
+      "threshold": 500.00,
+      "current": 450.25
+    }
+  ]
+}

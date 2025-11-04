@@ -1,0 +1,104 @@
+{
+  "models": [
+    {
+      "id": "model_nlp_pro",
+      "name": "NLP Pro Analyzer",
+      "vendor": "ATOM AI Labs",
+      "description": "Advanced natural language processing model for sentiment analysis, entity recognition, and text classification",
+      "version": "3.2.1",
+      "price": 49.99,
+      "rating": 4.8,
+      "downloads": 15420,
+      "license": "MIT",
+      "tags": ["nlp", "sentiment", "classification", "entities"],
+      "safety_metadata": {
+        "governance_status": "approved",
+        "pii_scan": "passed",
+        "bias_check": "passed",
+        "security_scan": "passed"
+      },
+      "created_at": "2024-01-10T12:00:00Z",
+      "updated_at": "2024-11-15T14:30:00Z"
+    },
+    {
+      "id": "model_vision_detect",
+      "name": "Vision Object Detector",
+      "vendor": "Computer Vision Inc",
+      "description": "Real-time object detection and classification for images and video streams",
+      "version": "2.8.0",
+      "price": 79.99,
+      "rating": 4.9,
+      "downloads": 8930,
+      "license": "Apache-2.0",
+      "tags": ["computer-vision", "object-detection", "real-time"],
+      "safety_metadata": {
+        "governance_status": "approved",
+        "pii_scan": "passed",
+        "bias_check": "flagged",
+        "security_scan": "passed"
+      },
+      "created_at": "2024-02-05T16:20:00Z",
+      "updated_at": "2024-12-01T10:15:00Z"
+    },
+    {
+      "id": "model_speech_synth",
+      "name": "Neural Speech Synthesizer",
+      "vendor": "Audio AI Corp",
+      "description": "High-quality text-to-speech synthesis with multiple voice options and emotional tones",
+      "version": "1.5.3",
+      "price": 29.99,
+      "rating": 4.6,
+      "downloads": 12750,
+      "license": "Proprietary",
+      "tags": ["speech", "tts", "audio", "synthesis"],
+      "safety_metadata": {
+        "governance_status": "under_review",
+        "pii_scan": "passed",
+        "bias_check": "passed",
+        "security_scan": "pending"
+      },
+      "created_at": "2024-03-12T11:45:00Z",
+      "updated_at": "2024-12-20T09:30:00Z"
+    },
+    {
+      "id": "model_time_series",
+      "name": "Time Series Forecaster",
+      "vendor": "Predictive Analytics Ltd",
+      "description": "Advanced time series analysis and forecasting for financial and operational data",
+      "version": "4.1.0",
+      "price": 0,
+      "rating": 4.7,
+      "downloads": 22100,
+      "license": "MIT",
+      "tags": ["time-series", "forecasting", "analytics", "free"],
+      "safety_metadata": {
+        "governance_status": "approved",
+        "pii_scan": "passed",
+        "bias_check": "passed",
+        "security_scan": "passed"
+      },
+      "created_at": "2024-01-25T08:30:00Z",
+      "updated_at": "2024-11-28T15:45:00Z"
+    },
+    {
+      "id": "model_code_gen",
+      "name": "Code Generation Assistant",
+      "vendor": "DevTools AI",
+      "description": "AI-powered code generation and completion for multiple programming languages",
+      "version": "2.3.1",
+      "price": 99.99,
+      "rating": 4.5,
+      "downloads": 6840,
+      "license": "Apache-2.0",
+      "tags": ["code-generation", "programming", "ai-assistant"],
+      "safety_metadata": {
+        "governance_status": "approved",
+        "pii_scan": "passed",
+        "bias_check": "passed",
+        "security_scan": "passed"
+      },
+      "created_at": "2024-04-08T13:20:00Z",
+      "updated_at": "2024-12-15T11:10:00Z"
+    }
+  ]
+}

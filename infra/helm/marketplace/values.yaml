@@ -1,0 +1,32 @@
+global:
+  simulationMode: true
+  serviceMesh:
+    enabled: false
+
+marketplaceCore:
+  image:
+    repository: localhost:5000/atom-cloud/marketplace-core
+    tag: latest
+  port: 8100
+  replicas: 1
+
+modelRegistry:
+  image:
+    repository: localhost:5000/atom-cloud/model-registry
+    tag: latest
+  port: 8101
+  replicas: 1
+
+agentRegistry:
+  image:
+    repository: localhost:5000/atom-cloud/agent-registry
+    tag: latest
+  port: 8102
+  replicas: 1
+
+marketplaceGateway:
+  image:
+    repository: localhost:5000/atom-cloud/marketplace-gateway
+    tag: latest
+  port: 8103
+  replicas: 1

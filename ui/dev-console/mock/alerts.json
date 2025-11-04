@@ -1,0 +1,109 @@
+{
+  "alerts": [
+    {
+      "id": "alert_cpu_001",
+      "title": "High CPU Usage Detected",
+      "description": "ACME Corp Demo Project is experiencing CPU usage above 85% for the last 20 minutes. Consider scaling resources or optimizing workloads.",
+      "severity": "high",
+      "status": "active",
+      "project_id": "proj_acme_001",
+      "project_name": "ACME Corp Demo Project",
+      "created_at": "2024-12-28T10:30:00Z",
+      "acknowledged_at": null,
+      "acknowledged_by": null,
+      "category": "performance",
+      "affected_service": "compute-engine"
+    },
+    {
+      "id": "alert_quota_002",
+      "title": "API Rate Limit Approaching",
+      "description": "StartupXYZ ML Pipeline has used 95% of its daily API quota (9,500/10,000 requests). Rate limiting may occur soon.",
+      "severity": "medium",
+      "status": "active", 
+      "project_id": "proj_startup_002",
+      "project_name": "StartupXYZ ML Pipeline",
+      "created_at": "2024-12-28T09:45:00Z",
+      "acknowledged_at": null,
+      "acknowledged_by": null,
+      "category": "quota",
+      "affected_service": "api-gateway"
+    },
+    {
+      "id": "alert_deploy_003",
+      "title": "Model Deployment Failed",
+      "description": "Neural Optimizer v2.1.0 deployment failed due to insufficient memory resources. Deployment rolled back automatically.",
+      "severity": "high",
+      "status": "acknowledged",
+      "project_id": "proj_acme_001", 
+      "project_name": "ACME Corp Demo Project",
+      "created_at": "2024-12-28T08:20:00Z",
+      "acknowledged_at": "2024-12-28T08:25:00Z",
+      "acknowledged_by": "admin@acme-corp.com",
+      "category": "deployment",
+      "affected_service": "model-registry"
+    },
+    {
+      "id": "alert_storage_004",
+      "title": "Storage Usage Warning",
+      "description": "Enterprise AI Suite storage usage has reached 85% of allocated quota (17GB/20GB). Consider cleaning up unused data.",
+      "severity": "medium",
+      "status": "active",
+      "project_id": "proj_enterprise_003",
+      "project_name": "Enterprise AI Suite", 
+      "created_at": "2024-12-28T07:15:00Z",
+      "acknowledged_at": null,
+      "acknowledged_by": null,
+      "category": "storage",
+      "affected_service": "storage-api"
+    },
+    {
+      "id": "alert_security_005",
+      "title": "Suspicious API Activity",
+      "description": "Unusual API access patterns detected from IP 192.168.1.100. Multiple failed authentication attempts in the last hour.",
+      "severity": "critical",
+      "status": "resolved",
+      "project_id": "proj_acme_001",
+      "project_name": "ACME Corp Demo Project",
+      "created_at": "2024-12-27T22:30:00Z",
+      "acknowledged_at": "2024-12-27T22:35:00Z", 
+      "acknowledged_by": "security@acme-corp.com",
+      "resolved_at": "2024-12-27T23:15:00Z",
+      "category": "security",
+      "affected_service": "auth-service"
+    },
+    {
+      "id": "alert_billing_006",
+      "title": "Budget Threshold Exceeded",
+      "description": "StartupXYZ ML Pipeline has exceeded 90% of monthly budget ($450.25/$500.00). Automatic scaling has been disabled.",
+      "severity": "medium",
+      "status": "acknowledged",
+      "project_id": "proj_startup_002",
+      "project_name": "StartupXYZ ML Pipeline",
+      "created_at": "2024-12-27T16:20:00Z",
+      "acknowledged_at": "2024-12-27T16:45:00Z",
+      "acknowledged_by": "finance@startupxyz.com", 
+      "category": "billing",
+      "affected_service": "billing-service"
+    }
+  ],
+  "alert_stats": {
+    "total": 6,
+    "active": 3,
+    "acknowledged": 2,
+    "resolved": 1,
+    "by_severity": {
+      "critical": 1,
+      "high": 2,
+      "medium": 3,
+      "low": 0
+    },
+    "by_category": {
+      "performance": 1,
+      "quota": 1,
+      "deployment": 1,
+      "storage": 1,
+      "security": 1,
+      "billing": 1
+    }
+  }
+}
