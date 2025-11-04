@@ -1,0 +1,40 @@
+{
+  "federation_registry": {
+    "version": "1.0",
+    "created": "2024-12-19T10:45:00Z",
+    "partners": [
+      {
+        "partner_id": "partner-a",
+        "name": "Partner A Corp",
+        "federation_endpoint": "https://api.partner-a.com/federation",
+        "auth_method": "oauth2",
+        "capabilities": ["data-sync", "user-federation", "billing-integration"],
+        "status": "active",
+        "contract_version": "1.0",
+        "sla_tier": "gold"
+      },
+      {
+        "partner_id": "partner-b",
+        "name": "Partner B Solutions",
+        "federation_endpoint": "https://federation.partner-b.io/v1",
+        "auth_method": "jwt",
+        "capabilities": ["analytics-sharing", "model-federation"],
+        "status": "testing",
+        "contract_version": "1.0",
+        "sla_tier": "silver"
+      }
+    ],
+    "federation_config": {
+      "timeout_seconds": 30,
+      "retry_attempts": 3,
+      "circuit_breaker_enabled": true,
+      "rate_limit_per_minute": 1000,
+      "encryption_required": true
+    },
+    "governance": {
+      "data_residency_compliance": true,
+      "audit_logging_enabled": true,
+      "policy_enforcement": "strict"
+    }
+  }
+}
