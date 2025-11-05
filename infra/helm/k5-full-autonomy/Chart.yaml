@@ -1,0 +1,11 @@
+apiVersion: v2
+name: k5-full-autonomy
+description: ATOM K.5 Full Autonomy Services
+type: application
+version: 1.5.0
+appVersion: "1.5.0"
+keywords:
+  - autonomy
+  - meta-learning
+  - explainability
+  - governance

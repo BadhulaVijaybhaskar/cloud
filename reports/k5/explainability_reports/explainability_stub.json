@@ -1,0 +1,7 @@
+{
+  "id": "explain-stub-001",
+  "created": "2024-12-19T10:32:00Z",
+  "top_features": ["cpu_usage", "latency", "mem_usage"],
+  "importance": [0.35, 0.28, 0.20],
+  "notes": "Simulation stub"
+}

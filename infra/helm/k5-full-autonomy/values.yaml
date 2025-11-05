@@ -1,0 +1,43 @@
+global:
+  simulationMode: true
+  approveMeta: false
+  namespace: k5-full-autonomy
+
+services:
+  metaLearner:
+    enabled: true
+    port: 8800
+    replicas: 1
+    image: "atom/meta-learner:latest"
+  
+  explainabilityEngine:
+    enabled: true
+    port: 8801
+    replicas: 1
+    image: "atom/explainability-engine:latest"
+  
+  policyRefiner:
+    enabled: true
+    port: 8802
+    replicas: 1
+    image: "atom/policy-refiner:latest"
+  
+  autonomyAuditor:
+    enabled: true
+    port: 8803
+    replicas: 1
+    image: "atom/autonomy-auditor:latest"
+  
+  simulatorProxy:
+    enabled: true
+    port: 8804
+    replicas: 1
+    image: "atom/simulator-proxy:latest"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

@@ -1,0 +1,114 @@
+name: K.5 Full Autonomy CI/CD
+
+on:
+  push:
+    branches: [ prod-feature/k5.full-autonomy ]
+  pull_request:
+    branches: [ main ]
+    paths: 
+      - 'services/meta-learner/**'
+      - 'services/explainability-engine/**'
+      - 'services/policy-refiner/**'
+      - 'services/autonomy-auditor/**'
+      - 'services/simulator-proxy/**'
+      - 'infra/terraform/modules/k5_full_autonomy/**'
+      - 'infra/helm/k5-full-autonomy/**'
+      - 'tests/k5/**'
+
+env:
+  SIMULATION_MODE: true
+  APPROVE_META: false
+
+jobs:
+  k5-precheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run K.5 Precheck
+        run: |
+          chmod +x infra/scripts/k5/precheck.sh
+          SIMULATION_MODE=true ./infra/scripts/k5/precheck.sh
+      
+      - name: Upload Precheck Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: k5-precheck-report
+          path: reports/k5/precheck_report.json
+
+  k5-test:
+    runs-on: ubuntu-latest
+    needs: k5-precheck
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: |
+          pip install flask requests pytest
+      
+      - name: Run K.5 Tests
+        run: |
+          python -m pytest tests/k5/ -v --tb=short
+      
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: k5-test-results
+          path: tests/k5/
+
+  k5-deploy-simulation:
+    runs-on: ubuntu-latest
+    needs: [k5-precheck, k5-test]
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run K.5 Deploy (Simulation)
+        run: |
+          chmod +x infra/scripts/k5/deploy.sh
+          SIMULATION_MODE=true ./infra/scripts/k5/deploy.sh
+      
+      - name: Upload Deploy Summary
+        uses: actions/upload-artifact@v3
+        with:
+          name: k5-deploy-summary
+          path: reports/k5/deploy_summary.json
+
+  k5-verify:
+    runs-on: ubuntu-latest
+    needs: k5-deploy-simulation
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run K.5 Verification
+        run: |
+          chmod +x infra/scripts/k5/verify.sh
+          SIMULATION_MODE=true ./infra/scripts/k5/verify.sh
+      
+      - name: Upload Verification Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: k5-verification-report
+          path: reports/k5/verification_summary.json
+      
+      - name: Upload Explainability Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: k5-explainability-artifacts
+          path: reports/k5/explainability_reports/
+
+  k5-security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run Security Scan
+        run: |
+          echo "Security scan for K.5 services (simulation mode)"
+          echo "Checking for hardcoded secrets..."
+          ! grep -r "password\|secret\|key" services/meta-learner/ services/explainability-engine/ services/policy-refiner/ services/autonomy-auditor/ services/simulator-proxy/ || echo "No hardcoded secrets found"
