@@ -1,0 +1,42 @@
+# models/config/training.yaml
+# K.2: Forecast retraining config and metadata for base_predictor
+model:
+  name: base_predictor
+  framework: lightgbm
+  version: "0.1.0"
+  artifact: "../base_predictor.pkl"   # relative to models/config
+  checksum: ""                        # fill with sha256 after artifact available
+
+training:
+  schedule: "0 */12 * * *"            # cron: every 12 hours
+  retrain_window_days: 14             # use last 14 days of metrics
+  validation_split: 0.2
+  random_seed: 42
+  hyperparams:
+    num_leaves: 64
+    learning_rate: 0.05
+    n_estimators: 200
+  features:
+    - cpu_usage
+    - mem_usage
+    - p95_latency
+    - error_rate
+    - queue_depth
+    - request_rate
+
+deployment:
+  staging_path: "../../models/staging/"
+  prod_path: "../../models/production/"
+  promote_on_accuracy: 0.90          # promote if validation accuracy >= 0.90
+  max_models_to_keep: 5
+
+monitoring:
+  accuracy_metric: "forecast_accuracy"
+  drift_threshold: 0.05              # if accuracy drops > 5%, alert
+  alert_channel: "ops-oncall"        # integration key or alerting destination
+
+metadata:
+  owner: "ml-team@atom.internal"
+  contact: "ml-oncall@atom.internal"
+  created_at: ""
+  last_trained_at: ""
