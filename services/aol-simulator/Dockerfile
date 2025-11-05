@@ -6,8 +6,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src/
-COPY config.yaml .
 
-EXPOSE 8200
+EXPOSE 8320
 
-CMD ["python", "src/main.py"]
+CMD ["python", "src/simulate.py"]

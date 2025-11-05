@@ -6,8 +6,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src/
-COPY config.yaml .
+COPY schemas/ ./schemas/
 
-EXPOSE 8200
+EXPOSE 8300
 
-CMD ["python", "src/main.py"]
+CMD ["python", "src/policy_engine.py"]

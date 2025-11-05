@@ -1,0 +1,69 @@
+{
+  "simulation_id": "k1-sim-001",
+  "timestamp": "2024-12-19T15:30:00Z",
+  "simulation_mode": true,
+  "duration_seconds": 300,
+  "scenarios_executed": [
+    {
+      "name": "node-failure",
+      "events_generated": 12,
+      "decisions_triggered": 8,
+      "actions_simulated": 5,
+      "policy_evaluations": 8,
+      "success_rate": 0.95
+    },
+    {
+      "name": "high-load",
+      "events_generated": 15,
+      "decisions_triggered": 10,
+      "actions_simulated": 7,
+      "policy_evaluations": 10,
+      "success_rate": 0.92
+    }
+  ],
+  "aol_services": {
+    "controller": {
+      "status": "healthy",
+      "decisions_processed": 18,
+      "avg_decision_time_ms": 45,
+      "simulation_mode": true
+    },
+    "policy": {
+      "status": "healthy",
+      "evaluations_processed": 18,
+      "avg_evaluation_time_ms": 12,
+      "policies_enforced": ["P1", "P2", "P3", "P4", "P5"]
+    },
+    "executor": {
+      "status": "healthy",
+      "actions_simulated": 12,
+      "actions_blocked": 0,
+      "simulation_mode": true
+    },
+    "simulator": {
+      "status": "healthy",
+      "scenarios_completed": 2,
+      "total_events": 27
+    }
+  },
+  "governance_compliance": {
+    "policy_violations": 0,
+    "safety_checks_passed": 18,
+    "audit_trail_complete": true,
+    "explainability_coverage": 1.0
+  },
+  "performance_metrics": {
+    "decision_latency_p95_ms": 78,
+    "policy_evaluation_latency_p95_ms": 25,
+    "throughput_decisions_per_second": 2.1,
+    "error_rate": 0.02
+  },
+  "summary": {
+    "status": "PASSED",
+    "total_decisions": 18,
+    "successful_decisions": 18,
+    "policy_compliance": 100,
+    "simulation_accuracy": 95,
+    "ready_for_canary": true
+  }
+}

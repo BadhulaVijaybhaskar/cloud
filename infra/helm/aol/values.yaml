@@ -1,0 +1,72 @@
+global:
+  namespace: atom-auto
+  simulationMode: true
+  autonomousMode: false
+  imageRegistry: registry.atomcloud.io
+  imageTag: latest
+
+aolController:
+  enabled: true
+  image: aol-controller
+  port: 8200
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+aolPolicy:
+  enabled: true
+  image: aol-policy
+  port: 8300
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+aolExecutor:
+  enabled: true
+  image: aol-executor
+  port: 8310
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+aolSimulator:
+  enabled: true
+  image: aol-simulator
+  port: 8320
+  replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+serviceAccount:
+  create: true
+  name: aol-service-account
+
+rbac:
+  create: true
+
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+  jaeger:
+    enabled: true

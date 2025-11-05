@@ -1,26 +1,14 @@
 apiVersion: v2
 name: aol
-description: Adaptive Optimization Layer (AOL) for ATOM Cloud
+description: Autonomous Operations Layer (AOL) for ATOM Cloud Platform
 type: application
 version: 1.0.0
 appVersion: "1.0.0"
 keywords:
-  - optimization
-  - adaptive
-  - machine-learning
-  - automation
-home: https://github.com/atom-cloud/aol
-sources:
-  - https://github.com/atom-cloud/aol
+  - autonomous
+  - operations
+  - aol
+  - atom-cloud
 maintainers:
-  - name: ATOM Team
-    email: team@atom-cloud.io
-dependencies:
-  - name: postgresql
-    version: "12.1.2"
-    repository: "https://charts.bitnami.com/bitnami"
-    condition: postgresql.enabled
-  - name: prometheus
-    version: "15.18.0"
-    repository: "https://prometheus-community.github.io/helm-charts"
-    condition: prometheus.enabled
+  - name: ATOM Cloud Team
+    email: team@atomcloud.io
