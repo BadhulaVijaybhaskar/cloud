@@ -1,0 +1,13 @@
+{
+  "phase": "L.1",
+  "timestamp": "2024-12-19T11:02:00Z",
+  "simulation_mode": true,
+  "checks": {
+    "orchestrator": "ok",
+    "gateway": "ok",
+    "metadata": "ok",
+    "policy_broker": "ok"
+  },
+  "overall_result": "PASS_SIMULATION",
+  "recommendation": "Proceed with controlled partner onboarding and opt-in experiments when APPROVE_FEDERATION=yes and legal approvals are in place."
+}

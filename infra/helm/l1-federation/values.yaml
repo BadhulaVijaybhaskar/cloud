@@ -1,0 +1,53 @@
+global:
+  simulationMode: true
+  approveFederation: false
+  namespace: atom-federation
+
+services:
+  federationOrchestrator:
+    enabled: true
+    port: 8900
+    replicas: 1
+    image: "atom/federation-orchestrator:latest"
+  
+  federationGateway:
+    enabled: true
+    port: 8901
+    replicas: 1
+    image: "atom/federation-gateway:latest"
+  
+  federationMetadata:
+    enabled: true
+    port: 8902
+    replicas: 1
+    image: "atom/federation-metadata:latest"
+  
+  federationPolicyBroker:
+    enabled: true
+    port: 8903
+    replicas: 1
+    image: "atom/federation-policy-broker:latest"
+  
+  federationMirrorAgent:
+    enabled: true
+    port: 8904
+    replicas: 1
+    image: "atom/federation-mirror-agent:latest"
+
+federation:
+  heartbeatSec: 30
+  metadataSyncIntervalSec: 300
+  optInExpiryDays: 365
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+security:
+  policyEnforcement: true
+  auditLogging: true
+  encryptionInTransit: true

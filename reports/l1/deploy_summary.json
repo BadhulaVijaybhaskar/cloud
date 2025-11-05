@@ -1,0 +1,11 @@
+{
+  "phase": "L.1",
+  "timestamp": "2024-12-19T11:01:00Z",
+  "simulation_mode": true,
+  "steps": [
+    {"step": "terraform_plan", "result": "simulated"},
+    {"step": "helm_template", "result": "simulated"},
+    {"step": "register_sample_nodes", "result": "simulated"}
+  ],
+  "overall_status": "SIM_OK"
+}
