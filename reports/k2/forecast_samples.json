@@ -1,0 +1,5 @@
+[
+  {"ts": "2024-12-19T15:59:00Z", "target": "services/web", "cpu_forecast": 0.72, "failure_prob": 0.02},
+  {"ts": "2024-12-19T16:00:00Z", "target": "services/worker", "cpu_forecast": 0.45, "failure_prob": 0.01},
+  {"ts": "2024-12-19T16:00:30Z", "target": "services/db", "cpu_forecast": 0.88, "failure_prob": 0.08}
+]

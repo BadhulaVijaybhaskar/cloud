@@ -1,0 +1,28 @@
+{
+  "phase": "K.2",
+  "approvals": [
+    {
+      "role": "Security Admin",
+      "name": "",
+      "email": "",
+      "time_utc": "",
+      "notes": ""
+    },
+    {
+      "role": "Ops Lead",
+      "name": "",
+      "email": "",
+      "time_utc": "",
+      "notes": ""
+    },
+    {
+      "role": "Governance Owner",
+      "name": "",
+      "email": "",
+      "time_utc": "",
+      "notes": ""
+    }
+  ],
+  "auto_generated_template": true,
+  "instructions": "Fill 'name', 'email' and 'time_utc' (ISO8601). Attach signed approval artifacts if required."
+}

@@ -1,0 +1,80 @@
+global:
+  namespace: atom-k2
+  simulationMode: true
+  imageRegistry: registry.atomcloud.io
+  imageTag: latest
+
+autoscale:
+  enabled: true
+
+ml:
+  enabled: true
+
+serviceMesh:
+  enabled: false
+
+predictiveOpsEngine:
+  enabled: true
+  image: predictive-ops-engine
+  port: 8500
+  replicas: 2
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+adaptiveScaler:
+  enabled: true
+  image: adaptive-scaler
+  port: 8501
+  replicas: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+metricsCollector:
+  enabled: true
+  image: metrics-collector
+  port: 8502
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+trainingWorker:
+  enabled: true
+  image: training-worker
+  port: 8503
+  replicas: 1
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+serviceAccount:
+  create: true
+  name: k2-adaptive-ops-sa
+
+rbac:
+  create: true
+
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+  jaeger:
+    enabled: true

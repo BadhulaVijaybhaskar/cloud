@@ -1,0 +1,52 @@
+{
+  "title": "K2 Adaptive Ops - Key Metrics",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Forecast Accuracy (P95)",
+      "targets": [
+        {
+          "expr": "k2_forecast_accuracy_p95",
+          "legendFormat": "accuracy_p95"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Scaling Decisions (last 24h)",
+      "targets": [
+        {
+          "expr": "k2_scaling_decisions_total",
+          "legendFormat": "decisions_total"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Policy Violations",
+      "targets": [
+        {
+          "expr": "k2_policy_violations_total",
+          "legendFormat": "violations"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Decision Latency P95 (ms)",
+      "targets": [
+        {
+          "expr": "k2_decision_latency_p95_ms",
+          "legendFormat": "latency_p95"
+        }
+      ]
+    }
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  }
+}

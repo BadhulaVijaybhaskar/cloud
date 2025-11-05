@@ -1,0 +1,59 @@
+{{- if .Values.predictiveOpsEngine.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predictive-ops-engine
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: predictive-ops-engine
+    app.kubernetes.io/component: ml-engine
+spec:
+  replicas: {{ .Values.predictiveOpsEngine.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: predictive-ops-engine
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: predictive-ops-engine
+        app.kubernetes.io/component: ml-engine
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+      - name: predictive-ops-engine
+        image: {{ .Values.global.imageRegistry }}/{{ .Values.predictiveOpsEngine.image }}:{{ .Values.global.imageTag }}
+        ports:
+        - containerPort: {{ .Values.predictiveOpsEngine.port }}
+        env:
+        - name: SIMULATION_MODE
+          value: "{{ .Values.global.simulationMode }}"
+        - name: MODEL_PATH
+          value: "/models/base_predictor.pkl"
+        resources:
+          {{- toYaml .Values.predictiveOpsEngine.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.predictiveOpsEngine.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.predictiveOpsEngine.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: predictive-ops-engine
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app.kubernetes.io/name: predictive-ops-engine
+  ports:
+  - port: {{ .Values.predictiveOpsEngine.port }}
+    targetPort: {{ .Values.predictiveOpsEngine.port }}
+  type: ClusterIP
+{{- end }}

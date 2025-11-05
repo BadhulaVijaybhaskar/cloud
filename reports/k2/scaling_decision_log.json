@@ -1,0 +1,4 @@
+[
+  {"id": "dec-sim-0001", "action": "scale", "target": "services/web", "params": {"replicas": 6}, "policy_allow": true, "simulated": true},
+  {"id": "dec-sim-0002", "action": "scale", "target": "services/worker", "params": {"replicas": 3}, "policy_allow": true, "simulated": true}
+]

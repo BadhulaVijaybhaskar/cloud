@@ -1,0 +1,14 @@
+apiVersion: v2
+name: k2-adaptive-ops
+description: K2 Adaptive Scaling & Predictive Ops Helm chart
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - adaptive-scaling
+  - predictive-ops
+  - machine-learning
+  - k2
+maintainers:
+  - name: ATOM Cloud Team
+    email: team@atomcloud.io

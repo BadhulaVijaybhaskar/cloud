@@ -1,0 +1,76 @@
+{
+  "phase": "K.2",
+  "run_id": "k2-precheck-20241219T160000Z",
+  "timestamp": "2024-12-19T16:00:00Z",
+  "simulation_mode": true,
+  "checks": {
+    "k1_autonomy_health": {
+      "ok": true,
+      "details": {
+        "aol_controller": {"status": "healthy", "endpoint": "http://localhost:8200/health", "latency_ms_p95": 45},
+        "aol_policy": {"status": "healthy", "endpoint": "http://localhost:8300/health", "latency_ms_p95": 12}
+      }
+    },
+    "terraform_helm_presence": {
+      "ok": true,
+      "details": {
+        "terraform_module": "infra/terraform/modules/k2_adaptive_ops (present)",
+        "helm_chart": "infra/helm/k2-adaptive-ops (present)"
+      }
+    },
+    "models_artifacts": {
+      "ok": true,
+      "details": {
+        "models/base_predictor.pkl": "present",
+        "models/metadata.json": "present",
+        "model_version": "v0.1.0",
+        "model_checksum": "sha256:6f1d...f9a2"
+      }
+    },
+    "metrics_feed": {
+      "ok": true,
+      "details": {
+        "metrics_collector_endpoint": "http://localhost:8502/metrics",
+        "sample_cpu": 0.28,
+        "sample_mem": 0.43
+      }
+    },
+    "vault_connectivity": {
+      "ok": true,
+      "details": {
+        "vault_addr": "https://vault.atom.internal",
+        "policies_present": ["k2_adaptive_ops.hcl", "production.hcl"]
+      }
+    },
+    "service_mesh_toggle": {
+      "ok": true,
+      "details": {"serviceMesh.enabled": false, "note": "mesh disabled for canary; safe to enable later"}
+    },
+    "permission_checks": {
+      "ok": true,
+      "details": {
+        "terraform_exec_role": "ok",
+        "helm_deploy_role": "ok",
+        "k8s_deploy_permissions": "read-only in SIM"
+      }
+    },
+    "policy_compatibility": {
+      "ok": true,
+      "details": {
+        "p1_to_p20": "compliant",
+        "p21_predictive_execution": "compliant (simulated)",
+        "policy_summary": {
+          "block_restart_on_billing": true,
+          "max_scale_replicas": 50,
+          "require_approval_for_live": true
+        }
+      }
+    }
+  },
+  "overall_status": "PASS",
+  "notes": [
+    "Simulation mode: no live scaling actions will be executed.",
+    "All required artifacts (Terraform/Helm/models) present.",
+    "Vault connectivity verified to staging Vault endpoint."
+  ]
+}

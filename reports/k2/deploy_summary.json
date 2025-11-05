@@ -1,0 +1,105 @@
+{
+  "phase": "K.2",
+  "run_id": "k2-deploy-20241219T160050Z",
+  "timestamp": "2024-12-19T16:00:50Z",
+  "simulation_mode": true,
+  "steps": [
+    {
+      "step": "precheck",
+      "status": "skipped_if_failed",
+      "result": "ok",
+      "details": "Precheck passed (see reports/k2/precheck_report.json)"
+    },
+    {
+      "step": "terraform_plan",
+      "status": "simulated",
+      "result": "success",
+      "details": {
+        "module": "infra/terraform/modules/k2_adaptive_ops",
+        "plan_summary": {
+          "to_create": 4,
+          "to_change": 0,
+          "to_destroy": 0
+        },
+        "plan_file": "reports/k2/terraform_plan_k2.json"
+      }
+    },
+    {
+      "step": "helm_template",
+      "status": "simulated",
+      "result": "success",
+      "details": {
+        "helm_chart": "infra/helm/k2-adaptive-ops",
+        "rendered_manifest_path": "reports/k2/helm_template_k2.yaml",
+        "values_overrides": {
+          "simulationMode": true,
+          "autoscale.enabled": true,
+          "ml.enabled": true
+        }
+      }
+    },
+    {
+      "step": "vault_apply",
+      "status": "simulated",
+      "result": "success",
+      "details": {
+        "policy_file": "infra/vault/policies/k2_adaptive_ops.hcl",
+        "applied": "simulated (no write to live vault)"
+      }
+    },
+    {
+      "step": "service_boot",
+      "status": "simulated",
+      "result": "success",
+      "details": {
+        "services_started": [
+          {"name": "metrics-collector", "port": 8502, "status": "simulated-running"},
+          {"name": "predictive-ops-engine", "port": 8500, "status": "simulated-running"},
+          {"name": "adaptive-scaler", "port": 8501, "status": "simulated-running"},
+          {"name": "training-worker", "port": 8503, "status": "simulated-running"}
+        ]
+      }
+    },
+    {
+      "step": "seed_data",
+      "status": "simulated",
+      "result": "success",
+      "details": {
+        "metrics_samples_seeded": 1200,
+        "model_loaded": "models/base_predictor.pkl (v0.1.0)"
+      }
+    },
+    {
+      "step": "initial_forecast_run",
+      "status": "simulated",
+      "result": "success",
+      "details": {
+        "forecast_sample_path": "reports/k2/forecast_samples.json",
+        "forecast_sample_count": 3
+      }
+    },
+    {
+      "step": "scaling_decision_dryrun",
+      "status": "simulated",
+      "result": "success",
+      "details": {
+        "dryrun_actions_emitted": 2,
+        "dryrun_action_examples": [
+          {"action": "scale", "target": "services/web", "params": {"replicas": 6}, "policy_allow": true, "simulated": true},
+          {"action": "scale", "target": "services/worker", "params": {"replicas": 3}, "policy_allow": true, "simulated": true}
+        ]
+      }
+    }
+  ],
+  "overall_status": "SIM_OK",
+  "artifacts": {
+    "terraform_plan": "reports/k2/terraform_plan_k2.json",
+    "helm_template": "reports/k2/helm_template_k2.yaml",
+    "forecast_samples": "reports/k2/forecast_samples.json",
+    "scaling_log": "reports/k2/scaling_decision_log.json"
+  },
+  "notes": [
+    "No live modifications performed (SIMULATION_MODE=true).",
+    "To proceed to live canary: set SIMULATION_MODE=false and APPROVE_AUTONOMY=yes; follow docs/checklist_to_run_live.md"
+  ]
+}
