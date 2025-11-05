@@ -1,0 +1,43 @@
+simulationMode: true
+approveTransfer: false
+
+services:
+  cognitiveLearner:
+    image: localhost:5000/atom-cloud/cognitive-learner:latest
+    port: 8700
+    replicas: 1
+  
+  experienceRepository:
+    image: localhost:5000/atom-cloud/experience-repository:latest
+    port: 8701
+    replicas: 1
+  
+  transferAgent:
+    image: localhost:5000/atom-cloud/transfer-agent:latest
+    port: 8702
+    replicas: 1
+  
+  optimizerProxy:
+    image: localhost:5000/atom-cloud/optimizer-proxy:latest
+    port: 8703
+    replicas: 1
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+governance:
+  enforce: true
+  policy: "P23"
+
+security:
+  anonymization: true
+  auditLog: true
+
+monitoring:
+  enabled: true
+  prometheus: true

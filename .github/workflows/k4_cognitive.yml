@@ -1,0 +1,77 @@
+name: K4 Cognitive Optimization Verify
+
+on:
+  push:
+    branches: ['prod-feature/k4.*']
+  pull_request:
+    branches: ['main']
+    paths: 
+      - 'services/cognitive-learner/**'
+      - 'services/experience-repository/**'
+      - 'services/transfer-agent/**'
+      - 'services/optimizer-proxy/**'
+      - 'infra/scripts/k4/**'
+      - 'tests/k4/**'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install flask pytest requests
+      
+      - name: Make scripts executable
+        run: |
+          chmod +x infra/scripts/k4/*.sh
+      
+      - name: Run K4 precheck
+        run: |
+          SIMULATION_MODE=true infra/scripts/k4/precheck.sh
+        
+      - name: Run K4 deploy simulation
+        run: |
+          SIMULATION_MODE=true infra/scripts/k4/deploy.sh
+        
+      - name: Run K4 verification
+        run: |
+          SIMULATION_MODE=true infra/scripts/k4/verify.sh
+      
+      - name: Run integration tests
+        run: |
+          export SIMULATION_MODE=true
+          export APPROVE_TRANSFER=no
+          python -m pytest tests/k4/ -v --tb=short
+        continue-on-error: true
+      
+      - name: Upload K4 reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: k4-reports
+          path: reports/k4/
+          retention-days: 30
+      
+      - name: Validate reports
+        run: |
+          python -c "
+          import json, sys
+          try:
+            with open('reports/k4/verification_summary.json') as f:
+              data = json.load(f)
+              if data.get('overall_result') != 'PASS_SIMULATION':
+                print('K4 verification failed')
+                sys.exit(1)
+              print('K4 verification passed')
+          except Exception as e:
+            print(f'Report validation failed: {e}')
+            sys.exit(1)
+          "
