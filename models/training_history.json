@@ -1,0 +1,23 @@
+{
+  "model_name": "base_predictor",
+  "framework": "lightgbm",
+  "version_history": [
+    {
+      "version": "0.1.0",
+      "trained_at": "2025-11-05T08:00:00Z",
+      "accuracy": 0.942,
+      "loss": 0.128,
+      "retrain_window_days": 14,
+      "validation_split": 0.2,
+      "promoted": true,
+      "artifact_path": "models/base_predictor.pkl",
+      "checksum": "sha256:6f1d...f9a2",
+      "notes": "Initial production-ready model for adaptive scaling"
+    }
+  ],
+  "schedule": "0 */12 * * *",
+  "promote_on_accuracy": 0.90,
+  "alert_channel": "ops-oncall",
+  "next_retrain_due": "2025-11-06T08:00:00Z",
+  "last_updated": "2025-11-05T08:05:00Z"
+}
