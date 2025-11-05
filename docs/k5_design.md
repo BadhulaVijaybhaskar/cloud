@@ -87,6 +87,25 @@ Phase K.5 implements full autonomy for the ATOM Cloud Platform through meta-lear
 7. **Application**: Proposal applied with audit logging
 8. **Monitoring**: Continuous monitoring of applied changes
 
+## Environment Variables
+
+- `SIMULATION_MODE=true` - Enforce simulation mode for safety
+- `APPROVE_META=false` - Require explicit approval for live changes
+- `VAULT_ADDR=https://vault.atom.internal` - Vault server address
+- `NAMESPACE=k5-full-autonomy` - Kubernetes namespace
+- `POLICY_ENFORCE_P24=true` - Enforce P24 governance policy
+
+## Reports Generated
+
+- `reports/k5/precheck_report.json` - Environment validation results
+- `reports/k5/deploy_summary.json` - Deployment status and artifacts
+- `reports/k5/verification_summary.json` - Post-deployment verification
+- `reports/k5/explainability_reports/*.json` - Explainability artifacts
+
+## Governance Policy
+
+Defined in `infra/vault/policies/k5_full_autonomy.hcl` (P24)
+
 ## Deployment
 
 ### Prerequisites
