@@ -1,0 +1,14 @@
+apiVersion: v2
+name: k3-self-heal
+description: K.3 Self-Healing & Autonomous Incident Resolution
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - k3
+  - self-healing
+  - incident-resolution
+  - autonomous
+maintainers:
+  - name: ATOM Platform Team
+    email: platform@atom.internal

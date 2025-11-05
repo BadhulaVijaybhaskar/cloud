@@ -1,0 +1,41 @@
+simulationMode: true
+autonomous:
+  enabled: false
+governance:
+  enforce: true
+
+services:
+  incidentDetector:
+    image: localhost:5000/atom-cloud/incident-detector:latest
+    port: 8600
+    replicas: 1
+  
+  healingPlanner:
+    image: localhost:5000/atom-cloud/healing-planner:latest
+    port: 8601
+    replicas: 1
+  
+  actionExecutor:
+    image: localhost:5000/atom-cloud/action-executor:latest
+    port: 8602
+    replicas: 1
+  
+  knowledgeIndexer:
+    image: localhost:5000/atom-cloud/knowledge-indexer:latest
+    port: 8603
+    replicas: 1
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+serviceMesh:
+  enabled: false
+
+monitoring:
+  enabled: true
+  prometheus: true

@@ -1,0 +1,76 @@
+name: K3 Self-Healing Verify
+
+on:
+  push:
+    branches: ['prod-feature/k3.*']
+  pull_request:
+    branches: ['main']
+    paths: 
+      - 'services/incident-detector/**'
+      - 'services/healing-planner/**'
+      - 'services/action-executor/**'
+      - 'services/knowledge-indexer/**'
+      - 'infra/scripts/k3/**'
+      - 'tests/k3/**'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install flask pytest requests bc
+      
+      - name: Make scripts executable
+        run: |
+          chmod +x infra/scripts/k3/*.sh
+      
+      - name: Run K3 precheck
+        run: |
+          SIMULATION_MODE=true infra/scripts/k3/precheck.sh
+        
+      - name: Run K3 deploy simulation
+        run: |
+          SIMULATION_MODE=true infra/scripts/k3/deploy.sh
+        
+      - name: Run K3 verification
+        run: |
+          SIMULATION_MODE=true infra/scripts/k3/verify.sh
+      
+      - name: Run unit tests
+        run: |
+          export SIMULATION_MODE=true
+          python -m pytest tests/k3/ -v --tb=short
+        continue-on-error: true
+      
+      - name: Upload K3 reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: k3-reports
+          path: reports/k3/
+          retention-days: 30
+      
+      - name: Validate reports
+        run: |
+          python -c "
+          import json, sys
+          try:
+            with open('reports/k3/verification_summary.json') as f:
+              data = json.load(f)
+              if data.get('overall_status') != 'PASS':
+                print('K3 verification failed')
+                sys.exit(1)
+              print('K3 verification passed')
+          except Exception as e:
+            print(f'Report validation failed: {e}')
+            sys.exit(1)
+          "
