@@ -1,0 +1,24 @@
+name: K9 Contract Lint
+on:
+  push:
+    paths:
+      - 'infra/contracts/k9_openapi.yaml'
+  pull_request:
+    paths:
+      - 'infra/contracts/k9_openapi.yaml'
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install speccy
+        run: npm install -g speccy
+      - name: Lint OpenAPI
+        run: |
+          mkdir -p reports/k9
+          speccy lint infra/contracts/k9_openapi.yaml -j > reports/k9/openapi_lint.json || true
+      - name: Upload lint report
+        uses: actions/upload-artifact@v4
+        with:
+          name: k9-openapi-lint
+          path: reports/k9/openapi_lint.json

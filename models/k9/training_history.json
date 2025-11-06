@@ -1,0 +1,9 @@
+[
+  {
+    "model": "base_marketing_model",
+    "version": "v0.1.0",
+    "trained_at": "2024-12-19T00:00:00Z",
+    "accuracy_estimate": 0.91,
+    "dataset": "synthetic-marketing-sim"
+  }
+]

@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: K9 AI Marketing Agent API
+  version: "0.1.0"
+paths:
+  /v1/campaigns:
+    post:
+      summary: Create a marketing campaign (simulation)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignResponse'
+components:
+  schemas:
+    CampaignRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        budget:
+          type: number
+        region:
+          type: string
+      required: [name, budget]
+    CampaignResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        simulated:
+          type: boolean

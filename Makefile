@@ -66,5 +66,26 @@ k9-verify:
 k9-test:
 	SIMULATION_MODE=true pytest tests/k9/ -q || true
 
+k9-test-telemetry:
+	@echo "Running k9 telemetry integration tests (pytest)"
+	pytest -q tests/k9/integration/test_telemetry.py || true
+
 k9-clean:
 	rm -rf reports/k9 || true
+
+# K.9 finalization targets
+k9-telemetry:
+	python services/k9-agent-core/telemetry/telemetry_collector.py
+
+k9-contract-lint:
+	@echo "Linting infra/contracts/k9_openapi.yaml (speccy)"
+	@if command -v speccy >/dev/null 2>&1; then \
+		mkdir -p reports/k9 || true; \
+		speccy lint infra/contracts/k9_openapi.yaml -j > reports/k9/openapi_lint.json || true; \
+		echo "Lint report: reports/k9/openapi_lint.json"; \
+	else \
+		echo "speccy not installed — please install (npm i -g speccy)"; \
+	fi
+
+k9-quick: k9-telemetry k9-test
+	@echo "K9 quick tasks complete."
