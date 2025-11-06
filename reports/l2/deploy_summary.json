@@ -1,0 +1,31 @@
+{
+  "phase": "L.2",
+  "simulation_mode": true,
+  "steps": [
+    {
+      "step": "terraform_plan",
+      "result": "simulated",
+      "module": "infra/terraform/modules/l2_governance_mesh"
+    },
+    {
+      "step": "helm_template",
+      "result": "simulated",
+      "chart": "infra/helm/l2-governance"
+    },
+    {
+      "step": "vault_policy",
+      "result": "simulated",
+      "policy": "l2_governance_mesh.hcl"
+    },
+    {
+      "step": "services_start",
+      "result": "simulated",
+      "services": [
+        "governance-mesh-core",
+        "delegation-service",
+        "ledger-service"
+      ]
+    }
+  ],
+  "overall_status": "SIM_OK"
+}

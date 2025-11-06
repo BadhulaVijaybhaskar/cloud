@@ -100,3 +100,25 @@ l1-audit:
 l1-test:
 	@echo "Running L.1 audit tests..."
 	pytest -q tests/l1/integration || true
+
+# L.2 Governance Mesh
+.PHONY: l2-precheck l2-deploy l2-verify l2-test l2-clean
+
+l2-precheck:
+	@echo "Running L.2 precheck..."
+	SIMULATION_MODE=true bash infra/scripts/l2/precheck_l2.sh > reports/l2/precheck_report.json
+
+l2-deploy:
+	@echo "Running L.2 deploy (simulation)..."
+	SIMULATION_MODE=true bash infra/scripts/l2/deploy_l2.sh > reports/l2/deploy_summary.json
+
+l2-verify:
+	@echo "Running L.2 verification..."
+	SIMULATION_MODE=true bash infra/scripts/l2/verify_l2.sh > reports/l2/verification_summary.json
+
+l2-test:
+	@echo "Running L.2 integration tests..."
+	python tests/l2/integration/test_mesh_end_to_end.py
+
+l2-clean:
+	rm -rf reports/l2 || true

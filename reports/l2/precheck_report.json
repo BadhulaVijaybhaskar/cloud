@@ -1,0 +1,33 @@
+{
+  "phase": "L.2",
+  "simulation_mode": "true",
+  "services": {
+    "governance-mesh-core": {
+      "exists": true
+    },
+    "delegation-service": {
+      "exists": true
+    },
+    "ledger-service": {
+      "exists": true
+    },
+    "governance-ui": {
+      "exists": true
+    },
+    "mesh-notifier": {
+      "exists": true
+    }
+  },
+  "integrations": {
+    "k8_billing": {
+      "available": true
+    },
+    "k9_telemetry": {
+      "available": true
+    },
+    "l1_audit": {
+      "available": true
+    }
+  },
+  "overall_status": "PASS"
+}
