@@ -1,0 +1,30 @@
+name: K9 Verify
+on:
+  push:
+    branches:
+      - 'prod-feature/k9.*'
+  pull_request:
+    branches:
+      - main
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install test deps
+        run: pip install pytest
+      - name: Run precheck
+        run: SIMULATION_MODE=true bash infra/scripts/k9/precheck.sh
+      - name: Run deploy (sim)
+        run: SIMULATION_MODE=true bash infra/scripts/k9/deploy.sh
+      - name: Run tests
+        run: SIMULATION_MODE=true pytest tests/k9/ -q
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: k9-reports
+          path: reports/k9

@@ -1,0 +1,16 @@
+model:
+  name: base_marketing_model
+  framework: lightgbm
+  version: v0.1.0
+training:
+  retrain_interval_hours: 12
+  features:
+    - ctr_history_1h
+    - ctr_history_24h
+    - conversion_rate_7d
+    - avg_spend
+  hyperparameters:
+    num_boost_round: 100
+    learning_rate: 0.05
+promotion:
+  staging_to_prod: manual

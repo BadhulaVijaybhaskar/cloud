@@ -7,7 +7,7 @@
 K2_SCRIPTS_DIR := infra/scripts/k2
 REPORTS_DIR := reports/k2
 
-.PHONY: k2-precheck k2-deploy k2-verify k2-clean k2-all
+.PHONY: k2-precheck k2-deploy k2-verify k2-clean k2-all k9-precheck k9-deploy k9-verify k9-test k9-clean
 
 # default simulation mode
 SIM ?= true
@@ -52,3 +52,19 @@ k2-clean:
 	@echo "Done."
 
 k2-all: k2-precheck k2-deploy k2-verify
+
+# K.9 AI Marketing Agent targets
+k9-precheck:
+	SIMULATION_MODE=true bash infra/scripts/k9/precheck.sh
+
+k9-deploy:
+	SIMULATION_MODE=true bash infra/scripts/k9/deploy.sh
+
+k9-verify:
+	SIMULATION_MODE=true bash infra/scripts/k9/verify.sh
+
+k9-test:
+	SIMULATION_MODE=true pytest tests/k9/ -q || true
+
+k9-clean:
+	rm -rf reports/k9 || true
