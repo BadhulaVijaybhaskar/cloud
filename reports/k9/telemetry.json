@@ -1,11 +1,11 @@
 {
   "phase": "K.9",
-  "timestamp": "2025-11-06T14:41:21Z",
+  "timestamp": "2025-11-06T14:54:52Z",
   "metrics": {
-    "ad_spend_usd": 5020.84,
-    "impressions": 4157676,
-    "clicks": 17319,
-    "conversions": 190,
-    "cpa_usd": 38.71
+    "ad_spend_usd": 3161.39,
+    "impressions": 4106777,
+    "clicks": 30253,
+    "conversions": 867,
+    "cpa_usd": 34.98
   }
 }
