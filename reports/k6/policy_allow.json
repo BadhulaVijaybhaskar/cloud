@@ -1,0 +1,7 @@
+{
+  "allowed": true,
+  "reason": "read_metadata allowed",
+  "policy_ids": [
+    "p1"
+  ]
+}

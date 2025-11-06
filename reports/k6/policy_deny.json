@@ -1,0 +1,7 @@
+{
+  "allowed": false,
+  "reason": "export_raw_data denied",
+  "policy_ids": [
+    "p2"
+  ]
+}

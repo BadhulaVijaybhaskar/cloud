@@ -1,0 +1,6 @@
+simulationMode: true
+serviceMesh:
+  enabled: false
+connectors: {}
+edgeOrchestrator:
+  enabled: true

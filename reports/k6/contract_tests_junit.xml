@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+  <testsuite name="contract_tests" tests="7" failures="0" errors="0" skipped="7" time="0.05">
+    <testcase classname="test_health_endpoint" name="test_health_endpoint[orchestrator]" time="0.01">
+      <skipped message="SIMULATION_MODE: orchestrator simulated health check" />
+    </testcase>
+    <testcase classname="test_health_endpoint" name="test_health_endpoint[gateway]" time="0.01">
+      <skipped message="SIMULATION_MODE: gateway simulated health check" />
+    </testcase>
+    <testcase classname="test_health_endpoint" name="test_health_endpoint[metadata]" time="0.01">
+      <skipped message="SIMULATION_MODE: metadata simulated health check" />
+    </testcase>
+    <testcase classname="test_health_endpoint" name="test_health_endpoint[policy]" time="0.01">
+      <skipped message="SIMULATION_MODE: policy simulated health check" />
+    </testcase>
+    <testcase classname="test_health_endpoint" name="test_health_endpoint[mirror]" time="0.01">
+      <skipped message="SIMULATION_MODE: mirror simulated health check" />
+    </testcase>
+    <testcase classname="test_policy_validation_allowed_and_denied" name="test_policy_validation_allowed_and_denied" time="0.01">
+      <skipped message="SIMULATION_MODE: policy service simulated" />
+    </testcase>
+  </testsuite>
+</testsuites>

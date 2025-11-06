@@ -1,0 +1,57 @@
+{
+  "collection": {
+    "info": {
+      "name": "K6 Contract Collection"
+    }
+  },
+  "run": {
+    "stats": {
+      "requests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "completed": 1234567890,
+      "started": 1234567880
+    },
+    "executions": [
+      {
+        "item": {
+          "name": "Orchestrator - Health"
+        },
+        "response": {
+          "code": 200,
+          "status": "OK"
+        },
+        "assertions": [
+          {
+            "assertion": "Status code is 200",
+            "error": null
+          }
+        ]
+      },
+      {
+        "item": {
+          "name": "Policy Broker - Validate (allow)"
+        },
+        "response": {
+          "code": 200,
+          "status": "OK"
+        },
+        "assertions": [
+          {
+            "assertion": "Response has allowed field",
+            "error": null
+          }
+        ]
+      }
+    ]
+  }
+}

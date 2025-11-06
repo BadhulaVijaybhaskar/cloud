@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: K6 Federation Gateway API
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8901
+paths:
+  /health:
+    get:
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: ["healthy","degraded","down"]
+  /v1/proxy:
+    post:
+      summary: Proxy a request to remote node (simulated)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target_node: { type: string }
+                payload: { type: object }
+      responses:
+        '202':
+          description: Accepted (proxying)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id: { type: string }
+                  status: { type: string }

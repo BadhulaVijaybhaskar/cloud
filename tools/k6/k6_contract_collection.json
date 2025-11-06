@@ -1,0 +1,74 @@
+{
+  "info": {
+    "name": "K6 Contract Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Orchestrator - Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{orchestrator}}/health",
+          "host": ["{{orchestrator}}"],
+          "path": ["health"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Policy Broker - Validate (allow)",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"action\":\"read_metadata\",\"metadata\":{\"tenant\":\"t1\"}}"
+        },
+        "url": {
+          "raw": "{{policy}}/v1/validate",
+          "host": ["{{policy}}"],
+          "path": ["v1","validate"]
+        }
+      }
+    },
+    {
+      "name": "Policy Broker - Validate (deny)",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"action\":\"export_raw_data\",\"metadata\":{\"tenant\":\"t1\"}}"
+        },
+        "url": {
+          "raw": "{{policy}}/v1/validate",
+          "host": ["{{policy}}"],
+          "path": ["v1","validate"]
+        }
+      }
+    },
+    {
+      "name": "Metadata - Sanitize",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tenant_id\":\"t1\",\"payload\":{\"email\":\"user@example.com\",\"ip\":\"1.2.3.4\"}}"
+        },
+        "url": {
+          "raw": "{{metadata}}/v1/metadata/sanitize",
+          "host": ["{{metadata}}"],
+          "path": ["v1","metadata","sanitize"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {"key": "orchestrator","value":"http://localhost:8900"},
+    {"key": "policy","value":"http://localhost:8903"},
+    {"key": "metadata","value":"http://localhost:8902"}
+  ]
+}

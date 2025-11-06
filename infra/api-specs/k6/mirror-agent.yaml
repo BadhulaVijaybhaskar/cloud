@@ -1,0 +1,40 @@
+openapi: 3.0.3
+info:
+  title: K6 Federation Mirror Agent API
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8904
+paths:
+  /health:
+    get:
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string }
+  /v1/mirror:
+    post:
+      summary: Mirror an artifact (sanitized) to another region (simulated)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                artifact_id: { type: string }
+                target_region: { type: string }
+      responses:
+        '202':
+          description: Mirror queued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mirror_job: { type: string }
+                  status: { type: string }

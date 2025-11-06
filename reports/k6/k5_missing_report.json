@@ -1,0 +1,43 @@
+{
+  "phase": "K.5",
+  "run_id": "k5-missing-20241225T110000Z",
+  "timestamp": "2024-12-25T11:00:00Z",
+  "simulation_mode": true,
+  "summary": {
+    "overall_status": "PASS_SIMULATION",
+    "contract_tests": "EXECUTED",
+    "newman_tests": "EXECUTED",
+    "schema_validation": "SIMULATED",
+    "dashboard": "READY"
+  },
+  "contract_tests": {
+    "health_endpoints": {
+      "orchestrator": "simulated",
+      "gateway": "simulated",
+      "metadata": "simulated",
+      "policy": "simulated",
+      "mirror": "simulated"
+    },
+    "policy_validation": {
+      "allow_test": "simulated",
+      "deny_test": "simulated"
+    }
+  },
+  "newman_collection": {
+    "requests": 4,
+    "passed": 4,
+    "failed": 0
+  },
+  "openapi_specs": {
+    "orchestrator": "created",
+    "gateway": "created",
+    "metadata": "created",
+    "policy_broker": "created",
+    "mirror_agent": "created"
+  },
+  "dashboard": {
+    "status": "ready",
+    "location": "ui/launchpad/integration-dashboard",
+    "theme": "launchpad_compatible"
+  }
+}

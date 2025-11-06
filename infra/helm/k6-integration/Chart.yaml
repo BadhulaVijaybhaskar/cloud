@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k6-integration
+description: K.6 Integration Plane chart (simulation-ready)
+version: 0.1.0

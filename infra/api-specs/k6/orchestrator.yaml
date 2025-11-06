@@ -1,0 +1,61 @@
+openapi: 3.0.3
+info:
+  title: K6 Federation Orchestrator API
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8900
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Service health
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["status","uptime"]
+                properties:
+                  status:
+                    type: string
+                    enum: ["healthy","degraded","down"]
+                  uptime:
+                    type: number
+  /v1/node/register:
+    post:
+      summary: Register a federation node
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeRegister'
+      responses:
+        '201':
+          description: Node registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResult'
+components:
+  schemas:
+    NodeRegister:
+      type: object
+      required: ["node_id","region","meta"]
+      properties:
+        node_id:
+          type: string
+        region:
+          type: string
+        meta:
+          type: object
+    RegisterResult:
+      type: object
+      required: ["node_id","status"]
+      properties:
+        node_id:
+          type: string
+        status:
+          type: string
+          enum: ["registered","existing"]
