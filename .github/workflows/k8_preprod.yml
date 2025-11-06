@@ -1,0 +1,25 @@
+name: K8 PreProd Verify
+on:
+  push:
+    branches:
+      - 'prod-feature/k8.*'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make scripts executable
+        run: chmod +x infra/scripts/k8/*.sh || true
+      - name: Precheck
+        run: make k8-precheck
+      - name: Deploy (simulation)
+        run: make k8-deploy
+      - name: Reconcile billing
+        run: make k8-reconcile
+      - name: Run tests
+        run: pytest tests/k8/ -q || true
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: k8-reports
+          path: reports/k8

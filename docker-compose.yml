@@ -1,0 +1,64 @@
+version: "3.8"
+services:
+  billing-gateway:
+    build:
+      context: services/billing-gateway
+      dockerfile: Dockerfile
+    image: local/billing-gateway:latest
+    environment:
+      - SIMULATION_MODE=true
+      - SERVICE_PORT=8300
+    ports:
+      - "8300:8300"
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost:8300/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  billing-agent:
+    build:
+      context: services/billing-agent
+      dockerfile: Dockerfile
+    image: local/billing-agent:latest
+    environment:
+      - SIMULATION_MODE=true
+      - SERVICE_PORT=8301
+    ports:
+      - "8301:8301"
+    depends_on:
+      - billing-gateway
+
+  finops-engine:
+    build:
+      context: services/finops-engine
+      dockerfile: Dockerfile
+    image: local/finops-engine:latest
+    environment:
+      - SIMULATION_MODE=true
+      - SERVICE_PORT=8302
+    ports:
+      - "8302:8302"
+    depends_on:
+      - billing-agent
+
+  compliance-reporter:
+    build:
+      context: services/compliance-reporter
+      dockerfile: Dockerfile
+    image: local/compliance-reporter:latest
+    environment:
+      - SIMULATION_MODE=true
+      - SERVICE_PORT=8303
+    ports:
+      - "8303:8303"
+
+  pricing-console:
+    build:
+      context: services/pricing-console
+    image: local/pricing-console:latest
+    environment:
+      - SIMULATION_MODE=true
+      - PORT=8310
+    ports:
+      - "8310:8310"

@@ -1,0 +1,23 @@
+simulationMode: true
+namespace: atom-k8
+billingGateway:
+  replicaCount: 1
+  image: "local/billing-gateway:latest"
+billingAgent:
+  replicaCount: 1
+  image: "local/billing-agent:latest"
+finopsEngine:
+  replicaCount: 1
+  image: "local/finops-engine:latest"
+pricingConsole:
+  replicaCount: 1
+  image: "local/pricing-console:latest"
+autoscale:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+ingress:
+  enabled: false
+  host: "k8-billing.local"
+  class: "nginx"

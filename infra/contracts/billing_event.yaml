@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: Billing Event
+  version: 0.1.0
+paths:
+  /v1/billing/event:
+    post:
+      summary: Accept billing event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingEvent'
+      responses:
+        '202':
+          description: Accepted
+components:
+  schemas:
+    BillingEvent:
+      type: object
+      properties:
+        tenant_id:
+          type: string
+        workspace_id:
+          type: string
+        resource:
+          type: string
+        usage:
+          type: number
+        unit:
+          type: string
+        price_usd:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+      required: [tenant_id,workspace_id,resource,usage,unit,price_usd,timestamp]
