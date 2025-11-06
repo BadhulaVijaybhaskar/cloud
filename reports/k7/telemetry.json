@@ -1,0 +1,24 @@
+{
+  "generated_at": "2025-11-06T07:42:36Z",
+  "partner_metrics": [
+    {
+      "partner_id": "partner-test-1",
+      "requests": 72,
+      "errors": 2
+    },
+    {
+      "partner_id": "partner-test-2",
+      "requests": 102,
+      "errors": 2
+    },
+    {
+      "partner_id": "partner-test-3",
+      "requests": 80,
+      "errors": 1
+    }
+  ],
+  "summary": {
+    "total_requests": 254,
+    "total_errors": 5
+  }
+}

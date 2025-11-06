@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: K7 Partner Portal API (minimal)
+  version: 0.1.0
+paths:
+  /v1/publish:
+    post:
+      summary: Publish package
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                version:
+                  type: string
+                price:
+                  type: number
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                  billing_event:
+                    type: object

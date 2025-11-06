@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Atom Partner Python SDK</title>
+</head>
+<body>
+    <h1>Atom Partner Python SDK Documentation</h1>
+    <h2>Installation</h2>
+    <pre>pip install atom-partner-sdk</pre>
+    
+    <h2>Usage</h2>
+    <pre>
+from atom_partner.client import AtomPartnerClient
+
+client = AtomPartnerClient('http://localhost:8200')
+result = client.register_partner({
+    'name': 'My Company',
+    'email': 'contact@company.com',
+    'org': 'Company Inc'
+})
+    </pre>
+    
+    <h2>API Reference</h2>
+    <ul>
+        <li><code>register_partner(payload)</code> - Register a new partner</li>
+        <li><code>get_partner(partner_id)</code> - Get partner details</li>
+        <li><code>publish_package(package_data)</code> - Publish package to marketplace</li>
+    </ul>
+</body>
+</html>
