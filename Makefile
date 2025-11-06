@@ -89,3 +89,14 @@ k9-contract-lint:
 
 k9-quick: k9-telemetry k9-test
 	@echo "K9 quick tasks complete."
+
+# L.1 Post-Integration Audit
+.PHONY: l1-audit l1-test
+
+l1-audit:
+	@echo "Running L.1 post-integration audit..."
+	bash infra/scripts/l1/run_audit.sh
+
+l1-test:
+	@echo "Running L.1 audit tests..."
+	pytest -q tests/l1/integration || true
