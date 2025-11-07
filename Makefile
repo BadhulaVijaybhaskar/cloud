@@ -244,3 +244,25 @@ l5-test:
 
 l5-clean:
 	rm -rf reports/l5 || true
+
+# L.6 Cognitive Resilience & Adaptive Self-Healing Federation
+.PHONY: l6-precheck l6-deploy l6-verify l6-test l6-clean
+
+l6-precheck:
+	@echo "Running L.6 precheck..."
+	SIMULATION_MODE=true bash infra/scripts/l6/precheck.sh
+
+l6-deploy:
+	@echo "Running L.6 deploy (simulation)..."
+	SIMULATION_MODE=true bash infra/scripts/l6/deploy.sh
+
+l6-verify:
+	@echo "Running L.6 verification..."
+	SIMULATION_MODE=true bash infra/scripts/l6/verify.sh
+
+l6-test:
+	@echo "Running L.6 integration tests..."
+	python tests/l6/integration/test_orchestrator_policy_integration.py
+
+l6-clean:
+	rm -rf reports/l6 || true

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: l6-cognitive-resilience
+description: L.6 Cognitive Resilience & Adaptive Self-Healing Federation Helm Chart
+type: application
+version: 0.1.0
+appVersion: "1.0"
+keywords:
+  - cognitive
+  - resilience
+  - self-healing
+  - federation
+  - l6

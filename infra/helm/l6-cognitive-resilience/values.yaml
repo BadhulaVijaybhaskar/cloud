@@ -1,0 +1,47 @@
+replicaCount: 1
+
+orchestrator:
+  image:
+    repository: l6-orchestrator
+    tag: "latest"
+  service:
+    port: 9200
+
+resilienceEngine:
+  image:
+    repository: l6-resilience-engine
+    tag: "latest"
+  service:
+    port: 9201
+
+edgeAgent:
+  image:
+    repository: l6-edge-agent
+    tag: "latest"
+  service:
+    port: 9202
+
+policyBroker:
+  image:
+    repository: l6-policy-broker
+    tag: "latest"
+  service:
+    port: 9203
+
+auditStore:
+  image:
+    repository: l6-audit-store
+    tag: "latest"
+  service:
+    port: 9204
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+env:
+  SIMULATION_MODE: "true"

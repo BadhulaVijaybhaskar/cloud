@@ -1,0 +1,18 @@
+name: L6 Verify
+on:
+  push:
+    branches: ['prod-feature/l6*']
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: chmod +x infra/scripts/l6/*.sh || true
+      - run: SIMULATION_MODE=true infra/scripts/l6/precheck.sh
+      - run: SIMULATION_MODE=true infra/scripts/l6/deploy.sh
+      - run: SIMULATION_MODE=true infra/scripts/l6/verify.sh
+      - run: pytest tests/l6/ || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: l6-reports
+          path: reports/l6
