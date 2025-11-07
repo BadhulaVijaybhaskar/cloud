@@ -1,0 +1,6 @@
+apiVersion: v2
+name: l2-governance
+description: L2 Cross-Tenant Governance Mesh Helm chart
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

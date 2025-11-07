@@ -1,0 +1,8 @@
+simulationMode: true
+replicaCount: 1
+image:
+  repository: localhost:5000
+  pullPolicy: IfNotPresent
+serviceMesh:
+  enabled: false
+namespace: atom-l2
