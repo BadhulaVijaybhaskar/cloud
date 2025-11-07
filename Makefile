@@ -144,3 +144,25 @@ l3-test:
 
 l3-clean:
 	rm -rf reports/l3 || true
+
+# L.3 GAE Extended
+.PHONY: l3-gae-precheck l3-gae-deploy l3-gae-verify l3-gae-test l3-gae-clean
+
+l3-gae-precheck:
+	@echo "Running L.3 GAE precheck..."
+	SIMULATION_MODE=true bash infra/scripts/l3_gae/precheck.sh
+
+l3-gae-deploy:
+	@echo "Running L.3 GAE deploy..."
+	SIMULATION_MODE=true bash infra/scripts/l3_gae/deploy.sh
+
+l3-gae-verify:
+	@echo "Running L.3 GAE verification..."
+	bash infra/scripts/l3/verify.sh
+
+l3-gae-test:
+	@echo "Running L.3 GAE tests..."
+	python tests/l3_gae/integration/test_exchange_flow.py
+
+l3-gae-clean:
+	rm -rf reports/l3 infra/security/certs || true

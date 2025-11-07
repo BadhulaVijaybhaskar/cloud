@@ -1,0 +1,22 @@
+{
+  "dashboard": {
+    "title": "L3 Global Autonomy Exchange",
+    "panels": [
+      {
+        "title": "Proposal Processing Rate",
+        "type": "graph",
+        "targets": [{"expr": "rate(l3_proposals_total[5m])"}]
+      },
+      {
+        "title": "Gateway Requests",
+        "type": "graph", 
+        "targets": [{"expr": "rate(l3_gateway_requests_total[5m])"}]
+      },
+      {
+        "title": "Service Health",
+        "type": "stat",
+        "targets": [{"expr": "up{job=\"l3-gae\"}"}]
+      }
+    ]
+  }
+}
