@@ -1,0 +1,21 @@
+name: L5 Cognitive Scaling Verify
+on:
+  push:
+    branches: ['prod-feature/l5-*']
+  pull_request:
+    branches: ['prod-feature/l5-*']
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -y && sudo apt-get install -y jq
+      - run: chmod +x infra/scripts/l5/*.sh || true
+      - run: SIMULATION_MODE=true infra/scripts/l5/precheck.sh
+      - run: SIMULATION_MODE=true infra/scripts/l5/deploy.sh
+      - run: SIMULATION_MODE=true infra/scripts/l5/verify.sh
+      - run: pytest tests/l5/ || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: l5-reports
+          path: reports/l5

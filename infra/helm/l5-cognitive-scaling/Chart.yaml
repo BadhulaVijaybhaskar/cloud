@@ -1,0 +1,11 @@
+apiVersion: v2
+name: l5-cognitive-scaling
+description: L.5 Cognitive Federation Scaling Helm Chart
+type: application
+version: 0.1.0
+appVersion: "1.0"
+keywords:
+  - cognitive
+  - federation
+  - scaling
+  - l5

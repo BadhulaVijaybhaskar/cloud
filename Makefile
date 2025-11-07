@@ -222,3 +222,25 @@ l4-test:
 
 l4-clean:
 	rm -rf reports/l4 || true
+
+# L.5 Cognitive Federation Scaling
+.PHONY: l5-precheck l5-deploy l5-verify l5-test l5-clean
+
+l5-precheck:
+	@echo "Running L.5 precheck..."
+	SIMULATION_MODE=true bash infra/scripts/l5/precheck.sh
+
+l5-deploy:
+	@echo "Running L.5 deploy (simulation)..."
+	SIMULATION_MODE=true bash infra/scripts/l5/deploy.sh
+
+l5-verify:
+	@echo "Running L.5 verification..."
+	SIMULATION_MODE=true bash infra/scripts/l5/verify.sh
+
+l5-test:
+	@echo "Running L.5 integration tests..."
+	python tests/l5/integration/test_end_to_end.py
+
+l5-clean:
+	rm -rf reports/l5 || true
