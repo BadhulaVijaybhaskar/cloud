@@ -185,3 +185,18 @@ l3-rbac-audit:
 l3-missing-check:
 	@echo "Checking L.3 production readiness..."
 	python -c "import os; missing=[]; [missing.append(f) for f in ['reports/l3/approval_signoffs.json', 'infra/monitoring/alert_rules/l3_alerts.yaml', 'docs/canary_plan_l3.md'] if not os.path.exists(f)]; print('Missing items:', missing if missing else 'None - Ready for production!')"
+
+# L.3 Missing V1 - Additional Production Tools
+.PHONY: l3-archive-s3 l3-vault-test l3-alert-dryrun
+
+l3-archive-s3:
+	@echo "Archiving L.3 reports to S3 (simulation by default)..."
+	SIMULATION_MODE=${SIM:-true} bash infra/scripts/l3/archive_reports_to_s3.sh
+
+l3-vault-test:
+	@echo "Testing Vault PKI & policies (simulation by default)..."
+	SIMULATION_MODE=${SIM:-true} bash infra/scripts/l3/vault_pki_policy_test.sh
+
+l3-alert-dryrun:
+	@echo "Running alert dry-run test (simulation by default)..."
+	SIMULATION_MODE=${SIM:-true} bash infra/scripts/l3/alert_dryrun.sh

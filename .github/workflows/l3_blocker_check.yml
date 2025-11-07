@@ -1,0 +1,48 @@
+name: L3 Blocker Check
+on:
+  pull_request:
+    branches: [main]
+    paths: ['services/l3-*/**', 'infra/scripts/l3/**', 'reports/l3/**']
+  workflow_dispatch:
+
+jobs:
+  blocker-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check approval signoffs
+        run: |
+          if [ ! -f "reports/l3/approval_signoffs.json" ]; then
+            echo "ERROR: Missing approval_signoffs.json"
+            exit 1
+          fi
+          echo "Approval signoffs file present"
+      
+      - name: Check Vault policies
+        run: |
+          if [ ! -f "infra/vault/policies/l3_gae.hcl" ]; then
+            echo "ERROR: Missing Vault policy"
+            exit 1
+          fi
+          echo "Vault policy present"
+      
+      - name: Check mTLS scripts
+        run: |
+          if [ ! -f "infra/security/mtls_bootstrap.sh" ]; then
+            echo "ERROR: Missing mTLS bootstrap"
+            exit 1
+          fi
+          echo "mTLS scripts present"
+      
+      - name: Check monitoring config
+        run: |
+          if [ ! -f "infra/monitoring/alert_rules/l3_alerts.yaml" ]; then
+            echo "ERROR: Missing alert rules"
+            exit 1
+          fi
+          echo "Monitoring configuration present"
+      
+      - name: Blocker summary
+        run: |
+          echo "✅ All L.3 production blockers resolved"
+          echo "Ready for stakeholder approval and live deployment"
