@@ -1,0 +1,18 @@
+openapi: 3.0.3
+info:
+  title: L4 Orchestrator API
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      responses:
+        '200':
+          description: OK
+  /v1/proposals:
+    post:
+      requestBody:
+        content:
+          application/json: {}
+      responses:
+        '202':
+          description: Accepted

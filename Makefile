@@ -200,3 +200,25 @@ l3-vault-test:
 l3-alert-dryrun:
 	@echo "Running alert dry-run test (simulation by default)..."
 	SIMULATION_MODE=${SIM:-true} bash infra/scripts/l3/alert_dryrun.sh
+
+# L.4 Distributed Intelligence Federation
+.PHONY: l4-precheck l4-deploy l4-verify l4-test l4-clean
+
+l4-precheck:
+	@echo "Running L.4 precheck..."
+	SIMULATION_MODE=true bash infra/scripts/l4/precheck.sh
+
+l4-deploy:
+	@echo "Running L.4 deploy (simulation)..."
+	SIMULATION_MODE=true bash infra/scripts/l4/deploy.sh
+
+l4-verify:
+	@echo "Running L.4 verification..."
+	SIMULATION_MODE=true bash infra/scripts/l4/verify.sh
+
+l4-test:
+	@echo "Running L.4 integration tests..."
+	python tests/l4/integration/test_end_to_end.py
+
+l4-clean:
+	rm -rf reports/l4 || true
