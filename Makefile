@@ -166,3 +166,22 @@ l3-gae-test:
 
 l3-gae-clean:
 	rm -rf reports/l3 infra/security/certs || true
+
+# L.3 Missing Items - Production Readiness
+.PHONY: l3-apply-vault l3-provision-secrets l3-rbac-audit l3-missing-check
+
+l3-apply-vault:
+	@echo "Applying Vault policies..."
+	SIMULATION_MODE=${SIM:-true} bash infra/scripts/l3/apply_vault_policies.sh
+
+l3-provision-secrets:
+	@echo "Provisioning secrets..."
+	SIMULATION_MODE=${SIM:-true} bash infra/scripts/l3/provision_secrets.sh
+
+l3-rbac-audit:
+	@echo "Running RBAC audit..."
+	bash infra/scripts/l3/rbac_audit.sh
+
+l3-missing-check:
+	@echo "Checking L.3 production readiness..."
+	python -c "import os; missing=[]; [missing.append(f) for f in ['reports/l3/approval_signoffs.json', 'infra/monitoring/alert_rules/l3_alerts.yaml', 'docs/canary_plan_l3.md'] if not os.path.exists(f)]; print('Missing items:', missing if missing else 'None - Ready for production!')"

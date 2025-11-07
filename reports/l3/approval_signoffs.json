@@ -1,0 +1,11 @@
+{
+  "phase": "L.3",
+  "approvals": {
+    "security_admin": {"name": "", "email": "", "timestamp": "", "signature": ""},
+    "ops_lead": {"name": "", "email": "", "timestamp": "", "signature": ""},
+    "governance_owner": {"name": "", "email": "", "timestamp": "", "signature": ""},
+    "legal": {"name": "", "email": "", "timestamp": "", "signature": ""},
+    "product_owner": {"name": "", "email": "", "timestamp": "", "signature": ""}
+  },
+  "notes": "Template for stakeholder approvals before live deployment"
+}

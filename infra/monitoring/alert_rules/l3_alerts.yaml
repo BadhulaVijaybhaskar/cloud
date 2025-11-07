@@ -1,0 +1,20 @@
+groups:
+- name: l3_alerts
+  rules:
+  - alert: L3ServiceDown
+    expr: up{job=~"l3-.*"} == 0
+    for: 2m
+    labels:
+      severity: page
+    annotations:
+      summary: "One or more L3 services down"
+      description: "Service {{ $labels.job }} has been down for > 2m."
+
+  - alert: L3HighErrorRate
+    expr: rate(http_requests_total{job=~"l3-.*",status=~"5.."}[5m]) > 0.05
+    for: 5m
+    labels:
+      severity: p1
+    annotations:
+      summary: "Elevated 5xx rate in L3 services"
+      description: "High 5xx error rate for {{ $labels.job }}."
