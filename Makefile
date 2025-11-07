@@ -122,3 +122,25 @@ l2-test:
 
 l2-clean:
 	rm -rf reports/l2 || true
+
+# L.3 Global Autonomy Exchange
+.PHONY: l3-precheck l3-deploy l3-verify l3-test l3-clean
+
+l3-precheck:
+	@echo "Running L.3 precheck..."
+	SIMULATION_MODE=true bash infra/scripts/l3/precheck.sh
+
+l3-deploy:
+	@echo "Running L.3 deploy (simulation)..."
+	SIMULATION_MODE=true bash infra/scripts/l3/deploy.sh
+
+l3-verify:
+	@echo "Running L.3 verification..."
+	bash infra/scripts/l3/verify.sh
+
+l3-test:
+	@echo "Running L.3 integration tests..."
+	python tests/l3/integration/contract_tests.py
+
+l3-clean:
+	rm -rf reports/l3 || true

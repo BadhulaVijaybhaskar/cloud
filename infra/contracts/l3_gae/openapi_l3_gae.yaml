@@ -1,0 +1,53 @@
+openapi: 3.0.0
+info:
+  title: L3 Global Autonomy Exchange API
+  version: "1.0.0"
+paths:
+  /v1/artifacts:
+    post:
+      summary: Submit artifact for cross-region exchange
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtifactSubmission'
+      responses:
+        '201':
+          description: Artifact accepted
+  /v1/proposals:
+    post:
+      summary: Create cross-region proposal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProposalRequest'
+      responses:
+        '201':
+          description: Proposal created
+components:
+  schemas:
+    ArtifactSubmission:
+      type: object
+      properties:
+        id:
+          type: string
+        checksum:
+          type: string
+        sanitized:
+          type: boolean
+      required: [id, checksum]
+    ProposalRequest:
+      type: object
+      properties:
+        artifact_id:
+          type: string
+        targets:
+          type: array
+          items:
+            type: string
+        policy_binding:
+          type: object
+      required: [artifact_id, targets]
