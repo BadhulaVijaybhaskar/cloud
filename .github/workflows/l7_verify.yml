@@ -1,0 +1,21 @@
+name: L7 Federated Cognitive Continuum Verify
+on:
+  push:
+    branches: ['prod-feature/l7-*']
+  pull_request:
+    branches: ['prod-feature/l7-*']
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -y && sudo apt-get install -y jq
+      - run: chmod +x infra/scripts/l7/*.sh || true
+      - run: SIMULATION_MODE=true infra/scripts/l7/precheck.sh
+      - run: SIMULATION_MODE=true infra/scripts/l7/deploy.sh
+      - run: SIMULATION_MODE=true infra/scripts/l7/verify.sh
+      - run: SIMULATION_MODE=true python -m pytest tests/l7/ -q
+      - uses: actions/upload-artifact@v4
+        with:
+          name: l7-reports
+          path: reports/l7

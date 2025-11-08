@@ -266,3 +266,25 @@ l6-test:
 
 l6-clean:
 	rm -rf reports/l6 || true
+
+# L.7 Federated Cognitive Continuum & Self-Evolving Intelligence
+.PHONY: l7-precheck l7-deploy l7-verify l7-test l7-clean
+
+l7-precheck:
+	@echo "Running L.7 precheck..."
+	SIMULATION_MODE=true bash infra/scripts/l7/precheck.sh
+
+l7-deploy:
+	@echo "Running L.7 deploy (simulation)..."
+	SIMULATION_MODE=true bash infra/scripts/l7/deploy.sh
+
+l7-verify:
+	@echo "Running L.7 verification..."
+	SIMULATION_MODE=true bash infra/scripts/l7/verify.sh
+
+l7-test:
+	@echo "Running L.7 integration tests..."
+	python -m pytest tests/l7/ -q
+
+l7-clean:
+	rm -rf reports/l7 || true

@@ -1,0 +1,25 @@
+openapi: 3.0.0
+info:
+  title: L7 Federated Cognitive Continuum API
+  version: '1.0.0'
+paths:
+  /v1/proposals:
+    post:
+      summary: Create proposal
+      requestBody:
+        required: true
+      responses:
+        '201':
+          description: Created
+  /v1/proposals/{id}:
+    get:
+      summary: Get proposal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK

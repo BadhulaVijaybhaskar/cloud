@@ -1,0 +1,3 @@
+apiVersion: v2
+name: l7-federated-continuum
+version: 0.1.0
