@@ -1,0 +1,24 @@
+{
+  "phase": "L.6",
+  "timestamp": "2024-11-08T11:47:00Z",
+  "approvals": [
+    {
+      "role": "security_admin",
+      "status": "PENDING",
+      "required_for_production": true
+    },
+    {
+      "role": "ops_lead",
+      "status": "PENDING",
+      "required_for_production": true
+    },
+    {
+      "role": "governance_owner",
+      "status": "PENDING",
+      "required_for_production": true
+    }
+  ],
+  "simulation_mode": true,
+  "approve_l6_deploy": "no",
+  "ready_for_production": false
+}
