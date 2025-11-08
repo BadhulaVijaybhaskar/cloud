@@ -1,0 +1,15 @@
+service:
+  name: "l7-orchestrator"
+  port: 9200
+  simulation_mode: true
+
+federation:
+  max_nodes: 10
+  min_approval_threshold: 2
+  proposal_timeout_hours: 24
+
+policies:
+  p39_privacy_boundary: true
+  p40_explainability_required: true
+  p41_multi_role_approval: true
+  p42_audit_provenance: true

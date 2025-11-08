@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: atom-l7
+  name: l7-federated-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps"]
+  verbs: ["get", "list", "create", "update"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "create", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: l7-federated-binding
+  namespace: atom-l7
+subjects:
+- kind: ServiceAccount
+  name: l7-service-account
+  namespace: atom-l7
+roleRef:
+  kind: Role
+  name: l7-federated-role
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,14 @@
+{
+  "phase": "L.7",
+  "approval_status": "PENDING",
+  "required_approvals": [
+    "Security Admin",
+    "Ops Lead", 
+    "Governance Owner",
+    "ML Engineering Lead"
+  ],
+  "current_approvals": [],
+  "notes": "Multi-role approvals required before live deployment as per P41 policy",
+  "approve_l7_deploy": "no",
+  "timestamp": "2024-01-01T00:00:00Z"
+}
