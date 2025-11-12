@@ -1,47 +1,52 @@
-## Pull request title
-Short summary (e.g. feat(k2): add predictive-ops engine and precheck scripts)
+# Release: ATOM Cloud — K/L Series Bundle
 
-## Description
-Describe what this PR introduces and which K-phase it addresses.
+## Summary
+This PR packages simulation artifacts and evidence for the full K/L product rollout candidate.
 
-## Related Tickets / Issues
-- Issue: #
-- Epics: ATOM-K2
+**Includes:** reports/* JSON artifacts for K1..K9, L1..L7 (precheck, deploy, verification), approval_signoffs.json, runbooks.
 
-## What changed
-- Added: infra/scripts/k2/precheck.sh, infra/scripts/k2/deploy.sh
-- Added: infra/terraform/modules/k2_adaptive_ops/...
-- Added: reports/k2/* (stubs)
-
-## Evidence / Test Artifacts
-Please attach links or paths to generated evidence (CI artifacts or local reports):
-- Precheck report (simulation): `reports/k2/precheck_report.json`
-- Deploy summary (simulation): `reports/k2/deploy_summary.json`
-- Verification summary: `reports/k2/verification_summary.json`
-- Coverage / Test artifacts: `reports/k2/test_coverage.json`
-
-If you ran the makefile locally, paste outputs:
-```
-make k2-precheck
-make k2-deploy SIM=true
-make k2-verify
-```
+## Evidence files attached
+- reports/k1/*
+- reports/k2/*
+- reports/k3/*
+- reports/k4/*
+- reports/k5/*
+- reports/k6/*
+- reports/k7/*
+- reports/k8/*
+- reports/k9/*
+- reports/l1/*
+- reports/l2/*
+- reports/l3/*
+- reports/l4/*
+- reports/l5/*
+- reports/l6/*
+- reports/l7/*
+- reports/product_approval_bundle.json
 
 ## Checklist (required before merge)
-- [ ] `reports/k2/precheck_report.json` exists and valid JSON
-- [ ] `reports/k2/deploy_summary.json` exists and valid JSON
-- [ ] `infra/helm/k2-adaptive-ops/` present with Chart.yaml
-- [ ] `infra/terraform/modules/k2_adaptive_ops/` present
-- [ ] Vault policies updated under `infra/vault/policies/k2_adaptive_ops.hcl`
-- [ ] RBAC / namespace scaffolding present under `infra/terraform/...` or `infra/scripts/k2/create_canary_namespace.sh`
-- [ ] CI workflow for K.2 present and passing (`.github/workflows/k2_adaptive_ops.yml`)
-- [ ] SIMULATION_MODE safe defaults remain in deploy scripts
+- [ ] Legal signoff attached (`reports/*/approval_signoffs.json`)
+- [ ] Security signoff attached
+- [ ] Finance signoff attached
+- [ ] Ops signoff attached
+- [ ] On-call roster attached (`docs/on_call_roster.md`)
+- [ ] Launch runbook attached (`docs/launch_day_runbook.md`)
+- [ ] SIMULATION_MODE validated in scripts (true)
+- [ ] No hardcoded secrets in this PR
 
-## Approvals required
-- Security Admin
-- Ops Lead
-- Governance Owner
+## Approvals
+Request approvals from:
+- Security Admin @security_team
+- Ops Lead @ops_team
+- Finance Owner @finance_team
+- Governance Owner @governance_team
 
-## Deployment notes
-- For live deployment run: `SIMULATION_MODE=false APPROVE_AUTONOMY=yes make k2-deploy`
-- Observation window: 48 hours
+## How to reproduce locally (simulation)
+```bash
+# run quick validation (simulation)
+SIMULATION_MODE=true make k-all-precheck
+```
+
+## Merge action
+
+* On merge, tag `v1.0.0-release-candidate` and create a release draft with attached artifacts.

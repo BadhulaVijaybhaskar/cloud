@@ -1,0 +1,36 @@
+{
+  "product": "ATOM Cloud",
+  "bundle_id": "release-candidate-20241108T114800Z",
+  "artifacts": [
+    "reports/k1/precheck_report.json",
+    "reports/k1/deploy_summary.json",
+    "reports/k1/verification_summary.json",
+    "reports/k2/precheck_report.json",
+    "reports/k2/deploy_summary.json",
+    "reports/k2/verification_summary.json",
+    "reports/k3/verification_summary.json",
+    "reports/k4/verification_summary.json",
+    "reports/k5/verification_summary.json",
+    "reports/k6/k6_compatibility_report.json",
+    "reports/k7/verification_summary.json",
+    "reports/k8/precheck_report.json",
+    "reports/k8/deploy_summary.json",
+    "reports/k8/compliance_report.json",
+    "reports/k9/verification_summary.json",
+    "reports/l1/verification_summary.json",
+    "reports/l2/verification_summary.json",
+    "reports/l3/verification_summary.json",
+    "reports/l4/verification_summary.json",
+    "reports/l5/verification_summary.json",
+    "reports/l6/verification_summary.json",
+    "reports/l7/verification_summary.json"
+  ],
+  "approvals": {
+    "security_admin": null,
+    "ops_lead": null,
+    "finance_owner": null,
+    "governance_owner": null,
+    "legal_signoff": null
+  },
+  "notes": "Fill signatures or attach signed PDFs. Merge blocked until approvals present."
+}

@@ -1,0 +1,10 @@
+{
+  "checks": {
+    "simulation_mode_set": true,
+    "vault_policies_present": true,
+    "no_phase_dirs": true,
+    "reports_present": true,
+    "ci_workflows_present": true
+  },
+  "action": "Run CI to validate contract tests and upload artifacts."
+}
