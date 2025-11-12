@@ -1,0 +1,812 @@
+Good — below I’ve combed through the whole project state you’ve built and the L.3 Extended report, and produced a clean, prioritized list of **what’s actually missing** before you can call L.3 fully produced (live-ready), plus concrete next steps and acceptance criteria for each item.
+
+I grouped items by priority so you can act fast on blockers first.
+
+---
+
+# Short answer
+
+L.3 Extended is simulation-certified, **but** production readiness still requires human approvals plus a set of operational, security, legal and monitoring items. The missing items below are the things you must complete (or verify live) before flipping `APPROVE_L3_DEPLOY=yes` and deploying L.3 in production.
+
+---
+
+# Missing items — prioritized
+
+## Priority: Blockers (must complete before live deployment)
+
+1. **Live Vault & Secrets Binding**
+
+   * Status: simulated Vault policies exist, but *live* Vault policy application and secret provisioning for prod tenants is missing.
+   * Acceptance: vault policies applied to prod Vault, secret paths validated, CI secrets sealed, no hard-coded credentials in repo.
+   * Next step: run `vault policy write l3_ga infra/vault/policies/l3_ga.hcl` in prod and verify with `vault read` role tests.
+
+2. **Legal & Multi-stakeholder Signoffs**
+
+   * Status: simulation signoffs generated; legal / data-sovereignty (L.2 / P25-P27) and privacy approvals may still be pending.
+   * Acceptance: recorded approvals from Legal, Security, Privacy, Ops, and Product in `reports/l3/approval_signoffs.json`.
+   * Next step: collect signed artifacts and attach to PR.
+
+3. **Real mTLS Certificate Management (not simulated)**
+
+   * Status: mTLS bootstrap & validation scripts exist but certificate lifecycle with production CA/PKI is missing.
+   * Acceptance: production certs provisioned, rotation automation scheduled, test mTLS handshakes with prod CA.
+   * Next step: integrate with internal CA or Vault PKI, run `mtls_validate.sh` against real endpoints.
+
+4. **Production RBAC & Least-Privilege Review**
+
+   * Status: RBAC templates present; production review/approval and role binding enforcement is missing.
+   * Acceptance: RBAC audit passed, service accounts scoped, no wide cluster-admin bindings.
+   * Next step: run RBAC dry-run and audit script; produce RBAC compliance report.
+
+5. **Legal Partner Agreements for Federation**
+
+   * Status: federation flows simulated, but partner legal contracts & ToS required for cross-region actions are missing.
+   * Acceptance: signed partner contracts; opt-in records stored and auditable.
+   * Next step: attach contract templates & executed agreements to `reports/l1/partner_onboarding/`.
+
+## Priority: High (recommended before canary)
+
+6. **Production Prometheus + Grafana Deployment**
+
+   * Status: dashboard JSON present, but production Prometheus scrape config, retention, and alerting in prod cluster not deployed.
+   * Acceptance: Prometheus deployed with retention policy, alerts configured in Alertmanager, dashboard imported to prod Grafana.
+   * Next step: deploy `infra/monitoring/prometheus/*` to prod namespace and validate scrapes.
+
+7. **Alerting & Ops Runbooks + On-Call Roster**
+
+   * Status: runbooks created; need populated on-call roster and runbook ownership.
+   * Acceptance: on-call schedule in place, PagerDuty/SMS/webhook integration tested, documented escalation paths.
+   * Next step: publish `docs/on_call_roster.md`, test alerting path.
+
+8. **Production Logging/Retention/Indexing**
+
+   * Status: Loki/ELK templates may be present; production retention/ingest budget and indexing rules not finalized.
+   * Acceptance: logs ingested, retention policy enforced, S3/backups configured.
+   * Next step: enable prod logging stack and run end-to-end log query tests.
+
+9. **Secrets Rotation & KMS Integration**
+
+   * Status: vault policies present but rotation automation (KMS lifecycle) not verified.
+   * Acceptance: secrets rotation scheduled and tested; KMS keys managed per policy.
+   * Next step: implement rotation jobs and validate.
+
+10. **Canary Plan & Safety Window**
+
+    * Status: canary concept exists, need explicit canary target list, traffic % rules and rollback criteria.
+    * Acceptance: `docs/canary_plan.md` with targets, observation metrics, rollback triggers and 48h observation window configured.
+    * Next step: create canary namespaces and schedule limited rollout.
+
+## Priority: Medium (operational/quality)
+
+11. **SLA / SLO Definitions & Monitoring**
+
+    * Status: SLA docs skeleton exists; SLO metrics and burn-down alerts need formalization.
+    * Acceptance: SLOs defined (latency, availability), SLI collection and SLO burn rate alerts implemented.
+    * Next step: add SLOs to `docs/SLA.md` and configure Grafana alerts.
+
+12. **Performance & Load Testing (prod-scale)**
+
+    * Status: unit/integration tests passed; large-scale load/chaos testing not executed against prod-like infra.
+    * Acceptance: performance benchmarks and chaos runs completed; results attached.
+    * Next step: run load tests (k6/jmeter) and chaos experiments in staging.
+
+13. **Disaster Recovery & Backups**
+
+    * Status: backup scripts present but DR runbooks + restore tests missing.
+    * Acceptance: tested backup & restore of DB, vector DB, S3 objects, and config; RTO/RPO documented.
+    * Next step: perform restore tests and document results.
+
+14. **Penetration / Vulnerability Scanning**
+
+    * Status: Gitleaks and static scans run in simulation, but 3rd-party pentest and dynamic scans may be missing.
+    * Acceptance: vulnerability report with remediation applied; no critical findings.
+    * Next step: schedule external pentest and fix any findings.
+
+15. **Billing & FinOps Live Integration**
+
+    * Status: K.8 billing simulation OK; production billing meter hooks and reconciliation tests need to run against ledger.
+    * Acceptance: live billing events reconcile with ledger with >99% accuracy in test run.
+    * Next step: run `tests/k8/billing_reconciliation` in prod-like environment.
+
+## Priority: Low (nice-to-have before prod)
+
+16. **SDK / UI Production Polishing**
+
+    * Status: UI and SDK stubs exist; full UI (J2/J3) not ready — you already noted this.
+    * Acceptance: Developer Console pages, Marketplace UI, subscription flows implemented and E2E tested.
+    * Next step: backlog UI tasks and schedule sprint for J2/J3.
+
+17. **Audit Replay & Forensics Playbooks**
+
+    * Status: audit trail exists; replay tooling and forensics runbooks need scheduled testing.
+    * Acceptance: audit replay validated with sample incidents.
+    * Next step: run replay scenario and verify logs.
+
+18. **Cost Controls / Quotas**
+
+    * Status: cost optimizer present; per-tenant quotas, circuit breakers for runaway costs need enforcement.
+    * Acceptance: quotas implemented, alerts on spend spikes configured.
+    * Next step: create tenant quota policies and validate.
+
+19. **Certificate Rotation Automation**
+
+    * Status: rotation mechanism not fully automated for production CA secrets.
+    * Acceptance: scheduled cert rotation tested with zero-downtime rollovers.
+    * Next step: add rotation cronjobs and test.
+
+20. **3rd-party Compliance Evidence (SOC2 etc.)**
+
+    * Status: preparation appears in docs, formal audits not completed.
+    * Acceptance: SOC2/ISO audit plan & scheduled timeline.
+    * Next step: schedule auditor and gather artifact list.
+
+---
+
+# Quick checklist you can run now (simulation-safe)
+
+* `make l3-precheck` → regenerate `reports/l3/precheck_report.json`
+* `make l3-deploy SIM=true` → simulate deploy and confirm artifacts in `reports/l3/`
+* `make l3-verify` → verification summary for CI evidence
+* Create `reports/l3/approval_signoffs.json` with final stakeholder approvals before live flip
+
+(You already have simulation variants — run these to produce fresh evidence artifacts.)
+
+---
+
+# Suggested immediate next 3 actions (recommended)
+
+1. **Apply Vault production policies + provision prod secrets** (blocker)
+2. **Obtain Legal/Security/Ops signoffs and attach them to `reports/l3/approval_signoffs.json`** (blocker)
+3. **Deploy Prometheus + Alertmanager + Grafana in prod and import L.3 dashboards, then validate alerts** (high priority)
+
+Once those three are done, you can safely run a small canary and observe the behavior through the prebuilt monitoring and audit paths.
+
+---
+
+# Acceptance criteria before removing `SIMULATION_MODE=true` for L.3
+
+* Vault production secrets applied and verified.
+* mTLS certs from prod CA installed and validated.
+* Stakeholder approval doc present in `reports/l3/approval_signoffs.json`.
+* Canary plan documented and canary namespace ready.
+* Production monitoring + alerting active and tested.
+* Automated rollback script verified (smoke rollback executed in staging).
+* Billing reconciliation tested end-to-end.
+
+---
+
+
+Drop these files into your repo (preserve paths). All scripts respect `SIMULATION_MODE=true` by default — set to `false` and ensure proper approvals to run live operations.
+
+---
+
+## 1) Vault production policy apply + verification
+
+**Path:** `infra/scripts/l3/apply_vault_policies.sh` (executable)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# infra/scripts/l3/apply_vault_policies.sh
+# Apply and verify Vault policies for L.3. Safe: simulation default.
+
+SIMULATION_MODE=${SIMULATION_MODE:-true}
+VAULT_ADDR=${VAULT_ADDR:-"https://vault.atom.internal"}
+POLICIES_DIR="infra/vault/policies"
+LOG="reports/l3/vault_apply.log"
+
+mkdir -p reports/l3
+
+echo "Starting Vault policy apply. SIMULATION_MODE=${SIMULATION_MODE}" | tee "$LOG"
+
+for f in "${POLICIES_DIR}"/*.hcl; do
+  [ -f "$f" ] || continue
+  policy_name=$(basename "$f" .hcl)
+  echo "Processing policy: $policy_name (file: $f)" | tee -a "$LOG"
+
+  if [ "$SIMULATION_MODE" = "true" ]; then
+    echo "SIMULATION_MODE: would run -> vault policy write ${policy_name} ${f}" | tee -a "$LOG"
+  else
+    echo "Applying policy ${policy_name} to Vault at ${VAULT_ADDR}..." | tee -a "$LOG"
+    vault policy write "${policy_name}" "${f}" 2>&1 | tee -a "$LOG"
+    echo "Verifying readback..." | tee -a "$LOG"
+    vault policy read "${policy_name}" > /dev/null
+    echo "Policy ${policy_name} applied." | tee -a "$LOG"
+  fi
+done
+
+echo "Completed Vault policy apply (simulation=${SIMULATION_MODE})" | tee -a "$LOG"
+```
+
+---
+
+## 2) Vault secret provisioning (template) + verification
+
+**Path:** `infra/scripts/l3/provision_secrets.sh` (executable)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# infra/scripts/l3/provision_secrets.sh
+# Creates secret placeholders in Vault for production services.
+SIMULATION_MODE=${SIMULATION_MODE:-true}
+VAULT_ADDR=${VAULT_ADDR:-"https://vault.atom.internal"}
+LOG="reports/l3/vault_provision.log"
+
+mkdir -p reports/l3
+echo "Provisioning secrets (SIMULATION_MODE=${SIMULATION_MODE})" | tee "$LOG"
+
+# Example secrets list
+declare -A SECRETS
+SECRETS["l3-orchestrator"]="secret/data/l3/orchestrator"
+SECRETS["l3-gateway"]="secret/data/l3/gateway"
+SECRETS["l3-metadata"]="secret/data/l3/metadata"
+SECRETS["l3-bus"]="secret/data/l3/bus"
+SECRETS["l3-auditor"]="secret/data/l3/auditor"
+
+for svc in "${!SECRETS[@]}"; do
+  path=${SECRETS[$svc]}
+  echo "=> ${svc} -> ${path}" | tee -a "$LOG"
+  if [ "$SIMULATION_MODE" = "true" ]; then
+    echo "SIMULATION: vault kv put ${path} api_key=SIM_PLACEHOLDER" | tee -a "$LOG"
+  else
+    vault kv put "${path}" api_key="$(openssl rand -hex 32)" 2>&1 | tee -a "$LOG"
+    echo "Wrote secret for ${svc}" | tee -a "$LOG"
+  fi
+done
+
+echo "Secret provisioning complete." | tee -a "$LOG"
+```
+
+---
+
+## 3) mTLS production certificate bootstrap + validate (Vault PKI or external CA)
+
+**Path:** `infra/scripts/l3/mtls_bootstrap.sh` (executable)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# infra/scripts/l3/mtls_bootstrap.sh
+# Bootstraps mTLS certs (simulation-safe). Integrates with Vault PKI if available.
+
+SIMULATION_MODE=${SIMULATION_MODE:-true}
+VAULT_ADDR=${VAULT_ADDR:-"https://vault.atom.internal"}
+PKI_ROLE=${PKI_ROLE:-"l3-pki-role"}
+CERT_DIR="infra/security/certs"
+LOG="reports/l3/mtls_bootstrap.log"
+
+mkdir -p "$CERT_DIR" reports/l3
+
+echo "mTLS bootstrap start (SIMULATION_MODE=${SIMULATION_MODE})" | tee "$LOG"
+
+services=(l3-orchestrator l3-gateway l3-metadata l3-bus l3-auditor)
+
+for svc in "${services[@]}"; do
+  cn="${svc}.atom.internal"
+  key="${CERT_DIR}/${svc}.key.pem"
+  csr="${CERT_DIR}/${svc}.csr.pem"
+  crt="${CERT_DIR}/${svc}.crt.pem"
+
+  if [ "$SIMULATION_MODE" = "true" ]; then
+    echo "SIM: Generating self-signed cert for ${cn}" | tee -a "$LOG"
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+      -subj "/CN=${cn}/O=atom" \
+      -keyout "${key}" -out "${crt}" 2>/dev/null
+    echo "SIM: cert for ${svc} written to ${crt}" | tee -a "$LOG"
+  else
+    # Example using Vault PKI (requires Vault configured)
+    echo "Requesting cert for ${cn} from Vault PKI role ${PKI_ROLE}" | tee -a "$LOG"
+    vault write -format=json pki/issue/"${PKI_ROLE}" common_name="${cn}" ttl=8760h \
+      > "${CERT_DIR}/${svc}.json"
+    jq -r .data.certificate < "${CERT_DIR}/${svc}.json" > "${crt}"
+    jq -r .data.private_key < "${CERT_DIR}/${svc}.json" > "${key}"
+    echo "Certificate issued and saved to ${crt}" | tee -a "$LOG"
+  fi
+done
+
+echo "mTLS bootstrap complete." | tee -a "$LOG"
+```
+
+**Path:** `infra/scripts/l3/mtls_validate.sh` (executable)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# infra/scripts/l3/mtls_validate.sh
+SIMULATION_MODE=${SIMULATION_MODE:-true}
+CERT_DIR="infra/security/certs"
+LOG="reports/l3/mtls_validate.log"
+mkdir -p reports/l3
+
+services=(l3-orchestrator l3-gateway l3-metadata l3-bus l3-auditor)
+for svc in "${services[@]}"; do
+  crt="${CERT_DIR}/${svc}.crt.pem"
+  echo "Validating ${crt} (SIM=${SIMULATION_MODE})" | tee -a "$LOG"
+  if [ "$SIMULATION_MODE" = "true" ]; then
+    echo "SIM: openssl x509 -noout -text -in ${crt}" | tee -a "$LOG"
+  else
+    openssl x509 -in "${crt}" -noout -text 2>&1 | tee -a "$LOG"
+  fi
+done
+echo "mTLS validation complete." | tee -a "$LOG"
+```
+
+---
+
+## 4) RBAC audit + enforcement script
+
+**Path:** `infra/scripts/l3/rbac_audit.sh` (executable)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# infra/scripts/l3/rbac_audit.sh
+# Audit cluster roles and bindings for l3 namespace and services.
+NAMESPACE=${NAMESPACE:-"l3-gae"}
+LOG="reports/l3/rbac_audit.log"
+mkdir -p reports/l3
+echo "RBAC audit for namespace ${NAMESPACE}" | tee "$LOG"
+
+# List rolebindings and clusterrolebindings referencing our service accounts
+kubectl get rolebinding,role -n "${NAMESPACE}" -o yaml > reports/l3/rolebindings_namespace.yaml
+kubectl get clusterrolebinding -o yaml > reports/l3/clusterrolebindings.yaml
+
+# Check for cluster-admin privileges held by our service accounts
+echo "Checking for cluster-admin bindings referencing our service accounts..." | tee -a "$LOG"
+kubectl get clusterrolebinding -o json | jq -r '.items[] | {name:.metadata.name, subjects:.subjects}' > reports/l3/cluster_role_subjects.json
+
+# Simple heuristic checks (no fragile parsing)
+echo "Heuristic checks summary:" > reports/l3/rbac_summary.txt
+if kubectl get rolebinding -n "${NAMESPACE}" | grep -E "cluster-admin" >/dev/null 2>&1; then
+  echo "WARNING: cluster-admin rolebinding found in ${NAMESPACE}" | tee -a reports/l3/rbac_summary.txt
+else
+  echo "No obvious cluster-admin rolebindings in namespace." | tee -a reports/l3/rbac_summary.txt
+fi
+
+echo "RBAC audit artifacts created under reports/l3/" | tee -a "$LOG"
+```
+
+---
+
+## 5) Prometheus + Grafana helm-values (prod-ready skeleton)
+
+**Path:** `infra/monitoring/prometheus/values.l3.yaml`
+
+```yaml
+# infra/monitoring/prometheus/values.l3.yaml
+global:
+  scrape_interval: 15s
+  external_labels:
+    cluster: "prod"
+
+prometheus:
+  retention: "30d"
+  storageSpec:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: standard
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 100Gi
+
+scrape_configs:
+  - job_name: 'l3-services'
+    static_configs:
+      - targets: ['l3-orchestrator:9005', 'l3-gateway:9006', 'l3-metadata:9007', 'l3-bus:9008', 'l3-auditor:9009']
+    metrics_path: /metrics
+    scrape_interval: 15s
+```
+
+**Path:** `infra/monitoring/grafana/l3_gae_dashboard.json`
+(You already have dashboard JSON — ensure imported into Grafana as part of deploy.)
+
+---
+
+## 6) Alertmanager rules & sample alerts
+
+**Path:** `infra/monitoring/alert_rules/l3_alerts.yaml`
+
+```yaml
+groups:
+- name: l3_alerts
+  rules:
+  - alert: L3ServiceDown
+    expr: up{job=~"l3-.*"} == 0
+    for: 2m
+    labels:
+      severity: page
+    annotations:
+      summary: "One or more L3 services down"
+      description: "Service {{ $labels.job }} has been down for > 2m."
+
+  - alert: L3HighErrorRate
+    expr: rate(http_requests_total{job=~"l3-.*",status=~"5.."}[5m]) > 0.05
+    for: 5m
+    labels:
+      severity: p1
+    annotations:
+      summary: "Elevated 5xx rate in L3 services"
+      description: "High 5xx error rate for {{ $labels.job }}."
+```
+
+---
+
+## 7) On-call roster + runbook template
+
+**Path:** `docs/on_call_roster.md`
+
+```markdown
+# On-Call Roster & Runbook — L.3 Global Autonomy Exchange
+
+## On-Call Roster (example)
+- Primary On-Call (Week A): ops-lead@example.com, +91-XXXXXXXXXX
+- Secondary On-Call (Week A): sres@example.com, +91-YYYYYYYYYY
+- Security Admin: sec-admin@example.com
+- Governance Owner: gov-owner@example.com
+
+## Contact Directory
+- Slack channel: #atom-ops-l3
+- Pager: configured via PagerDuty integration (service: atom-l3-prod)
+
+---
+
+## Runbook - Service Down (L3ServiceDown)
+1. Acknowledge the alert in PagerDuty.
+2. Check health endpoints:
+   - curl -fsS https://l3-orchestrator:9005/health
+   - curl -fsS https://l3-gateway:9006/health
+3. Check pods:
+   - kubectl -n l3-gae get pods -o wide
+4. If CrashLoopBackOff:
+   - kubectl -n l3-gae logs <pod> --previous
+   - kubectl -n l3-gae describe pod <pod>
+5. If TLS/cert issue suspected:
+   - infra/scripts/l3/mtls_validate.sh
+6. If RBAC suspected:
+   - infra/scripts/l3/rbac_audit.sh
+7. Rollback step (if failed deploy):
+   - kubectl -n l3-gae rollout undo deploy/<deployment>
+8. Escalation:
+   - If unresolved 30 minutes, escalate to Security Admin and Governance Owner.
+
+---
+
+## Runbook - High Error Rate (L3HighErrorRate)
+1. Identify afflicted service: query Prometheus or check logs.
+2. Throttle traffic via admission or patch HPA to reduce load temporarily.
+3. Investigate recent deployments: git commit + helm release.
+4. Run canary-rollback if recent change suspected.
+5. Document incident to reports/l3/postmortem.md
+
+```
+
+---
+
+## 8) Canary plan (detailed)
+
+**Path:** `docs/canary_plan_l3.md`
+
+```markdown
+# Canary Plan — L.3 Global Autonomy Exchange
+
+## Purpose
+Controlled progressive rollout of L.3 to production with safety gates.
+
+## Preconditions
+- `reports/l3/approval_signoffs.json` contains approvals from Security, Ops, Governance (required).
+- Vault secrets provisioned (infra/scripts/l3/provision_secrets.sh run with SIM=false).
+- mTLS certs validated (infra/scripts/l3/mtls_validate.sh passed).
+- Monitoring and alerting active and tested.
+
+## Canary Target
+- Namespace: `l3-canary`
+- Node group: 2 nodes (isolated)
+- Traffic routing: 1% of control-plane traffic for first 24 hours; escalate to 10% at 48h; full at 7 days if stable.
+
+## Steps
+1. Create canary namespace and RBAC: `infra/scripts/l3/create_canary_namespace.sh`
+2. Deploy L.3 into `l3-canary` with `SIMULATION_MODE=false` and `APPROVE_L3_DEPLOY=yes`
+3. Monitor:
+   - Prometheus: error rates, latency, policy violations
+   - Audit events: check `l3-auditor` for unusual actions
+4. Observation window (initial): 48 hours
+   - If more than 3 P1 alerts, rollback
+   - If any governance violation (P25-P31), rollback immediately
+5. Escalation: ops lead + governance owner notified automatically
+6. Gradual ramp:
+   - Day 1: 1% traffic
+   - Day 3: 10% traffic
+   - Day 7: 50% traffic
+   - Day 14: 100% (if no incidents)
+7. Rollback steps:
+   - Run `infra/scripts/l3/rollback_canary.sh` which restores previous deployment and revokes canary tokens
+
+## Acceptance Criteria
+- 99.95% success rate for canary traffic
+- No governance violations logged
+- Alert rate below threshold (configurable) for 48h
+- Performance within SLOs
+
+```
+
+**Path:** `infra/scripts/l3/rollback_canary.sh` (executable)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# infra/scripts/l3/rollback_canary.sh
+NAMESPACE=${NAMESPACE:-"l3-canary"}
+echo "Rolling back canary in ${NAMESPACE}"
+kubectl -n "${NAMESPACE}" get deploy -o name | while read d; do
+  echo "Rolling back ${d}"
+  kubectl -n "${NAMESPACE}" rollout undo "${d}"
+done
+echo "Canary rollback done."
+```
+
+---
+
+## 9) Backup & restore runbook + DB backup script
+
+**Path:** `infra/scripts/l3/backup_db.sh` (executable)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# infra/scripts/l3/backup_db.sh
+# Backup PostgreSQL (example) for l3 metadata store (simulation safe)
+SIMULATION_MODE=${SIMULATION_MODE:-true}
+BACKUP_DIR="${BACKUP_DIR:-/mnt/backups/l3}"
+mkdir -p "$BACKUP_DIR"
+TIMESTAMP=$(date -u +"%Y%m%dT%H%M%SZ")
+BACKUP_FILE="${BACKUP_DIR}/metadata_backup_${TIMESTAMP}.sql.gz"
+echo "Backing up DB to ${BACKUP_FILE} (SIM=${SIMULATION_MODE})"
+
+if [ "$SIMULATION_MODE" = "true" ]; then
+  echo "SIMULATION: pg_dump ... | gzip > ${BACKUP_FILE}"
+  echo "{}" > "${BACKUP_DIR}/simulated_backup_${TIMESTAMP}.json"
+else
+  PGPASSWORD=${PGPASSWORD:-} pg_dump -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" | gzip > "${BACKUP_FILE}"
+  echo "Backup done: ${BACKUP_FILE}"
+fi
+```
+
+**Path:** `infra/scripts/l3/restore_db.sh` (executable)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+# infra/scripts/l3/restore_db.sh
+BACKUP_FILE=${1:-}
+if [ -z "${BACKUP_FILE}" ]; then
+  echo "Usage: $0 path/to/backup.sql.gz"
+  exit 2
+fi
+echo "Restoring from ${BACKUP_FILE} (SIMULATION_MODE=${SIMULATION_MODE:-true})"
+if [ "${SIMULATION_MODE:-true}" = "true" ]; then
+  echo "SIMULATION: restore would run here"
+else
+  gunzip -c "${BACKUP_FILE}" | psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}"
+  echo "Restore complete"
+fi
+```
+
+---
+
+## 10) Penetration / Vulnerability checklist (runbook)
+
+**Path:** `docs/pentest_checklist.md`
+
+```markdown
+# Penetration & Vulnerability Testing Checklist (L.3)
+
+## Scope
+- l3-orchestrator, l3-gateway, l3-metadata, l3-bus, l3-auditor
+- Prometheus/Grafana endpoints (auth)
+- Vault integrations & PKI
+- Kubernetes cluster (RBAC, network policies)
+
+## Tests
+1. Static application SCA vulnerability scan (dependabot, snyk)
+2. Container image scan (trivy)
+3. Dynamic application scan (OWASP ZAP)
+4. Authn/Authz fuzzing
+5. mTLS handshake robustness tests (invalid certs, revoked cert)
+6. Privilege escalation tests (RBAC checks)
+7. Network policies validation
+8. Secrets exfiltration tests (simulate compromised pod)
+9. Rate limit / DoS testing (controlled)
+10. Post-report remediation and re-test
+
+## Deliverables
+- PenTest report (PDF/JSON)
+- Remediation tracker (issues)
+- Re-test results
+```
+
+---
+
+## 11) Billing reconciliation test script
+
+**Path:** `tests/k8/integration/test_billing_reconciliation_prodlike.sh` (executable)
+
+```bash
+#!/usr/bin/env bash
+# tests/k8/integration/test_billing_reconciliation_prodlike.sh
+# Simulated run: post sample billing events to billing-gateway and assert ledger reconciliation
+SIMULATION_MODE=${SIMULATION_MODE:-true}
+BILLING_GATEWAY=${BILLING_GATEWAY:-"http://localhost:8100"}
+LEDGER_API=${LEDGER_API:-"http://localhost:9002"}
+REPORT="reports/k8/billing_reconciliation_test.log"
+mkdir -p reports/k8
+
+echo "Billing reconciliation test (SIM=${SIMULATION_MODE})" | tee "$REPORT"
+
+# Generate small batch of sample billing events
+cat > /tmp/sample_events.json <<JSON
+[
+  {"tenant_id":"t1","amount_cents":10000,"event_id":"evt-1","timestamp":"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"},
+  {"tenant_id":"t2","amount_cents":20000,"event_id":"evt-2","timestamp":"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"}
+]
+JSON
+
+if [ "$SIMULATION_MODE" = "true" ]; then
+  echo "SIM: would POST sample events to ${BILLING_GATEWAY}/v1/events" | tee -a "$REPORT"
+  echo "SIM: would verify ledger entries at ${LEDGER_API}/v1/ledger" | tee -a "$REPORT"
+else
+  curl -s -H "Content-Type: application/json" -X POST "${BILLING_GATEWAY}/v1/events" -d @/tmp/sample_events.json | tee -a "$REPORT"
+  sleep 2
+  curl -s "${LEDGER_API}/v1/ledger?from=$(date -u -d '-5m' +"%Y-%m-%dT%H:%M:%SZ")" | tee -a "$REPORT"
+fi
+
+echo "Billing reconciliation test complete" | tee -a "$REPORT"
+```
+
+---
+
+## 12) Makefile additions (top-level)
+
+**Path:** `Makefile` (append)
+
+```makefile
+# L.3 target additions
+.PHONY: l3-precheck l3-deploy l3-verify l3-apply-vault l3-provision-secrets l3-mtls l3-rbac l3-backup l3-rollback-canary
+
+l3-precheck:
+	@SIMULATION_MODE=true ./infra/scripts/l3/mtls_validate.sh || true
+	@SIMULATION_MODE=true ./infra/scripts/l3/rbac_audit.sh || true
+
+l3-apply-vault:
+	@SIMULATION_MODE=${SIM:=true} ./infra/scripts/l3/apply_vault_policies.sh
+
+l3-provision-secrets:
+	@SIMULATION_MODE=${SIM:=true} ./infra/scripts/l3/provision_secrets.sh
+
+l3-mtls:
+	@SIMULATION_MODE=${SIM:=true} ./infra/scripts/l3/mtls_bootstrap.sh
+
+l3-rbac:
+	@./infra/scripts/l3/rbac_audit.sh
+
+l3-backup:
+	@SIMULATION_MODE=${SIM:=true} ./infra/scripts/l3/backup_db.sh
+
+l3-rollback-canary:
+	@./infra/scripts/l3/rollback_canary.sh
+```
+
+---
+
+## 13) approval_signoffs.json template
+
+**Path:** `reports/l3/approval_signoffs.json`
+
+```json
+{
+  "phase": "L.3",
+  "approvals": {
+    "security_admin": {"name": "", "email": "", "timestamp": "", "signature": ""},
+    "ops_lead": {"name": "", "email": "", "timestamp": "", "signature": ""},
+    "governance_owner": {"name": "", "email": "", "timestamp": "", "signature": ""},
+    "legal": {"name": "", "email": "", "timestamp": "", "signature": ""},
+    "product_owner": {"name": "", "email": "", "timestamp": "", "signature": ""}
+  },
+  "notes": ""
+}
+```
+
+---
+
+## 14) PR body template for blocker remediation PR
+
+**Path:** `.github/pull_request_template_l3_blockers.md`
+
+```markdown
+## PR: L.3 Blocker Remediation — Vault/mTLS/RBAC/Monitoring
+
+### Summary
+This PR adds production-ready scripts and artifacts to close live-deployment blockers for L.3:
+- Vault policy apply & secret provisioning
+- mTLS certificate bootstrap & validation
+- RBAC audit scripts
+- Prometheus/Grafana helm values and alerts
+- Canary plan + rollback
+- Backup & restore scripts
+- PenTest checklist & billing reconciliation test
+
+### Checklist (must be completed before APPROVE_L3_DEPLOY=yes)
+- [ ] Vault policies applied to prod Vault
+- [ ] Secrets provisioned and verified
+- [ ] Production mTLS certs installed and validated
+- [ ] RBAC audit passed (no wide cluster-admin)
+- [ ] Monitoring & alerting configured in prod Grafana
+- [ ] Canary plan documented and canary namespace created
+- [ ] Backup & restore validated in staging
+- [ ] PenTest scheduled and remediation items created
+- [ ] approval_signoffs.json filled and attached
+
+Attach evidence artifacts from `reports/l3/` to the PR.
+```
+
+---
+
+## 15) Short README addition for operators
+
+**Path:** `docs/l3_operator_quickstart.md`
+
+```markdown
+# L.3 Operator Quickstart
+
+Prereqs: kubectl, vault, openssl, jq, helm, terraform.
+
+Step 1: Review approvals
+  cat reports/l3/approval_signoffs.json
+
+Step 2: Simulation smoke
+  make l3-precheck
+
+Step 3: (Optional) apply Vault policies in simulation
+  make l3-apply-vault SIM=true
+
+Step 4: Request approvals, then run:
+  SIMULATION_MODE=false make l3-apply-vault
+  SIMULATION_MODE=false make l3-provision-secrets
+  SIMULATION_MODE=false make l3-mtls
+
+Step 5: Deploy canary
+  ./infra/scripts/l3/deploy_canary.sh (requires APPROVE_L3_DEPLOY=yes)
+
+Step 6: Monitor dashboards and alerts
+```
+
+---
+
+### How to use these files right now (recommended order, simulation-safe)
+
+1. Commit the files above to `prod-feature/l3.blocker-fixes` branch.
+2. Run simulation smoke:
+
+   ```bash
+   make l3-precheck
+   make l3-mtls SIM=true
+   make l3-apply-vault SIM=true
+   make l3-provision-secrets SIM=true
+   ```
+
+   This will produce artifacts under `reports/l3/` (logs, simulated certs).
+3. Collect stakeholder signoffs in `reports/l3/approval_signoffs.json`.
+4. After signoffs, run:
+
+   ```bash
+   SIMULATION_MODE=false make l3-apply-vault
+   SIMULATION_MODE=false make l3-provision-secrets
+   SIMULATION_MODE=false make l3-mtls
+   ./infra/scripts/l3/deploy_canary.sh  # OR helm upgrade/install with canary values
+   ```
+
+   (Only do the above once legal & security approve and your prod Vault/PKI are reachable.)
+
+---
+

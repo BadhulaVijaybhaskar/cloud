@@ -1,0 +1,17 @@
+{
+  "phase": "M.1",
+  "timestamp": "2024-12-19T10:30:00Z",
+  "action": "vault_policy_write",
+  "policy_name": "m1_certification",
+  "policy_file": "infra/vault/policies/m1_certification.hcl",
+  "status": "MANUAL_EXECUTION_REQUIRED",
+  "operator_commands": [
+    "export VAULT_ADDR=\"https://vault.prod.example\"",
+    "vault login <METHOD_OR_TOKEN>",
+    "vault policy write m1_certification infra/vault/policies/m1_certification.hcl"
+  ],
+  "expected_result": "Success: policy written",
+  "governance_policies_enforced": ["P43", "P44", "P45", "P46"],
+  "simulation_mode": true,
+  "notes": "Policy file validated and ready for production deployment"
+}

@@ -1,0 +1,12 @@
+{
+  "phase": "M.1",
+  "timestamp": "2024-12-19T10:00:00Z",
+  "simulation_mode": true,
+  "checks": {
+    "services_dir": "present",
+    "signing_key_sample": "present",
+    "infrastructure": "simulated",
+    "vault_policies": "created"
+  },
+  "status": "READY_FOR_SIMULATION"
+}

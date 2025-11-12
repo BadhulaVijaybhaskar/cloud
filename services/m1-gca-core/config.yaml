@@ -1,0 +1,10 @@
+service:
+  name: "m1-gca-core"
+  port: 9200
+  
+security:
+  gca_private_key: "${GCA_SIGNING_KEY_PATH}"
+  vault_addr: "${VAULT_ADDR}"
+  
+simulation:
+  mode: "${SIMULATION_MODE:-true}"

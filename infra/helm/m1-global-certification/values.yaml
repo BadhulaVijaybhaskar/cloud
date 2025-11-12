@@ -1,0 +1,30 @@
+global:
+  simulationMode: true
+  namespace: atom-m1
+  dockerRegistry: localhost:5000
+
+services:
+  gcaCore:
+    name: m1-gca-core
+    port: 9200
+    replicas: 1
+  
+  ixBus:
+    name: m1-ix-bus
+    port: 9210
+    replicas: 1
+  
+  cdpBridge:
+    name: m1-cdp-bridge
+    port: 9220
+    replicas: 1
+  
+  fedAuditor:
+    name: m1-fed-auditor
+    port: 9230
+    replicas: 1
+  
+  metaMetrics:
+    name: m1-meta-metrics
+    port: 9240
+    replicas: 1

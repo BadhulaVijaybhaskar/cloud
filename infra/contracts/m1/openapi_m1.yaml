@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: M.1 Global Certification API
+  version: 1.0.0
+  description: Cross-domain intelligence exchange and certification
+
+paths:
+  /v1/sign:
+    post:
+      summary: Sign payload with GCA key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payload:
+                  type: object
+                metadata:
+                  type: object
+      responses:
+        '200':
+          description: Signed payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  signature:
+                    type: string
+                  signed_at:
+                    type: integer
+                  key_id:
+                    type: string
+
+  /v1/verify:
+    post:
+      summary: Verify signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payload:
+                  type: object
+                signature:
+                  type: string
+                key_id:
+                  type: string
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  reason:
+                    type: string

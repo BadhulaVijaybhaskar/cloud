@@ -1,0 +1,7 @@
+service:
+  name: "m1-fed-auditor"
+  port: 9230
+  
+audit:
+  db_url: "${AUDIT_DB_URL:-sqlite:///audit.db}"
+  retention_days: 365

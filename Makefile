@@ -297,6 +297,7 @@ k-all-precheck:
 	SIMULATION_MODE=true bash infra/scripts/k2/precheck.sh || true
 	SIMULATION_MODE=true bash infra/scripts/k8/precheck.sh || true
 	SIMULATION_MODE=true bash infra/scripts/l1/run_audit.sh || true
+	SIMULATION_MODE=true bash infra/scripts/m1/precheck.sh || true
 
 pr-package:
 	mkdir -p docs/pr_bundles/pr_k_full_release
@@ -324,3 +325,25 @@ l8-verify:
 	test -f docs/launch/launch_day_runbook.md && echo "✅ Launch runbook present"
 	test -d ui/developer-console && echo "✅ UI stubs present"
 	echo '{"phase":"L.8","status":"VERIFIED","timestamp":"'$$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"'}' > reports/l8/verification_summary.json
+
+# M.1 Global Autonomous Certification & Cross-Domain Intelligence Exchange
+.PHONY: m1-precheck m1-deploy m1-verify m1-test m1-clean
+
+m1-precheck:
+	@echo "Running M.1 precheck..."
+	SIMULATION_MODE=true bash infra/scripts/m1/precheck.sh
+
+m1-deploy:
+	@echo "Running M.1 deploy (simulation)..."
+	SIMULATION_MODE=true bash infra/scripts/m1/deploy.sh
+
+m1-verify:
+	@echo "Running M.1 verification..."
+	SIMULATION_MODE=true bash infra/scripts/m1/verify.sh
+
+m1-test:
+	@echo "Running M.1 integration tests..."
+	SIMULATION_MODE=true pytest tests/m1/ -q
+
+m1-clean:
+	rm -rf reports/m1 || true

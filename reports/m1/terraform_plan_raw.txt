@@ -1,0 +1,146 @@
+Terraform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # kubernetes_namespace.m1 will be created
+  + resource "kubernetes_namespace" "m1" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "atom-m1"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+
+          + labels = {
+              + "app.kubernetes.io/name" = "m1-global-certification"
+              + "atom.cloud/phase"      = "m1"
+            }
+        }
+    }
+
+  # kubernetes_deployment.gca_core will be created
+  + resource "kubernetes_deployment" "gca_core" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "m1-gca-core"
+          + namespace        = "atom-m1"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + min_ready_seconds         = 0
+          + paused                    = false
+          + progress_deadline_seconds = 600
+          + replicas                  = 1
+          + revision_history_limit    = 10
+
+          + selector {
+              + match_labels = {
+                  + "app" = "m1-gca-core"
+                }
+            }
+
+          + template {
+              + metadata {
+                  + generation = (known after apply)
+
+                  + labels = {
+                      + "app" = "m1-gca-core"
+                    }
+                }
+
+              + spec {
+                  + active_deadline_seconds          = (known after apply)
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + restart_policy                   = "Always"
+                  + service_account_name             = (known after apply)
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + image                      = "localhost:5000/m1-gca-core:latest"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "gca-core"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "SIMULATION_MODE"
+                          + value = "true"
+                        }
+
+                      + port {
+                          + container_port = 9200
+                          + protocol       = "TCP"
+                        }
+
+                      + resources {
+                          + limits   = (known after apply)
+                          + requests = (known after apply)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+  # kubernetes_service.gca_core will be created
+  + resource "kubernetes_service" "gca_core" {
+      + id                     = (known after apply)
+      + status                 = (known after apply)
+      + wait_for_load_balancer = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "m1-gca-core"
+          + namespace        = "atom-m1"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + allocate_load_balancer_node_ports = true
+          + cluster_ip                        = (known after apply)
+          + cluster_ips                       = (known after apply)
+          + external_traffic_policy           = (known after apply)
+          + health_check_node_port            = (known after apply)
+          + internal_traffic_policy           = (known after apply)
+          + ip_families                       = (known after apply)
+          + ip_family_policy                  = (known after apply)
+          + load_balancer_class               = (known after apply)
+          + load_balancer_ip                  = (known after apply)
+          + load_balancer_source_ranges       = (known after apply)
+          + publish_not_ready_addresses       = false
+          + session_affinity                  = "None"
+          + type                              = "ClusterIP"
+
+          + port {
+              + node_port   = (known after apply)
+              + port        = 9200
+              + protocol    = "TCP"
+              + target_port = "9200"
+            }
+
+          + selector = {
+              + "app" = "m1-gca-core"
+            }
+        }
+    }
+
+Plan: 3 to add, 0 to change, 0 to destroy.

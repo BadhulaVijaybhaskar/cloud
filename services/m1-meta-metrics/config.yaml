@@ -1,0 +1,6 @@
+service:
+  name: "m1-meta-metrics"
+  port: 9240
+  
+metrics:
+  db_url: "${METRICS_DB_URL:-sqlite:///metrics.db}"

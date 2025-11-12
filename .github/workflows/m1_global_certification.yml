@@ -1,0 +1,62 @@
+name: M.1 Global Certification CI
+
+on:
+  push:
+    branches: [ prod-feature/m1-global-certification ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  SIMULATION_MODE: true
+  DOCKER_REGISTRY: localhost:5000
+
+jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run precheck
+      run: |
+        chmod +x infra/scripts/m1/precheck.sh
+        ./infra/scripts/m1/precheck.sh
+
+  test:
+    runs-on: ubuntu-latest
+    needs: precheck
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: |
+        pip install pytest pyyaml requests
+    - name: Run tests
+      run: |
+        export SIMULATION_MODE=true
+        pytest tests/m1/ -v
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build services
+      run: |
+        for svc in services/m1-*; do
+          if [ -d "$svc" ]; then
+            echo "Building $(basename $svc)..."
+            docker build -t "localhost:5000/$(basename $svc):latest" "$svc"
+          fi
+        done
+
+  verify:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run verification
+      run: |
+        chmod +x infra/scripts/m1/verify.sh
+        ./infra/scripts/m1/verify.sh

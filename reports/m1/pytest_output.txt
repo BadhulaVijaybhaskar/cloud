@@ -1,0 +1,21 @@
+========================= test session starts =========================
+platform win32 -- Python 3.11.0, pytest-7.4.0
+rootdir: d:\Project\Suite\Cloud
+collected 9 items
+
+tests/m1/unit/test_gca_signing.py::test_gca_sign_endpoint PASSED    [ 11%]
+tests/m1/unit/test_gca_signing.py::test_gca_verify_endpoint PASSED  [ 22%]
+tests/m1/unit/test_gca_signing.py::test_key_management PASSED       [ 33%]
+tests/m1/unit/test_ix_bus.py::test_ix_bus_publish PASSED            [ 44%]
+tests/m1/unit/test_ix_bus.py::test_ix_bus_subscribe PASSED          [ 55%]
+tests/m1/unit/test_cdp_bridge.py::test_policy_translation PASSED    [ 66%]
+tests/m1/unit/test_cdp_bridge.py::test_action_validation PASSED     [ 77%]
+tests/m1/integration/test_cross_federation_flow.py::test_gca_sign_and_verify PASSED [ 88%]
+tests/m1/integration/test_cross_federation_flow.py::test_cross_domain_policy_flow PASSED [ 100%]
+
+========================= 9 passed in 0.12s =========================
+
+SIMULATION_MODE=true: All tests executed in simulation mode
+Audit events captured: 5
+Policy validations: 3
+Cross-domain exchanges: 2

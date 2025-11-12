@@ -1,0 +1,7 @@
+service:
+  name: "m1-ix-bus"
+  port: 9210
+  
+messaging:
+  mq_url: "${MQ_URL:-inproc://}"
+  encryption_key: "${ENCRYPTION_KEY:-sim}"

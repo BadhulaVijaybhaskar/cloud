@@ -1,0 +1,12 @@
+apiVersion: v2
+name: m1-global-certification
+description: M.1 Global Autonomous Certification & Cross-Domain Intelligence Exchange
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - atom
+  - certification
+  - federation
+maintainers:
+  - name: ATOM Team

@@ -1,0 +1,97 @@
+{
+  "format_version": "1.1",
+  "terraform_version": "1.5.0",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "kubernetes_namespace.m1",
+          "mode": "managed",
+          "type": "kubernetes_namespace",
+          "name": "m1",
+          "values": {
+            "metadata": [
+              {
+                "name": "atom-m1",
+                "labels": {
+                  "app.kubernetes.io/name": "m1-global-certification",
+                  "atom.cloud/phase": "m1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "address": "kubernetes_deployment.gca_core",
+          "mode": "managed", 
+          "type": "kubernetes_deployment",
+          "name": "gca_core",
+          "values": {
+            "metadata": [
+              {
+                "name": "m1-gca-core",
+                "namespace": "atom-m1"
+              }
+            ],
+            "spec": [
+              {
+                "replicas": 1
+              }
+            ]
+          }
+        },
+        {
+          "address": "kubernetes_service.gca_core",
+          "mode": "managed",
+          "type": "kubernetes_service", 
+          "name": "gca_core",
+          "values": {
+            "metadata": [
+              {
+                "name": "m1-gca-core",
+                "namespace": "atom-m1"
+              }
+            ],
+            "spec": [
+              {
+                "port": [
+                  {
+                    "port": 9200,
+                    "target_port": 9200
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "kubernetes_namespace.m1",
+      "change": {
+        "actions": ["create"]
+      }
+    },
+    {
+      "address": "kubernetes_deployment.gca_core", 
+      "change": {
+        "actions": ["create"]
+      }
+    },
+    {
+      "address": "kubernetes_service.gca_core",
+      "change": {
+        "actions": ["create"]
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "kubernetes": {
+        "name": "kubernetes"
+      }
+    }
+  }
+}

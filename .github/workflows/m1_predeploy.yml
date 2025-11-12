@@ -1,0 +1,68 @@
+name: M.1 Predeploy Checks
+on:
+  pull_request:
+    paths:
+      - 'infra/**'
+      - 'services/m1/**'
+      - 'tests/m1/**'
+
+env:
+  SIMULATION_MODE: true
+
+jobs:
+  predeploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.0
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        pip install pytest pyyaml requests
+    
+    - name: Terraform fmt/validate/plan
+      run: |
+        cd infra/terraform/modules/m1_global_certification
+        terraform init -input=false
+        terraform fmt -check
+        terraform validate
+        terraform plan -out=tfplan.m1 -input=false -no-color \
+          -var="simulation_mode=true" \
+          -var="namespace=atom-m1"
+        terraform show -json tfplan.m1 > ../../../../reports/m1/terraform_plan_m1.json
+    
+    - name: Validate Terraform plan
+      run: |
+        # Check for destructive changes
+        DESTROY_COUNT=$(jq '[.resource_changes[]? | select(.change.actions[]? == "destroy")] | length' reports/m1/terraform_plan_m1.json)
+        if [ "$DESTROY_COUNT" -gt 0 ]; then
+          echo "ERROR: Plan contains $DESTROY_COUNT destructive changes"
+          exit 1
+        fi
+        echo "✓ Terraform plan validation passed"
+    
+    - name: Run M.1 tests
+      run: |
+        export SIMULATION_MODE=true
+        pytest tests/m1/ -q --disable-warnings --maxfail=1 | tee reports/m1/pytest_output.txt
+    
+    - name: Validate audit logging
+      run: |
+        # Check audit log exists and is valid JSON
+        jq empty reports/m1/audit_log.json || exit 1
+        echo "✓ Audit logging validation passed"
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: m1-reports
+        path: reports/m1

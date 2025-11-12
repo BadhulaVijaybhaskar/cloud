@@ -1,0 +1,6 @@
+service:
+  name: "m1-cdp-bridge"
+  port: 9220
+  
+policy:
+  db_url: "${POLICY_DB_URL:-sqlite:///sim.db}"
